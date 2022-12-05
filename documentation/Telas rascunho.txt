@@ -1,0 +1,70 @@
+TELAS
+=====
+
+login: 
+- Card 
+-- logo (Image), 
+-- email (InputText)
+-- senha (InputPassword)
+-- Entrar (Button)
+-- esqueci senha (Link)
+
+recuperar senha:
+- Card
+-- email (InputText)
+-- enviar email (Button)
+
+nova senha
+- Card
+-- email (InputText Readonly)
+-- Nova senha (InputPassword)
+-- Confirmar senha (InputPassword)
+-- Salvar (Button)
+
+dashboard
+
+toda tela (
+- navbar
+- breadcrumb
+- card
+- footer
+)
+
+navbar:
+- Meus dados 
+-- Alterar (Button)
+-- Sair (Button)
+
+
+sidebar:
+- pedidos [permissao manage_orders]
+- refeições [permissao manage_meals]
+- clientes [permissao manage_meals]
+- acl [permissao manage_roles e permissao manage_users]
+-- usuarios [permissao manage_users]
+-- perfis [permissao manage_roles]
+
+Refeições (
+
+>Refeiçoes (index):
+- Novo Registro (Button)
+- Filtros
+-- Refeição (InputText)
+-- Tipo (Select)
+- Table
+-- Refeição (text)
+-- Tipo (text)
+-- Preço (text)
+-- Editar (ButtonTable)
+-- Excluir (ButtonTable)
+
+>Refeiçoes (create/edit):
+- Refeição (InputText)
+- Tipo (Select)
+- Preço (MoneyInput)
+- Salvar (Button)
+- Cancelar (Button)
+
+)
+
+
