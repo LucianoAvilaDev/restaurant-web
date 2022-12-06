@@ -14,7 +14,7 @@ export type menuType = {
   submenus: menuType[];
 };
 
-export const menusTest: menuType[] = [
+export const menus: menuType[] = [
   {
     name: "Tela Inicial",
     icon: <AiOutlineHome size={17} />,
@@ -66,17 +66,10 @@ export const menusTest: menuType[] = [
       {
         name: "Perfis",
         icon: <RiProfileLine size={17} />,
-        url: "permissions",
+        url: "roles",
         permissions: ["manage_roles"],
         submenus: [],
       },
     ],
-  },
-  {
-    name: "Sair",
-    icon: <AiOutlineHome size={17} />,
-    url: "logout",
-    permissions: [],
-    submenus: [],
   },
 ];
