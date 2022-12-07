@@ -1,11 +1,11 @@
 import "../../styles/globals.css";
 import type { AppProps } from "next/app";
-import Sidebar from "../components/sidebar/Sidebar";
+import Navigation from "../components/navigation/Navigation";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Sidebar>
+    <Navigation>
       <Component {...pageProps} />
-    </Sidebar>
+    </Navigation>
   );
 }

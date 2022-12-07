@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import { createContext } from "react";
-import api from "../services/api";
+import { api } from "../services/api";
 import { setCookie, parseCookies } from "nookies";
 import Router from "next/router";
 
@@ -38,12 +38,16 @@ export function AuthProvider({ children }: any) {
 
   const signIn = async (data: SignInType) => {
     const { token, expires, user } = await api
-      .post("login", { ...data })
+      .post("login", {
+        ...data,
+      })
       .then((response: AxiosResponse) => response.data);
 
     setCookie(undefined, "restaurantApp.token", token, {
       expires: expires,
     });
+
+    api.defaults.headers["Authorization"] = `bearer ${token}`;
 
     setUser(user);
 

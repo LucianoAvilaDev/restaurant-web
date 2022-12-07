@@ -6,15 +6,15 @@ import { FaRegAddressCard } from "react-icons/fa";
 import { RiProfileLine } from "react-icons/ri";
 import { GiTable } from "react-icons/gi";
 
-export type menuType = {
+export type MenuType = {
   name: string;
   icon: any;
   permissions: string[];
   url: string;
-  submenus: menuType[];
+  submenus: MenuType[];
 };
 
-export const menus: menuType[] = [
+export const Menus: MenuType[] = [
   {
     name: "Tela Inicial",
     icon: <AiOutlineHome size={17} />,
