@@ -8,27 +8,40 @@ type props = {
   readOnly?: boolean;
   placeholder: string;
   value: string;
-  onclick: Function;
+  label: string;
+  register: any;
 };
 
 const InputText = ({
   id,
   name,
   readOnly,
+  label,
   required,
   placeholder,
   value,
+  register,
 }: props) => {
   return (
-    <input
-      id={id ?? v4()}
-      name={name}
-      type="text"
-      required={required ?? false}
-      readOnly={readOnly ?? false}
-      className="rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-red-500 shadow-sm focus:shadow-red-500 focus:z-10 sm:text-sm"
-      placeholder={placeholder}
-    />
+    <>
+      {label && (
+        <label htmlFor="id" className={`text-gray-800 text-sm font-normal`}>
+          {label}
+        </label>
+      )}
+      <input
+        {...register}
+        key={v4()}
+        id={id}
+        name={name}
+        type="text"
+        readOnly={readOnly ?? false}
+        required={required ?? false}
+        className="rounded-md relative block w-full px-2 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none shadow-md focus:shadow-gray-500 focus:z-10 sm:text-sm"
+        placeholder={placeholder}
+        defaultValue={value}
+      />
+    </>
   );
 };
 

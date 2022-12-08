@@ -8,6 +8,7 @@ type props = {
   required?: boolean;
   placeholder: string;
   value?: string;
+  register: any;
 };
 
 const InputPassword = ({
@@ -17,6 +18,7 @@ const InputPassword = ({
   required,
   placeholder,
   value,
+  register,
 }: props) => {
   return (
     <>
@@ -26,12 +28,13 @@ const InputPassword = ({
         </label>
       )}
       <input
+        {...register}
         key={v4()}
         id={id}
         name={name}
         type="password"
         required={required ?? false}
-        className="rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-red-500 shadow-sm focus:shadow-red-500 focus:z-10 sm:text-sm"
+        className="rounded-md relative block w-full px-2 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none shadow-md focus:shadow-gray-500 focus:z-10 sm:text-sm"
         placeholder={placeholder}
         defaultValue={value}
       />
