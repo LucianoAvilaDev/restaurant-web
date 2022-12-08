@@ -13,41 +13,17 @@ module.exports = {
       //   'body': ['"Open Sans"'],
       // },
       colors: {
-        sidebarHeaderColor: "rgb(185 28 28)",
-        sidebarHeaderText: "rgb(249 250 251)",
+        themeBgBody: "rgb(229 231 235)",
 
-        sidebarHeaderIconColor: "rgb(249 250 251)",
-        sidebarHeaderIconHover: "rgb(185 28 28)",
-        sidebarHeaderIconBgHover: "rgb(249 250 251 / 0.8)",
+        themeLighter: "rgb(245, 225, 220)",
+        themeLight: "rgb(239 68 68)",
+        themeMedium: "rgb(185 28 28)",
+        themeDark: "rgb(153 27 27)",
+        themeDarker: "rgb(127 29 29)",
 
-        sidebarMenuBgColor: "rgb(153 27 27)",
-        sidebarMenuBorder: "rgb(239 68 68)",
-        sidebarMenuHover: "rgb(249 250 251 / 0.7)",
-
-        sidebarTextColor: "rgb(249 250 251)",
-        sidebarTextHover: "rgb(153 27 27)",
-
-        sidebarSubMenu: "rgb(127 29 29)",
-        sidebarSubMenuBorder: "rgb(153 27 27)",
-
-        sidebarSelectedMenu: "rgb(249 250 251 / 0.9)",
-
-        navbarBgColor: "rgb(185 28 28)",
-        navbarIconColor: "rgb(249 249 249)",
-        navbarIconHover: "rgb(249 249 249)",
-        navbarTextColor: "transparent",
-        navbarTextHover: "rgb(239 68 68 )",
-
-        navbarUserBg: "white",
-        navbarUserMenu: "white",
-        navbarUserMenuHover: "rgb(153 27 27)",
-        navbarUserText: "rgb(153 27 27)",
-        navbarUserTextHover: "rgb(249 249 249)",
-
-        breadcrumbBgColor: "rgb(127 29 29)",
-        breadcrumbText: "white",
-
-        mainBgColor: "rgb(229 231 235)",
+        themeTextLight: "rgb(249 250 251)",
+        themeTextMedium: "rgb(185 28 28)",
+        themeTextDark: "rgb(153 27 27)",
       },
     },
   },

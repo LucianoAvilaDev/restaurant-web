@@ -42,9 +42,9 @@ const Sidebar = () => {
           key={v4()}
           className={`${
             urlRef.includes(menu.url)
-              ? "border-l-4 border-sidebarMenuBorder cursor-pointer bg-sidebarSelectedMenu text-sidebarTextHover"
-              : "text-sidebarTextColor border-transparent"
-          } flex py-3 border-l-4  text-sm hover:border-l-4 hover:border-sidebarMenuBorder hover:cursor-pointer hover:bg-sidebarMenuHover hover:text-sidebarTextHover`}
+              ? "border-l-4 border-themeLight cursor-pointer bg-themeTextLight text-themeDark"
+              : "text-themeTextLight border-transparent"
+          } flex py-3 border-l-4  text-sm hover:border-l-4 hover:border-themeLight hover:cursor-pointer hover:bg-themeTextLight hover:text-themeDark`}
         >
           <div className={`px-2`}>{menu.icon}</div>
           <div className={`truncate ${!openSidebar ? "invisible" : ""}`}>
@@ -63,10 +63,10 @@ const Sidebar = () => {
           key={v4()}
           className={`${
             urlRef.includes(menu.url)
-              ? "border-sidebarSubMenuBorder cursor-pointer bg-sidebarSelectedMenu text-sidebarTextHover"
+              ? "border-themeDark cursor-pointer bg-themeTextLight text-themeDark"
               : " border-transparent"
           }
-          flex py-3 text-sm hover:cursor-pointer hover:bg-sidebarMenuHover hover:text-sidebarTextHover`}
+          flex py-3 text-sm hover:cursor-pointer hover:bg-themeTextLight hover:text-themeDark`}
         >
           <div className={`px-2`}>{menu.icon}</div>
           <div className={`truncate ${!openSidebar ? "invisible" : ""}`}>
@@ -88,16 +88,16 @@ const Sidebar = () => {
     return (
       <li
         key={v4()}
-        className={`flex text-sidebarTextColor text-sm border-transparent `}
+        className={`flex text-themeTextLight text-sm border-transparent `}
         onClick={() => handleOpenMenu()}
       >
         <div className="flex flex-col w-full">
           <div
             className={`${
               openMenu
-                ? "border-sidebarMenuBorder text-sidebarTextColor"
+                ? "border-themeLight text-themeTextLight"
                 : " border-transparent "
-            } flex py-4 border-l-4 hover:border-l-4 hover:border-sidebarMenuBorder hover:cursor-pointer hover:bg-sidebarMenuHover hover:text-red-800`}
+            } flex py-4 border-l-4 hover:border-l-4 hover:border-themeLight hover:cursor-pointer hover:bg-themeTextLight hover:text-red-800`}
           >
             <div className={`pl-2`}>{menu.icon}</div>
             {openSidebar ? (
@@ -108,9 +108,7 @@ const Sidebar = () => {
             </button>
           </div>
           {openMenu ? (
-            <ul
-              className={`bg-sidebarSubMenu border-l-4 border-sidebarMenuBorder `}
-            >
+            <ul className={`bg-themeDarker border-l-4 border-themeLight `}>
               {menu.submenus.map((currentMenu: MenuType) => {
                 if (currentMenu.submenus.length == 0)
                   return subMenu(currentMenu);
@@ -128,20 +126,20 @@ const Sidebar = () => {
     <>
       {/* SIDEBAR */}
       <div
-        className={`${sidebarWidth} transition-all z-20 shadow-md bg-sidebarMenuBgColor min-h-screen`}
+        className={`${sidebarWidth} transition-all z-20 shadow-md bg-themeDark min-h-screen`}
       >
         {/* HEADER */}
-        <div className={`flex bg-sidebarHeaderColor py-2 justify-center`}>
+        <div className={`flex bg-themeMedium py-2 justify-center`}>
           {openSidebar ? (
             <div
-              className={`flex text-xl italic font-medium text-sidebarHeaderText px-2 pt-2`}
+              className={`flex text-xl italic font-medium text-themeTextLight px-2 pt-2`}
             >
               Restaurante
             </div>
           ) : null}
           <div className={`px-2 pt-2`}>
             <button
-              className={`p-0.5 rounded-md transition-all text-sidebarHeaderIconColor hover:bg-sidebarHeaderIconBgHover hover:text-sidebarHeaderIconHover`}
+              className={`p-0.5 rounded-md transition-all text-themeTextLight hover:bg-themeTextLight hover:text-themeMedium`}
               onClick={() => handleOpenSidebar()}
             >
               {openSidebar ? (

@@ -34,17 +34,17 @@ const Breadcrumb = () => {
     <>
       <div
         key={v4()}
-        className={`flex m-2 rounded-xl shadow-md bg-breadcrumbBgColor pt-2 pb-1 px-3 space-x-2`}
+        className={`flex m-2 rounded-xl shadow-md bg-themeDarker pt-2 pb-1 px-3 space-x-2`}
       >
         <a key={v4()} href={"dashboard"}>
           <div
             key={v4()}
-            className={`flex text-breadcrumbText border-b hover:border-breadcrumbText border-breadcrumbBgColor pb-1 text-xs items-center`}
+            className={`flex text-themeTextLight border-b hover:border-themeTextLight border-themeDarker pb-1 text-xs items-center`}
           >
             <AiOutlineHome size={14} />
           </div>
         </a>
-        <div className={`flex items-center text-breadcrumbText`}>
+        <div className={`flex items-center text-themeTextLight`}>
           <BiChevronsRight size={14} />
         </div>
         {breadcrumbList.map((itemRef: BreadcrumbMenuType, index: number) => {
@@ -54,14 +54,14 @@ const Breadcrumb = () => {
                 <a key={v4()} href={itemRef.url}>
                   <div
                     key={v4()}
-                    className={`flex text-breadcrumbText text-xs space-x-2 items-center`}
+                    className={`flex text-themeTextLight text-xs space-x-2 items-center`}
                   >
                     <div>{itemRef.name}</div>
                   </div>
                 </a>
               )}
               {index + 1 != breadcrumbList.length && (
-                <div className={`flex items-center text-breadcrumbText`}>
+                <div className={`flex items-center text-themeTextLight`}>
                   <BiChevronsRight size={14} />
                 </div>
               )}

@@ -9,21 +9,20 @@ const UserMenu = () => {
   return (
     <div className={`absolute  flex-col`}>
       <div
-        className={`cursor-pointer rounded-full bg-navbarTextColor hover:bg-navbarTextHover hover:shadow-lg hover:text-navbarIconHover text-navbarIconColor`}
+        className={`cursor-pointer rounded-full bg-navbarTextColor hover:bg-themeLight hover:shadow-lg hover:text-themeTextLight text-themeTextLight`}
       >
-        <FaUserCircle
-          size={30}
-          onMouseEnter={() => setUserMenuOpen(true)}
-          onMouseLeave={() => setUserMenuOpen(false)}
-        />
+        <FaUserCircle size={30} onMouseEnter={() => setUserMenuOpen(true)} />
       </div>
-      <div className={`fixed rounded-md shadow-md right-3 bg-white`}>
+      <div
+        className={`fixed rounded-md shadow-md right-3 bg-white`}
+        onMouseLeave={() => setUserMenuOpen(false)}
+      >
         {/* MENU USER NO NAVBAR */}
         {userMenuOpen ? (
-          <div className={`flex rounded-md bg-navbarUserBg`}>
+          <div className={`flex rounded-md bg-themeTextLight`}>
             <ul
               key={v4()}
-              className={`p-1 truncate font-medium text-navbarUserText `}
+              className={`p-1 truncate font-medium text-themeTextDark `}
             >
               <div
                 className={`flex flex-col items-center justify-center px-2 py-3`}
@@ -34,12 +33,12 @@ const UserMenu = () => {
                 />
                 <div>Luciano Thadeu</div>
               </div>
-              <div className={`text-center bg-navbarUserMenu text-xs`}>
+              <div className={`text-center bg-themeTextLight text-xs`}>
                 <div>
                   <Link key={v4()} href="edit-profile">
                     <li
                       key={v4()}
-                      className={`px-2 py-1 cursor-pointer rounded-sm hover:text-navbarUserTextHover hover:bg-navbarUserMenuHover`}
+                      className={`px-2 py-1 cursor-pointer rounded-sm hover:text-themeTextLight hover:bg-themeDark`}
                     >
                       Meus Dados
                     </li>
@@ -49,7 +48,7 @@ const UserMenu = () => {
                   <Link key={v4()} href="logout">
                     <li
                       key={v4()}
-                      className={`px-2 py-1 cursor-pointer rounded-sm hover:text-navbarUserTextHover hover:bg-navbarUserMenuHover`}
+                      className={`px-2 py-1 cursor-pointer rounded-sm hover:text-themeTextLight hover:bg-themeDark`}
                     >
                       Sair
                     </li>
