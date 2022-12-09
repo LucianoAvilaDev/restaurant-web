@@ -6,15 +6,16 @@ type Props = {
   color:
     | "primary"
     | "secondary"
-    | "disabled"
+    | "default"
     | "info"
     | "success"
     | "warning"
     | "danger";
   type?: "submit";
+  onClick?: Function;
 };
 
-export const Button = ({ id, label, color, type }: Props) => {
+export const ButtonSolid = ({ id, label, color, type, onClick }: Props) => {
   let styleButton: string;
 
   switch (color) {
@@ -24,14 +25,14 @@ export const Button = ({ id, label, color, type }: Props) => {
       break;
     case "secondary":
       styleButton =
-        "bg-purple-700 text-white focus:bg-purple-900 hover:bg-purple-600";
+        "bg-purple-700 text-white focus:bg-purple-900 hover:bg-purple-500";
       break;
-    case "disabled":
+    case "default":
       styleButton = "bg-gray-100 text-black focus:bg-gray-200 hover:bg-gray-50";
       break;
     case "success":
       styleButton =
-        "bg-green-700 text-white focus:bg-green-900 hover:bg-green-400";
+        "bg-green-600 text-white focus:bg-green-800 hover:bg-green-400";
       break;
     case "danger":
       styleButton = "bg-red-600 text-white focus:bg-red-800 hover:bg-red-500";
@@ -53,7 +54,10 @@ export const Button = ({ id, label, color, type }: Props) => {
     <button
       id={id}
       type={type}
-      className={`${styleButton} relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md hover:shadow-lg `}
+      className={`${styleButton} relative w-full flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-md shadow-md shadow-gray-300 hover:shadow-gray-500 `}
+      onClick={() => {
+        onClick ? onClick() : null;
+      }}
     >
       {label}
     </button>

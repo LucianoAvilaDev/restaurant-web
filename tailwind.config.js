@@ -5,13 +5,16 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      // fontFamily: {
-      //   'sans': ['ui-sans-serif', 'system-ui'],
-      //   'serif': ['ui-serif', 'Georgia'],
-      //   'mono': ['ui-monospace', 'SFMono-Regular'],
-      //   'display': ['Oswald'],
-      //   'body': ['"Open Sans"'],
-      // },
+      animation: {
+        fade: "fadeIn 300ms ease-in-out",
+      },
+
+      keyframes: (theme) => ({
+        fadeIn: {
+          "0%": { opacity: "0%", transform: "translateY(-3rem)" },
+          "100%": { opacity: 100 },
+        },
+      }),
       colors: {
         themeBgBody: "rgb(229 231 235)",
 
