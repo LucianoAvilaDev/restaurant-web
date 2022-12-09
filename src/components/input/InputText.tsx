@@ -25,13 +25,13 @@ const InputText = ({
   return (
     <>
       {label && (
-        <label htmlFor="id" className={`text-gray-800 text-sm font-normal`}>
+        <label htmlFor="id" className={`text-gray-800 text-sm font-medium`}>
           {label}
         </label>
       )}
       <input
         {...register}
-        key={v4()}
+        key={id}
         id={id}
         name={name}
         type="text"

@@ -37,17 +37,15 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   const signIn = async (data: SignInType) => {
-    const { token, expires, user } = await api
+    const { token, user } = await api
       .post("login", {
         ...data,
       })
       .then((response: AxiosResponse) => response.data);
 
     setCookie(undefined, "restaurantApp.token", token, {
-      expires: expires,
+      maxAge: 60 * 60,
     });
-
-    api.defaults.headers["Authorization"] = `bearer ${token}`;
 
     setUser(user);
 

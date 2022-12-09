@@ -1,18 +1,13 @@
 import { GetServerSideProps } from "next";
 import { Head } from "next/document";
-import React from "react";
+import React, { useContext } from "react";
+import Navigation from "../../components/navigation/Navigation";
+import { AuthContext } from "../../contexts/AuthContext";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 const index = () => {
-  return (
-    <>
-      <Head>
-        <title>Dashboard</title>
-      </Head>
-      <div>dashboard</div>;
-    </>
-  );
+  return <div>dashboard</div>;
 };
 
 export default index;

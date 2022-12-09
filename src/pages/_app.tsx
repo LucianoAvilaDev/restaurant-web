@@ -5,17 +5,13 @@ import { AuthContext, AuthProvider } from "../contexts/AuthContext";
 import { useContext } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
 
   return (
     <AuthProvider>
-      {isAuthenticated ? (
-        <Navigation>
-          <Component {...pageProps} />
-        </Navigation>
-      ) : (
+      <Navigation>
         <Component {...pageProps} />
-      )}
+      </Navigation>
     </AuthProvider>
   );
 }

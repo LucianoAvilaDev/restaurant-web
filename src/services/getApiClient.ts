@@ -8,7 +8,7 @@ export function getApiClient(ctx?: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    responseType: 'text'
+    // responseType: 'json'
 
   });
 

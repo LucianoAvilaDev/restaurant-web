@@ -53,7 +53,7 @@ export const ButtonSolid = ({ id, label, color, type, onClick }: Props) => {
   return (
     <button
       id={id}
-      type={type}
+      type={type ?? "button"}
       className={`${styleButton} relative w-full flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-md shadow-md shadow-gray-300 hover:shadow-gray-500 `}
       onClick={() => {
         onClick ? onClick() : null;

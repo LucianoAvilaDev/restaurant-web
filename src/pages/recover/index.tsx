@@ -1,15 +1,26 @@
-import { Head } from "next/document";
 import { NextRouter, useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { SimpleCard } from "../../components/cards/SimpleCard";
 import { ButtonSolid } from "../../components/input/ButtonSolid";
 import InputEmail from "../../components/input/InputEmail";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { object, string } from "yup";
 
 export default function index() {
-  const { register, handleSubmit } = useForm();
-
   const router: NextRouter = useRouter();
+
+  const schema = object({
+    email: string().required("Campo obrigatório!").email("E-mail inválido"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
   const handleSendRecoveryEmail = (data: any) => {
     console.log(data);
@@ -24,7 +35,7 @@ export default function index() {
     <div
       className="bg-cover min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
       style={{
-        backgroundImage: `url(${process.env.NEXT_PUBLIC_WEB_URL}/foto.png)`,
+        backgroundImage: `url(${process.env.NEXT_PUBLIC_WEB_URL}/foto3.png)`,
       }}
     >
       <div className="flex justify-center transition-all w-full animate-fade">
@@ -37,10 +48,9 @@ export default function index() {
               <InputEmail
                 id={"email"}
                 register={register("email")}
-                name={"email"}
                 label={"E-mail"}
                 placeholder={"Digite seu e-mail"}
-                required
+                errorMessage={errors?.email?.message}
               />
             </div>
 
@@ -56,7 +66,7 @@ export default function index() {
                 label={"Cancelar"}
                 color={"default"}
                 onClick={() => {
-                  handleCancel;
+                  handleCancel();
                 }}
               />
             </div>

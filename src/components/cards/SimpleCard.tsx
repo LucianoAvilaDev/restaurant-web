@@ -11,7 +11,7 @@ export const SimpleCard = ({ title, children }: any) => {
         </header>
         <main className={`px-4`}>{children}</main>
         <footer
-          className={`flex border-t text-sm flex-col items-center justify-center`}
+          className={`flex border-t text-sm flex-col items-center justify-center mx-2`}
         >
           <h2 className="w-full font-normal antialiased text-center truncate py-2">
             ©{process.env.NEXT_PUBLIC_OWNER} {new Date().getFullYear()}

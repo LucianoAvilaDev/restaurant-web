@@ -8,21 +8,33 @@ import { Switch } from "../../components/input/Switch";
 import { ButtonSolid } from "../../components/input/ButtonSolid";
 import { SimpleCard } from "../../components/cards/SimpleCard";
 import { Link } from "../../components/input/Link";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string } from "yup";
 
 export default function index() {
-  const { register, handleSubmit } = useForm();
   const { signIn } = useContext(AuthContext);
 
+  const schema = object({
+    email: string().required("Campo obrigatório!").email("E-mail inválido"),
+    password: string().required("Campo obrigatório!"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
   async function handleSignIn(data: any) {
-    console.log(data);
-    // await signIn(data);
+    await signIn(data);
   }
 
   return (
     <div
       className="bg-cover min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
       style={{
-        backgroundImage: `url(${process.env.NEXT_PUBLIC_WEB_URL}/foto.png)`,
+        backgroundImage: `url(${process.env.NEXT_PUBLIC_WEB_URL}/foto3.png)`,
       }}
     >
       <Head>
@@ -31,17 +43,16 @@ export default function index() {
       <div className="flex justify-center transition-all w-full animate-fade">
         <SimpleCard title="Realizar Login">
           <form
-            className="py-4 space-y-4"
+            className="pt-6 pb-2 space-y-4"
             onSubmit={handleSubmit(handleSignIn)}
           >
             <div>
               <InputEmail
                 id={"email"}
                 register={register("email")}
-                name={"email"}
                 label={"E-mail"}
                 placeholder={"Digite seu e-mail"}
-                required
+                errorMessage={errors?.email?.message}
               />
             </div>
             <div>
@@ -51,7 +62,7 @@ export default function index() {
                 name={"password"}
                 placeholder={"Digite a senha"}
                 label={"Senha"}
-                required
+                errorMessage={errors?.password?.message}
               />
             </div>
 
