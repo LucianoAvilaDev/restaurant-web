@@ -52,21 +52,18 @@ const customStyles = {
 
 const SimpleTable = ({ columns, data }: Props) => {
   return (
-    <div className="rounded-lg shadow-gray-300 shadow-md">
-      <DataTable
-        columns={columns}
-        data={data}
-        fixedHeader
-        fixedHeaderScrollHeight="300px"
-        highlightOnHover
-        pagination
-        persistTableHead
-        responsive
-        striped
-        subHeaderWrap
-        customStyles={customStyles}
-      />
-    </div>
+    <>
+      <div className="rounded-lg shadow-gray-300 shadow-md">
+        <DataTable
+          columns={columns}
+          data={data}
+          fixedHeaderScrollHeight="300px"
+          responsive
+          subHeaderWrap
+          customStyles={customStyles}
+        />
+      </div>
+    </>
   );
 };
 

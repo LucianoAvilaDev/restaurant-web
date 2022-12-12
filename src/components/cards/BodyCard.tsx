@@ -2,7 +2,7 @@ import React from "react";
 
 type Props = {
   title: string;
-  newButton?: JSX.Element;
+  newButton?: any;
 };
 
 export const BodyCard = ({ title, newButton, children }: any) => {
@@ -19,9 +19,9 @@ export const BodyCard = ({ title, newButton, children }: any) => {
         <footer
           className={`flex border-t text-sm flex-col items-center justify-center mx-2`}
         >
-          <h2 className="w-full font-normal antialiased text-center truncate py-2">
+          <div className="w-full font-normal antialiased text-center truncate py-2">
             ©{process.env.NEXT_PUBLIC_OWNER} {new Date().getFullYear()}
-          </h2>
+          </div>
         </footer>
       </div>
     </>
