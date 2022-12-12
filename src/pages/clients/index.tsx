@@ -1,7 +1,12 @@
 import React from "react";
+import Navigation from "../../components/navigation/Navigation";
 
 const index = () => {
-  return <div>clients</div>;
+  return (
+    <Navigation>
+      <div>clients</div>;
+    </Navigation>
+  );
 };
 
 export default index;

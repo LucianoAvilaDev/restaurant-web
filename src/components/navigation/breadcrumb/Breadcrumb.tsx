@@ -31,37 +31,47 @@ const Breadcrumb = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex w-full">
       <div
         key={v4()}
-        className={`flex m-2 rounded-xl shadow-md bg-themeDarker pt-2 pb-1 px-3 space-x-2`}
+        className={`flex w-full m-2 rounded-xl shadow-md bg-themeDarker py-1 px-3 space-x-2`}
       >
-        <a key={v4()} href={"dashboard"}>
-          <div
-            key={v4()}
-            className={`flex text-themeTextLight border-b hover:border-themeTextLight border-themeDarker pb-1 text-xs items-center`}
-          >
-            <AiOutlineHome size={14} />
+        <div className="flex items-center">
+          <a key={v4()} href={"dashboard"}>
+            <div
+              key={v4()}
+              className={`flex text-themeTextLight border-b hover:border-themeTextLight border-themeDarker text-xs items-center`}
+            >
+              <AiOutlineHome size={16} />
+            </div>
+          </a>
+          <div className={`flex pl-2 items-center text-themeTextLight`}>
+            <BiChevronsRight size={14} />
           </div>
-        </a>
-        <div className={`flex items-center text-themeTextLight`}>
-          <BiChevronsRight size={14} />
         </div>
         {breadcrumbList.map((itemRef: BreadcrumbMenuType, index: number) => {
           return (
-            <div key={v4()} className={`hover:border-b`}>
-              {itemRef.url != "dashboard" && (
+            <div key={v4()} className={`flex`}>
+              {itemRef.url != "dashboard" &&
+              index + 1 != breadcrumbList.length ? (
                 <a key={v4()} href={itemRef.url}>
                   <div
                     key={v4()}
-                    className={`flex text-themeTextLight text-xs space-x-2 items-center`}
+                    className={`flex hover:border-b pt-1 text-themeTextLight text-xs space-x-2 items-center`}
                   >
                     <div>{itemRef.name}</div>
                   </div>
                 </a>
+              ) : (
+                <div
+                  key={v4()}
+                  className={`flex p-1 rounded-md font-medium text-themeTextLight text-xs space-x-2 items-center`}
+                >
+                  <div>{itemRef.name}</div>
+                </div>
               )}
               {index + 1 != breadcrumbList.length && (
-                <div className={`flex items-center text-themeTextLight`}>
+                <div className={`flex pl-2  items-center text-themeTextLight`}>
                   <BiChevronsRight size={14} />
                 </div>
               )}
@@ -69,7 +79,7 @@ const Breadcrumb = () => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 

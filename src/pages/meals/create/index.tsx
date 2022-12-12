@@ -1,10 +1,10 @@
 import React from "react";
-import Navigation from "../../components/navigation/Navigation";
+import Navigation from "../../../components/navigation/Navigation";
 
 const index = () => {
   return (
     <Navigation>
-      <div>usersindex</div>
+      <div>create meal</div>
     </Navigation>
   );
 };

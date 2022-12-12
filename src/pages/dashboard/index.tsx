@@ -7,7 +7,11 @@ import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 const index = () => {
-  return <div>dashboard</div>;
+  return (
+    <Navigation>
+      <div>dashboard</div>
+    </Navigation>
+  );
 };
 
 export default index;

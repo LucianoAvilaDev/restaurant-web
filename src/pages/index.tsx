@@ -1,5 +1,4 @@
 import { GetServerSideProps } from "next";
-import { getApiClient } from "../services/getApiClient";
 import validateAuth from "../services/validateAuth";
 
 export default function Home() {
