@@ -47,6 +47,8 @@ export function AuthProvider({ children }: any) {
       maxAge: 60 * 60,
     });
 
+    api.defaults.headers["Authorization"] = `bearer ${token}`;
+
     setUser(user);
 
     Router.push("dashboard");
