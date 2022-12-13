@@ -129,7 +129,7 @@ const Sidebar = () => {
         className={`${sidebarWidth} transition-all z-20 shadow-md bg-themeDark min-h-screen`}
       >
         {/* HEADER */}
-        <div className={`flex bg-themeMedium py-2 justify-center`}>
+        <div className={`flex shadow-md bg-themeMedium py-2 justify-center`}>
           {openSidebar ? (
             <div
               className={`flex text-xl italic font-medium text-themeTextLight px-2 pt-2`}

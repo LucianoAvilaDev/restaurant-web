@@ -35,19 +35,6 @@ module.exports = {
         themeTextLight: "rgb(249 250 251)",
         themeTextMedium: "rgb(185 28 28)",
         themeTextDark: "rgb(153 27 27)",
-
-        primary: "#0d6efd",
-        secondary: "#6f42c1",
-
-        disabled: "#f8f9fa",
-
-        info: "#0dcaf0",
-
-        success: "#198754",
-
-        warning: "#ffc107",
-
-        danger: "#dc3545",
       },
     },
   },

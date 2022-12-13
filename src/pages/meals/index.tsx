@@ -3,27 +3,31 @@ import { NextRouter, useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
 import { MealType } from "../../../types/MealType";
 import { BodyCard } from "../../components/cards/BodyCard";
-import { ButtonSolid } from "../../components/input/ButtonSolid";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
-import { TableButtonSolid } from "../../components/tables/TabbleButtonSolid";
+import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
+import InputText from "../../components/input/InputText";
+import { useForm } from "react-hook-form";
 
 type Props = {
-  meals: MealType[];
+  mealsList: MealType[];
 };
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
+  const [pending, setPending] = useState<boolean>(true);
 
-  const getMeals = async () => {
+  const getMeals = async (filters?: string) => {
+    setPending(true);
     await api.get("meals").then(({ data }: any) => {
       setMeals(data);
+      setPending(false);
     });
   };
 
@@ -57,20 +61,23 @@ const index = () => {
       price: meal.price,
       type: meal.mealType.name,
       actions: (
-        <div className={`flex`}>
-          <div className={`p-1`}>
+        <div className={`flex space-x-2`}>
+          <div className={`py-2`}>
             <TableButtonSolid
               id={meal.id}
               tooltip={`Editar`}
-              icon={<MdOutlineModeEditOutline size={18} />}
+              icon={<MdOutlineModeEditOutline />}
               color={"success"}
+              onClick={() => {
+                router.push(`meals/edit/${meal.id}`);
+              }}
             />
           </div>
-          <div className={`p-1`}>
+          <div className={`py-2`}>
             <TableButtonSolid
               id={meal.id}
               tooltip={`Excluir`}
-              icon={<BiTrash size={18} />}
+              icon={<BiTrash />}
               color={"danger"}
             />
           </div>
@@ -92,12 +99,59 @@ const index = () => {
     </div>
   );
 
+  const { register, handleSubmit } = useForm();
+
+  const handleSearch = (data: any) => {
+    setPending(true);
+
+    api.post("meals/filters", data).then(({ data }) => {
+      setMeals(data);
+      setPending(false);
+    });
+  };
+
   return (
     <Navigation>
       <div className={`px-3 w-full`}>
         <BodyCard title={`Refeições`} newButton={newButton}>
           <div className="px-2 py-4">
-            <SimpleTable columns={columns} data={data} />
+            <div className={`p-4`}>
+              {/* --------------FILTERS ------------------------------ */}
+              <form onSubmit={handleSubmit(handleSearch)}>
+                <div className={`grid grid-cols-12 space-x-2 py-4`}>
+                  <div className="md:col-span-4 sm:col-span-6 col-span-12">
+                    <InputText
+                      register={register("name")}
+                      id={`name`}
+                      name={"name"}
+                      placeholder={"Pesquise pelo nome da refeição"}
+                      label={"Nome"}
+                    />
+                  </div>
+                  <div className="md:col-span-4 sm:col-span-6 col-span-12">
+                    <InputText
+                      register={register("type")}
+                      id={`type`}
+                      name={"type"}
+                      placeholder={"Pesquise pelo tipo de refeição"}
+                      label={"Tipo"}
+                    />
+                  </div>
+                </div>
+                <div className={`flex w-full items-end justify-end`}>
+                  <div className={`sm:w-36 w-44`}>
+                    <ButtonSolid
+                      id={"search"}
+                      label={"Pesquisar"}
+                      color={"secondary"}
+                      type={"submit"}
+                    />
+                  </div>
+                </div>
+              </form>
+              {/* ----------------------------------------------------- */}
+            </div>
+            <SimpleTable columns={columns} data={data} pending={pending} />
           </div>
         </BodyCard>
       </div>

@@ -5,9 +5,9 @@ export const SimpleCard = ({ title, children }: any) => {
     <>
       <div className="max-w-sm w-full border border-gray-200 bg-white rounded-lg shadow-gray-500 shadow-md ">
         <header className={`flex mx-2 flex-col  items-center justify-center`}>
-          <h2 className="p-3 antialiased border-b w-full text-center text-2xl font-medium text-gray-900">
+          <div className="p-2 antialiased border-b w-full text-center text-2xl font-medium text-gray-900">
             {title}
-          </h2>
+          </div>
         </header>
         <main className={`px-4`}>{children}</main>
         <footer

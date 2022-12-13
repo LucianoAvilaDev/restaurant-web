@@ -1,20 +1,15 @@
 import { GetServerSideProps } from "next";
 import React from "react";
-import Navigation from "../../components/navigation/Navigation";
-import { getApiClient } from "../../services/getApiClient";
-import validateAuth from "../../services/validateAuth";
+import { getApiClient } from "../../../services/getApiClient";
+import validateAuth from "../../../services/validateAuth";
 
 const index = () => {
-  return (
-    <Navigation>
-      <div>clients</div>;
-    </Navigation>
-  );
+  return <div>index</div>;
 };
 
 export default index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const apiClient = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {

@@ -1,19 +1,15 @@
 import { GetServerSideProps } from "next";
 import React from "react";
-import Navigation from "../../../components/navigation/Navigation";
+import { getApiClient } from "../../../services/getApiClient";
 import validateAuth from "../../../services/validateAuth";
 
-const index = () => {
-  return (
-    <Navigation>
-      <div>create meal</div>
-    </Navigation>
-  );
+const index = ({ id }: any) => {
+  return <div>index</div>;
 };
 
 export default index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -23,7 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
     };
   }
 
+  const id: string = ctx.params.id;
   return {
-    props: {},
+    props: {
+      id: id,
+    },
   };
 };

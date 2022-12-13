@@ -17,12 +17,10 @@ const index = () => {
 export default index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const apiClient = getApiClient(ctx);
-
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
-        destination: "login",
+        destination: "../login",
         permanent: false,
       },
     };

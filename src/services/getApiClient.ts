@@ -8,8 +8,7 @@ export function getApiClient(ctx?: any) {
     headers: {
       'Content-Type': 'application/json',
     },
-    responseType: 'json'
-
+    responseType: 'json',
   });
 
   const { "restaurantApp.token": token } = parseCookies(ctx);

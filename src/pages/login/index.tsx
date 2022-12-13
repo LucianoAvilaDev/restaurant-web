@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import InputEmail from "../../components/input/InputEmail";
 import InputPassword from "../../components/input/InputPassword";
 import { Switch } from "../../components/input/Switch";
-import { ButtonSolid } from "../../components/input/ButtonSolid";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { SimpleCard } from "../../components/cards/SimpleCard";
 import { Link } from "../../components/input/Link";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -66,13 +66,7 @@ export default function index() {
               />
             </div>
 
-            <div className="flex flex-col space-y-6 py-2 items-center justify-center">
-              <Switch
-                id={"remember"}
-                name={"remember"}
-                label={"Lembrar-me"}
-                register={register("remember")}
-              />
+            <div className="flex flex-col space-y-4 py-3 items-center justify-center">
               <ButtonSolid
                 id={"save"}
                 label={"Entrar"}

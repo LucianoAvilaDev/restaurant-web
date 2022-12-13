@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import DataTable from "react-data-table-component";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 type Props = {
   columns: any[];
   data: any[];
+  pending: boolean;
 };
 
 const customStyles = {
@@ -18,7 +20,7 @@ const customStyles = {
   headRow: {
     style: {
       borderRadius: "0.5rem 0.5rem 0  0",
-      fontSize: "0.8rem",
+      fontSize: "0.75rem",
       fontWeight: "bold",
       minHeight: "32px",
       color: "white",
@@ -28,9 +30,11 @@ const customStyles = {
 
   cells: {
     style: {
-      paddingLeft: "8px", // override the cell padding for data cells
-      paddingRight: "8px",
       fontSize: "0.75rem",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "noWrap",
+      minHeight: "50px",
     },
   },
 
@@ -50,10 +54,25 @@ const customStyles = {
   },
 };
 
-const SimpleTable = ({ columns, data }: Props) => {
+const SimpleTable = ({ columns, data, pending }: Props) => {
+  const progressComponent: any = (
+    <>
+      <div className="animate-spin">
+        <AiOutlineLoading3Quarters />
+      </div>
+      <div className={`py-4 px-2 text-sm`}>Carregando...</div>
+    </>
+  );
+
+  const noDataComponent: any = (
+    <>
+      <div className={`py-4 px-2 text-sm`}>Nenhum registro encontrado!</div>
+    </>
+  );
+
   return (
     <>
-      <div className="rounded-lg shadow-gray-300 shadow-md">
+      <div className="border border-gray-200 rounded-md truncate shadow-gray-300 shadow-md">
         <DataTable
           columns={columns}
           data={data}
@@ -61,6 +80,9 @@ const SimpleTable = ({ columns, data }: Props) => {
           responsive
           subHeaderWrap
           customStyles={customStyles}
+          progressPending={pending}
+          progressComponent={progressComponent}
+          noDataComponent={noDataComponent}
         />
       </div>
     </>

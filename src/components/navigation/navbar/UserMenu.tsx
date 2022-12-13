@@ -7,7 +7,7 @@ const UserMenu = () => {
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
 
   return (
-    <div className={`absolute  flex-col`}>
+    <div className={`absolute z-10 flex-col`}>
       <div
         className={`cursor-pointer rounded-full bg-navbarTextColor hover:bg-themeLight hover:shadow-lg hover:text-themeTextLight text-themeTextLight`}
       >

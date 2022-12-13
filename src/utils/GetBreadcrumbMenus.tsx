@@ -10,64 +10,75 @@ import { BiEditAlt } from "react-icons/bi";
 
 export type BreadcrumbMenuType = {
   name: string;
-  icon: any;
-  url: string;
   ref: string;
+};
+
+export const GetBreadcrumbMenus = (ref: string) => {
+  switch (ref) {
+    case "dashboard":
+      return { url: "dashboard", name: "Tela Inicial" };
+
+    case "orders":
+      return { url: "orders", name: "Pedidos" };
+
+    case "meals":
+      return { url: "meals", name: "Refeições" };
+
+    case "clients":
+      return { url: "clients", name: "Clientes" };
+
+    case "tables":
+      return { url: "tables", name: "Usuários" };
+
+    case "roles":
+      return { url: "roles", name: "Perfis" };
+
+    case "create":
+      return { url: "create", name: "Cadastrar" };
+
+    case "edit":
+      return { url: "edit", name: "Editar" };
+
+    default:
+      return { url: ref, name: ref };
+  }
 };
 
 export const BreadcrumbMenus: BreadcrumbMenuType[] = [
   {
     name: "Tela Inicial",
-    icon: <AiOutlineHome size={10} />,
     ref: "dashboard",
-    url: "dashboard",
   },
   {
     name: "Pedidos",
-    icon: <BsLayoutTextSidebarReverse size={10} />,
     ref: "orders",
-    url: "orders",
   },
   {
     name: "Refeições",
-    icon: <IoFastFoodOutline size={10} />,
     ref: "meals",
-    url: "meals",
   },
   {
     name: "Clientes",
-    icon: <HiOutlineUsers size={10} />,
     ref: "clients",
-    url: "clients",
   },
   {
     name: "Mesas",
-    icon: <GiTable size={10} />,
     ref: "tables",
-    url: "tables",
   },
   {
     name: "Usuários",
-    icon: <IoPeopleCircleSharp size={10} />,
     ref: "users",
-    url: "users",
   },
   {
     name: "Perfis",
-    icon: <RiProfileLine size={10} />,
     ref: "roles",
-    url: "roles",
   },
   {
     name: "Novo",
-    icon: <AiOutlinePlus size={10} />,
     ref: "create",
-    url: "#",
   },
   {
     name: "Editar",
-    icon: <BiEditAlt size={10} />,
     ref: "edit",
-    url: "#",
   },
 ];

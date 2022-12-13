@@ -3,19 +3,22 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiChevronsRight } from "react-icons/bi";
 import { v4 } from "uuid";
-import { BreadcrumbMenus, BreadcrumbMenuType } from "./BreadcrumbMenus";
+import {
+  BreadcrumbMenus,
+  BreadcrumbMenuType,
+  GetBreadcrumbMenus,
+} from "../../../utils/GetBreadcrumbMenus";
 
 const Breadcrumb = () => {
   const router = useRouter();
+
   const getItemByRef = (ref: string) => {
-    return BreadcrumbMenus.filter((i: BreadcrumbMenuType) =>
-      i.ref.includes(ref)
-    )[0];
+    return GetBreadcrumbMenus(ref);
   };
 
-  const [breadcrumbList, setBreadcrumbList] = useState<BreadcrumbMenuType[]>(
-    []
-  );
+  const [breadcrumbList, setBreadcrumbList] = useState<
+    { url: string; name: string }[]
+  >([]);
 
   useEffect(() => {
     if (document) {
@@ -25,9 +28,11 @@ const Breadcrumb = () => {
           .split("/"),
       ];
 
-      const refList: BreadcrumbMenuType[] = paths.map((item: string) => {
-        return getItemByRef(item);
-      });
+      const refList: { url: string; name: string }[] = paths.map(
+        (item: string) => {
+          return getItemByRef(item);
+        }
+      );
       setBreadcrumbList(refList);
     }
   }, []);
@@ -57,41 +62,45 @@ const Breadcrumb = () => {
             <BiChevronsRight size={14} />
           </div>
         </div>
-        {breadcrumbList.map((itemRef: BreadcrumbMenuType, index: number) => {
-          return (
-            <div key={v4()} className={`flex`}>
-              {itemRef.url != "dashboard" &&
-              index + 1 != breadcrumbList.length ? (
-                <div
-                  className={`cursor-pointer`}
-                  onClick={() => {
-                    window.location.href =
-                      process.env.NEXT_PUBLIC_WEB_URL + "/" + itemRef.url;
-                  }}
-                >
+        {breadcrumbList.map(
+          (itemRef: { url: string; name: string }, index: number) => {
+            return (
+              <div key={v4()} className={`flex`}>
+                {itemRef.url != "dashboard" &&
+                index + 1 != breadcrumbList.length ? (
+                  <div
+                    className={`cursor-pointer`}
+                    onClick={() => {
+                      window.location.href =
+                        process.env.NEXT_PUBLIC_WEB_URL + "/" + itemRef.url;
+                    }}
+                  >
+                    <div
+                      key={v4()}
+                      className={`flex hover:border-b pt-1 text-themeTextLight text-xs space-x-2 items-center`}
+                    >
+                      <div>{itemRef.name}</div>
+                    </div>
+                  </div>
+                ) : (
                   <div
                     key={v4()}
-                    className={`flex hover:border-b pt-1 text-themeTextLight text-xs space-x-2 items-center`}
+                    className={`flex p-1 rounded-md font-medium text-themeTextLight text-xs space-x-2 items-center`}
                   >
                     <div>{itemRef.name}</div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  key={v4()}
-                  className={`flex p-1 rounded-md font-medium text-themeTextLight text-xs space-x-2 items-center`}
-                >
-                  <div>{itemRef.name}</div>
-                </div>
-              )}
-              {index + 1 != breadcrumbList.length && (
-                <div className={`flex pl-2  items-center text-themeTextLight`}>
-                  <BiChevronsRight size={14} />
-                </div>
-              )}
-            </div>
-          );
-        })}
+                )}
+                {index + 1 != breadcrumbList.length && (
+                  <div
+                    className={`flex pl-2  items-center text-themeTextLight`}
+                  >
+                    <BiChevronsRight size={14} />
+                  </div>
+                )}
+              </div>
+            );
+          }
+        )}
       </div>
     </div>
   );
