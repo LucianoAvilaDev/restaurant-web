@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 
 import { v4 } from "uuid";
 import { Menus, MenuType } from "./Menus";
+import Link from "next/link";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const Sidebar = () => {
-  const [sidebarWidth, setSidebarWidth] = useState<string>("w-16");
+  const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
+
+  const { setRef } = useContext(AuthContext);
 
   useEffect(() => {
     setSidebarWidth(openSidebar ? "w-64" : "w-16");
@@ -31,11 +35,12 @@ const Sidebar = () => {
   // MENU SEM SUBMENU
   const simpleMenu: any = (menu: MenuType) => {
     return (
-      <a
+      <Link
         href={menu.url}
         key={v4()}
         onClick={() => {
           setUrlRef(menu.url);
+          setRef(menu.url);
         }}
       >
         <li
@@ -51,14 +56,21 @@ const Sidebar = () => {
             {menu.name}
           </div>
         </li>
-      </a>
+      </Link>
     );
   };
 
   //SUBMENU
   const subMenu: any = (menu: MenuType) => {
     return (
-      <a key={v4()} href={menu.url} onClick={() => setUrlRef(menu.url)}>
+      <Link
+        key={v4()}
+        href={menu.url}
+        onClick={() => {
+          setUrlRef(menu.url);
+          setRef(menu.url);
+        }}
+      >
         <li
           key={v4()}
           className={`${
@@ -73,7 +85,7 @@ const Sidebar = () => {
             {menu.name}
           </div>
         </li>
-      </a>
+      </Link>
     );
   };
 

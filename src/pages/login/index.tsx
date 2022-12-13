@@ -43,14 +43,14 @@ export default function index() {
       <div className="flex justify-center transition-all w-full animate-fade">
         <SimpleCard title="Realizar Login">
           <form
-            className="pt-6 pb-2 space-y-4"
+            className="pt-6 pb-2 space-y-4 px-4"
             onSubmit={handleSubmit(handleSignIn)}
           >
             <div>
               <InputEmail
                 id={"email"}
                 register={register("email")}
-                label={"E-mail"}
+                label={"E-mail:"}
                 placeholder={"Digite seu e-mail"}
                 errorMessage={errors?.email?.message}
               />
@@ -61,12 +61,12 @@ export default function index() {
                 register={register("password")}
                 name={"password"}
                 placeholder={"Digite a senha"}
-                label={"Senha"}
+                label={"Senha:"}
                 errorMessage={errors?.password?.message}
               />
             </div>
 
-            <div className="flex flex-col space-y-4 py-3 items-center justify-center">
+            <div className="flex flex-col space-y-4 py-4 items-center justify-center">
               <ButtonSolid
                 id={"save"}
                 label={"Entrar"}

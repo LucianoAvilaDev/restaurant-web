@@ -28,7 +28,7 @@ export const GetBreadcrumbMenus = (ref: string) => {
       return { url: "clients", name: "Clientes" };
 
     case "tables":
-      return { url: "tables", name: "Usuários" };
+      return { url: "tables", name: "Mesas" };
 
     case "roles":
       return { url: "roles", name: "Perfis" };
@@ -43,42 +43,3 @@ export const GetBreadcrumbMenus = (ref: string) => {
       return { url: ref, name: ref };
   }
 };
-
-export const BreadcrumbMenus: BreadcrumbMenuType[] = [
-  {
-    name: "Tela Inicial",
-    ref: "dashboard",
-  },
-  {
-    name: "Pedidos",
-    ref: "orders",
-  },
-  {
-    name: "Refeições",
-    ref: "meals",
-  },
-  {
-    name: "Clientes",
-    ref: "clients",
-  },
-  {
-    name: "Mesas",
-    ref: "tables",
-  },
-  {
-    name: "Usuários",
-    ref: "users",
-  },
-  {
-    name: "Perfis",
-    ref: "roles",
-  },
-  {
-    name: "Novo",
-    ref: "create",
-  },
-  {
-    name: "Editar",
-    ref: "edit",
-  },
-];

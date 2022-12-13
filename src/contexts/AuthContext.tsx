@@ -16,6 +16,8 @@ type UserType = {
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  ref: string;
+  setRef: Function;
   user: UserType | null;
   signIn: (data: SignInType) => Promise<void>;
 };
@@ -24,10 +26,15 @@ export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<UserType | null>(null);
+  const [ref, setRef] = useState<string>("");
 
   const isAuthenticated = !!user;
 
   useEffect(() => {
+    if (document) {
+      setRef(document.location.href);
+    }
+
     const { "restaurantApp.token": token } = parseCookies();
 
     if (token)
@@ -55,7 +62,9 @@ export function AuthProvider({ children }: any) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, signIn }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, signIn, ref, setRef }}
+    >
       {children}
     </AuthContext.Provider>
   );
