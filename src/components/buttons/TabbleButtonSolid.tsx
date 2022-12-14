@@ -1,5 +1,6 @@
 import React from "react";
 import { GetStyleByColorName } from "../../utils/GetStyleByColorName";
+import { GetStyleByColorNameOutlined } from "../../utils/GetStyleByColorNameOutlined";
 
 type Props = {
   id: string;
@@ -25,14 +26,14 @@ export const TableButtonSolid = ({
   icon,
   onClick,
 }: Props) => {
-  const styleButton: string = GetStyleByColorName(color);
+  const styleButton: string = GetStyleByColorNameOutlined(color);
 
   return (
     <button
       id={id}
       title={tooltip}
       type={type ?? "button"}
-      className={`${styleButton} items-center w-6 h-6 flex justify-center p-1 border border-transparent text-sm font-medium rounded-full shadow-md shadow-gray-300 hover:shadow-gray-500 `}
+      className={`${styleButton} items-center flex justify-center p-1 text-sm font-medium shadow-gray-300 hover:shadow-gray-500 `}
       onClick={() => {
         onClick ? onClick() : null;
       }}

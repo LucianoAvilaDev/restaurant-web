@@ -15,6 +15,9 @@ import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import InputText from "../../components/input/InputText";
 import { useForm } from "react-hook-form";
 import InputSelect from "../../components/input/InputSelect";
+import Loader from "../../components/loader/Loader";
+import { toast } from "react-toastify";
+import YesNoTemplate from "../../components/templates/YesNoTemplate";
 
 type Props = {
   mealsList: MealType[];
@@ -87,24 +90,46 @@ const index = () => {
       price: (+meal.price).toLocaleString(),
       type: meal.mealType.name,
       actions: (
-        <div className={`flex space-x-2`}>
-          <div className={`py-2`}>
+        <div className={`flex flex-wrap`}>
+          <div>
             <TableButtonSolid
               id={meal.id}
               tooltip={`Editar`}
-              icon={<MdOutlineModeEditOutline />}
+              icon={
+                <MdOutlineModeEditOutline
+                  className={`filter hover:drop-shadow m-1`}
+                  size={18}
+                />
+              }
               color={"success"}
               onClick={() => {
+                setIsLoading(true);
                 router.push(`meals/edit/${meal.id}`);
               }}
             />
           </div>
-          <div className={`py-2`}>
+          <div>
             <TableButtonSolid
               id={meal.id}
               tooltip={`Excluir`}
-              icon={<BiTrash />}
+              icon={
+                <BiTrash size={18} className={`filter hover:drop-shadow m-1`} />
+              }
               color={"danger"}
+              onClick={() => {
+                toast.info(
+                  <YesNoTemplate onClickYes={() => handleModalYes(meal.id)} />,
+                  {
+                    position: "top-center",
+                    autoClose: false,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                  }
+                );
+              }}
             />
           </div>
         </div>
@@ -119,6 +144,7 @@ const index = () => {
         label={"Cadastrar"}
         color={"primary"}
         onClick={() => {
+          setIsLoading(true);
           router.push("meals/create");
         }}
       />
@@ -127,6 +153,28 @@ const index = () => {
 
   const { register, handleSubmit, reset } = useForm();
 
+  const handleModalYes = async (id: string) => {
+    setIsLoading(true);
+    await api
+      .delete(`meals/${id}`)
+      .then(async () => {
+        toast.success("Registro excluído com sucesso", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+        });
+        await getMeals();
+        setIsLoading(false);
+      })
+      .catch((e: any) => {
+        toast.error(e.message);
+        setIsLoading(false);
+      });
+  };
   const handleSearch = (data: any) => {
     setPending(true);
 
@@ -153,61 +201,69 @@ const index = () => {
     return;
   };
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   return (
-    <Navigation>
-      <div className={`px-3 w-full`}>
-        <BodyCard title={`Refeições`} newButton={newButton}>
-          <div className="px-2 pt-2 pb-6">
-            <div className={`py-4`}>
-              {/* --------------FILTERS ------------------------------ */}
-              <form onSubmit={handleSubmit(handleSearch)}>
-                <div className={`grid grid-cols-12 py-4`}>
-                  <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
-                    <InputText
-                      register={register("name")}
-                      id={`name`}
-                      name={"name"}
-                      placeholder={"Pesquise pelo nome da refeição"}
-                      label={"Nome"}
-                    />
+    <>
+      {isLoading && <Loader />}
+
+      <Navigation>
+        <div className={`px-3 w-full`}>
+          <BodyCard title={`Refeições`} newButton={newButton}>
+            <div className="px-2 pt-2 pb-6">
+              <div className={`py-4`}>
+                {/* --------------FILTERS ------------------------------ */}
+                <form onSubmit={handleSubmit(handleSearch)}>
+                  <div className={`grid grid-cols-12 py-4`}>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputText
+                        register={register("name")}
+                        id={`name`}
+                        name={"name"}
+                        placeholder={"Pesquise pelo nome da refeição"}
+                        label={"Nome"}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("type")}
+                        id={`type`}
+                        name={"type"}
+                        placeholder={"Pesquise pelo tipo de refeição"}
+                        label={"Tipo"}
+                        options={mealTypes}
+                      />
+                    </div>
                   </div>
-                  <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
-                    <InputSelect
-                      register={register("type")}
-                      id={`type`}
-                      name={"type"}
-                      placeholder={"Pesquise pelo tipo de refeição"}
-                      label={"Tipo"}
-                      options={mealTypes}
-                    />
+                  <div
+                    className={`flex w-full space-x-2 items-end justify-end`}
+                  >
+                    <div className={`sm:w-36 w-44`}>
+                      <ButtonSolid
+                        id={"search"}
+                        label={"Pesquisar"}
+                        color={"secondary"}
+                        type={"submit"}
+                      />
+                    </div>
+                    <div className={`sm:w-36 w-44`}>
+                      <ButtonSolid
+                        id={"clear"}
+                        label={"Limpar"}
+                        color={"warning"}
+                        onClick={() => handleClear()}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className={`flex w-full space-x-2 items-end justify-end`}>
-                  <div className={`sm:w-36 w-44`}>
-                    <ButtonSolid
-                      id={"search"}
-                      label={"Pesquisar"}
-                      color={"secondary"}
-                      type={"submit"}
-                    />
-                  </div>
-                  <div className={`sm:w-36 w-44`}>
-                    <ButtonSolid
-                      id={"clear"}
-                      label={"Limpar"}
-                      color={"warning"}
-                      onClick={() => handleClear()}
-                    />
-                  </div>
-                </div>
-              </form>
-              {/* ----------------------------------------------------- */}
+                </form>
+                {/* ----------------------------------------------------- */}
+              </div>
+              <SimpleTable columns={columns} data={data} pending={pending} />
             </div>
-            <SimpleTable columns={columns} data={data} pending={pending} />
-          </div>
-        </BodyCard>
-      </div>
-    </Navigation>
+          </BodyCard>
+        </div>
+      </Navigation>
+    </>
   );
 };
 

@@ -1,11 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AxiosResponse } from "axios";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { number, object, string } from "yup";
-import { MealType } from "../../../../types/MealType";
+import { SelectType } from "../../../../types/SelectType";
 import { ButtonSolid } from "../../../components/buttons/ButtonSolid";
 import { BodyCard } from "../../../components/cards/BodyCard";
 import InputNumber from "../../../components/input/InputNumber";
@@ -22,14 +21,12 @@ type Props = {
 };
 
 const index = ({ id }: Props) => {
+  const [meal, setMeal] = useState<any>();
   const router = useRouter();
 
-  const [meal, setMeal] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [mealTypes, setMealTypes] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
 
   const getMeal = async (id: string) => {
     await api
@@ -60,12 +57,18 @@ const index = ({ id }: Props) => {
   };
 
   const schema = object({
-    name: string().required("Campo obrigatório!"),
+    name: string()
+      .required("Campo obrigatório!")
+      .min(6, "No mínimo 6 caracteres")
+      .max(100, "No máximo 100 caracteres"),
     price: number()
+      .typeError("Valor inválido")
+      .required("Campo obrigatório!")
       .positive("O Preço deve ser positivo!")
       .min(0.01, "O preço mínimo é 0,01!")
-      .max(999999.99, "O preço máximo é 999999,99!"),
+      .max(99999999.99, "O preço máximo é 99999999,99!"),
     mealTypeId: string().required("Campo obrigatório!"),
+    description: string().max(300, "No máximo 300 caracteres"),
   });
 
   const {
@@ -82,8 +85,8 @@ const index = ({ id }: Props) => {
     setIsLoading(true);
     api
       .put(`meals/${id}`, data)
-      .then((response: AxiosResponse) => {
-        router.push("meals");
+      .then(() => {
+        router.push("./meals");
       })
       .catch((e: any) => {
         alert("Erro ao salvar");
@@ -92,7 +95,8 @@ const index = ({ id }: Props) => {
   };
 
   const handleCancel = () => {
-    router.push("meals");
+    setIsLoading(true);
+    router.push("../../meals");
   };
 
   useEffect(() => {

@@ -12,7 +12,7 @@ type props = {
   register?: any;
   value?: any;
   options: { label: string; value: string }[];
-  errorMessage: any;
+  errorMessage?: any;
 };
 
 const InputSelect = ({
