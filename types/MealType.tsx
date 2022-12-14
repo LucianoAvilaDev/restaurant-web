@@ -5,5 +5,6 @@ export type MealType = {
   name: string;
   description: string;
   price: number;
+  mealTypeId: number;
   mealType: MealTypeType;
 };

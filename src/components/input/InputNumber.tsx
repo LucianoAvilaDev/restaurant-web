@@ -8,13 +8,16 @@ type props = {
   required?: boolean;
   readOnly?: boolean;
   placeholder: string;
-  value?: string;
+  value?: number;
   label: string;
   register?: any;
+  min: number;
+  max: number;
+  step: number;
   errorMessage?: any;
 };
 
-const InputText = ({
+const InputNumber = ({
   id,
   name,
   readOnly,
@@ -22,6 +25,9 @@ const InputText = ({
   required,
   placeholder,
   register,
+  min,
+  max,
+  step,
   value,
   errorMessage,
 }: props) => {
@@ -36,15 +42,17 @@ const InputText = ({
         {...register}
         key={id}
         id={id}
-        type="text"
+        type="number"
         readOnly={readOnly ?? false}
-        required={required ?? false}
         className="rounded-md relative block w-full px-2 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none shadow-md focus:shadow-gray-500 focus:z-10 sm:text-sm"
         placeholder={placeholder}
+        min={min}
+        max={max}
+        step={step}
       />
       {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
     </>
   );
 };
 
-export default InputText;
+export default InputNumber;

@@ -125,7 +125,7 @@ const index = () => {
     </div>
   );
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const handleSearch = (data: any) => {
     setPending(true);
@@ -134,6 +134,23 @@ const index = () => {
       setMeals(data);
       setPending(false);
     });
+  };
+
+  const handleClear = () => {
+    const inputName = document.getElementById("name") as any;
+    const inputValue = document.getElementById("type") as any;
+
+    inputName.value = "";
+    inputValue.value = "";
+    reset({
+      data: ["name", "type"],
+    });
+
+    const inputSearch = document.getElementById("search") as any;
+
+    inputSearch.click();
+
+    return;
   };
 
   return (
@@ -154,7 +171,7 @@ const index = () => {
                       label={"Nome"}
                     />
                   </div>
-                  <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                  <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
                     <InputSelect
                       register={register("type")}
                       id={`type`}
@@ -179,19 +196,7 @@ const index = () => {
                       id={"clear"}
                       label={"Limpar"}
                       color={"warning"}
-                      onClick={() => {
-                        const inputName = document.getElementById(
-                          "name"
-                        ) as any;
-                        const inputValue = document.getElementById(
-                          "type"
-                        ) as any;
-
-                        inputName.value = "";
-                        inputValue.value = "";
-
-                        return;
-                      }}
+                      onClick={() => handleClear()}
                     />
                   </div>
                 </div>
