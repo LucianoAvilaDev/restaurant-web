@@ -30,7 +30,7 @@ const customStyles = {
 
   cells: {
     style: {
-      fontSize: "0.75rem",
+      fontSize: "0.8rem",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "noWrap",
@@ -72,7 +72,7 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
 
   return (
     <>
-      <div className="border border-gray-200 rounded-md truncate shadow-gray-300 shadow-md">
+      <div className="border border-gray-200 rounded-lg truncate shadow-gray-300 shadow-md">
         <DataTable
           className="scrollbar-thin scrollbar-corner-gray-300 scrollbar-thumb-gray-300  hover:scrollbar-thumb-gray-400 scrollbar-track-gray-100 "
           columns={columns}
@@ -80,6 +80,8 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
           fixedHeader
           fixedHeaderScrollHeight="300px"
           responsive
+          striped
+          highlightOnHover
           subHeaderWrap
           customStyles={customStyles}
           progressPending={pending}
