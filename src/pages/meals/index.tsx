@@ -29,8 +29,11 @@ const index = () => {
     { value: string; label: string }[]
   >([]);
   const [pending, setPending] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getMeals = async (filters?: string) => {
+  const router: NextRouter = useRouter();
+
+  const getMeals = async () => {
     setPending(true);
     await api.get("meals").then(({ data }: any) => {
       setMeals(data);
@@ -52,8 +55,6 @@ const index = () => {
     getMeals();
     getMealTypes();
   }, []);
-
-  const router: NextRouter = useRouter();
 
   const columns: any = [
     {
@@ -84,7 +85,7 @@ const index = () => {
       width: "20%",
     },
   ];
-  const data: any[] = meals.map((meal) => {
+  const data: any[] = meals.map((meal: MealType) => {
     return {
       name: meal.name,
       price: (+meal.price).toLocaleString(),
@@ -200,8 +201,6 @@ const index = () => {
 
     return;
   };
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>
