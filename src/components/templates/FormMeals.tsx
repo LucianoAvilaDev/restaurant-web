@@ -3,59 +3,35 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { number, object, string } from "yup";
-import { SelectType } from "../../../../types/SelectType";
-import { ButtonSolid } from "../../../components/buttons/ButtonSolid";
-import { BodyCard } from "../../../components/cards/BodyCard";
-import InputNumber from "../../../components/input/InputNumber";
-import InputSelect from "../../../components/input/InputSelect";
-import InputText from "../../../components/input/InputText";
-import InputTextArea from "../../../components/input/InputTextArea";
-import Loader from "../../../components/loader/Loader";
-import Navigation from "../../../components/navigation/Navigation";
-import { MealsSchema } from "../../../schemas/MealsSchema";
-import { api } from "../../../services/api";
-import validateAuth from "../../../services/validateAuth";
+import { toast } from "react-toastify";
+import { object, string, number } from "yup";
+import { SelectType } from "../../../types/SelectType";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { SuccessAlert } from "../../components/alerts/SuccessAlert";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
+import { BodyCard } from "../../components/cards/BodyCard";
+import InputNumber from "../../components/input/InputNumber";
+import InputSelect from "../../components/input/InputSelect";
+import InputText from "../../components/input/InputText";
+import InputTextArea from "../../components/input/InputTextArea";
+import Loader from "../../components/loader/Loader";
+import Navigation from "../../components/navigation/Navigation";
+import { MealsSchema } from "../../schemas/MealsSchema";
+import { api } from "../../services/api";
+import validateAuth from "../../services/validateAuth";
 
 type Props = {
-  id: string;
+  id?: string;
+  setModal: Function;
 };
 
-const index = ({ id }: Props) => {
-  const [meal, setMeal] = useState<any>();
+export const FormMeals = ({ id, setModal }: Props) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [meal, setMeal] = useState<any>();
 
   const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    resolver: yupResolver(MealsSchema()),
-  });
-
-  const getMeal = async (id: string) => {
-    await api
-      .get(`meals/${id}`)
-      .then(({ data }: any) => {
-        if (data) {
-          setMeal(data);
-
-          setValue("name", data.name);
-          setValue("price", data.price);
-          setValue("mealTypeId", data.mealType.id);
-          setValue("description", data.description);
-        }
-      })
-      .catch((e: any) => {
-        router.push("meals");
-      });
-  };
 
   const getMealTypes = async () => {
     await api.get("meal-types").then(({ data }: any) => {
@@ -67,35 +43,86 @@ const index = ({ id }: Props) => {
     });
   };
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(MealsSchema()),
+  });
+
   const handleSave = (data: any) => {
     setIsLoading(true);
-    api
-      .put(`meals/${id}`, data)
-      .then(() => {
-        router.push("../../meals");
-      })
-      .catch((e: any) => {
-        alert("Erro ao salvar");
-        setIsLoading(false);
-      });
+    if (id) {
+      api
+        .put(`meals/${id}`, data)
+        .then(() => {
+          SuccessAlert("Registro salvo com sucesso!");
+          setIsLoading(false);
+          setModal(false);
+          return;
+        })
+        .catch((e: any) => {
+          ErrorAlert(e.message);
+          setIsLoading(false);
+          setIsLoading(false);
+          return;
+        });
+    } else {
+      api
+        .post(`meals`, data)
+        .then(() => {
+          SuccessAlert("Registro salvo com sucesso!");
+          setIsLoading(false);
+          setModal(false);
+          return;
+        })
+        .catch((e: any) => {
+          ErrorAlert(e.message);
+          setIsLoading(false);
+          setIsLoading(false);
+          return;
+        });
+    }
   };
 
   const handleCancel = () => {
-    setIsLoading(true);
-    router.push("../../meals");
+    setModal(false);
+  };
+
+  const getMeal = async (id: string) => {
+    await api
+      .get(`meals/${id}`)
+      .then(({ data }: any) => {
+        if (data) {
+          setMeal(data);
+
+          setValue("name", data.name ?? "");
+          setValue("price", data.price ?? "");
+          setValue("mealTypeId", data.mealType.id ?? "");
+          setValue("description", data.description ?? "");
+        }
+      })
+      .catch((e: any) => {
+        router.push("meals");
+      });
   };
 
   useEffect(() => {
     getMealTypes();
-    getMeal(id);
+    if (id) {
+      getMeal(id);
+    }
   }, []);
 
   return (
     <>
-      {isLoading && <Loader />}
-      <Navigation>
-        <div className={`px-3 w-full`}>
-          <BodyCard title={`Editar Refeição`}>
+      <div
+        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
+      >
+        <div className={`max-h-[80vh] max-w-[80vw]`}>
+          <BodyCard title={`${id ? "Editar" : "Cadastrar"} Refeição`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
@@ -170,37 +197,9 @@ const index = ({ id }: Props) => {
             </div>
           </BodyCard>
         </div>
-      </Navigation>
+      </div>
     </>
   );
 };
 
-export default index;
-
-export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
-  if (!(await validateAuth(ctx))) {
-    return {
-      redirect: {
-        destination: "../../login",
-        permanent: false,
-      },
-    };
-  }
-
-  const id: string = ctx.params.id;
-
-  if (!id || isNaN(+id)) {
-    return {
-      redirect: {
-        destination: "../../meals",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      id: id,
-    },
-  };
-};
+export default FormMeals;

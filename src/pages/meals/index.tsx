@@ -18,6 +18,8 @@ import InputSelect from "../../components/input/InputSelect";
 import Loader from "../../components/loader/Loader";
 import { toast } from "react-toastify";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import FormMeals from "../../components/templates/FormMeals";
+import { SelectType } from "../../../types/SelectType";
 
 type Props = {
   mealsList: MealType[];
@@ -25,13 +27,13 @@ type Props = {
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
-  const [mealTypes, setMealTypes] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
-  const router: NextRouter = useRouter();
+  const { register, handleSubmit, setValue } = useForm();
 
   const getMeals = async () => {
     setPending(true);
@@ -50,11 +52,6 @@ const index = () => {
       );
     });
   };
-
-  useEffect(() => {
-    getMeals();
-    getMealTypes();
-  }, []);
 
   const columns: any = [
     {
@@ -85,6 +82,7 @@ const index = () => {
       width: "20%",
     },
   ];
+
   const data: any[] = meals.map((meal: MealType) => {
     return {
       name: meal.name,
@@ -103,9 +101,14 @@ const index = () => {
                 />
               }
               color={"success"}
-              onClick={() => {
-                setIsLoading(true);
-                router.push(`meals/edit/${meal.id}`);
+              onClick={async () => {
+                await Promise.resolve(
+                  setModalTemplate(
+                    <FormMeals id={meal.id} setModal={setModal} />
+                  )
+                ).then(() => {
+                  setModal(true);
+                });
               }}
             />
           </div>
@@ -144,15 +147,16 @@ const index = () => {
         id={"newMeal"}
         label={"Cadastrar"}
         color={"primary"}
-        onClick={() => {
-          setIsLoading(true);
-          router.push("meals/create");
+        onClick={async () => {
+          await Promise.resolve(
+            setModalTemplate(<FormMeals setModal={setModal} />)
+          ).then(() => {
+            setModal(true);
+          });
         }}
       />
     </div>
   );
-
-  const { register, handleSubmit, setValue } = useForm();
 
   const handleYes = async (id: string) => {
     setIsLoading(true);
@@ -193,10 +197,15 @@ const index = () => {
     return;
   };
 
+  useEffect(() => {
+    getMeals();
+    getMealTypes();
+  }, [modal]);
+
   return (
     <>
+      {modal && modalTemplate}
       {isLoading && <Loader />}
-
       <Navigation>
         <div className={`px-3 w-full`}>
           <BodyCard title={`Refeições`} newButton={newButton}>
