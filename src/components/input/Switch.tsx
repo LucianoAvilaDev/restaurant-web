@@ -26,7 +26,7 @@ export const Switch = ({
   top,
   setValue,
 }: Props) => {
-  const [toggleValue, setToggleValue] = useState<boolean>(true);
+  const [toggleValue, setToggleValue] = useState<boolean>();
 
   useEffect(() => {
     setToggleValue(defaultValue ?? false);
