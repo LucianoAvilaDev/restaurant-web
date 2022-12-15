@@ -1,5 +1,4 @@
 import { GetServerSideProps } from "next";
-import { NextRouter, useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { BiTrash } from "react-icons/bi";
@@ -18,12 +17,10 @@ import InputSelect from "../../components/input/InputSelect";
 import Loader from "../../components/loader/Loader";
 import { toast } from "react-toastify";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
-import FormMeals from "../../components/templates/FormMeals";
+import FormMeals from "../../components/templates/forms/FormMeals";
 import { SelectType } from "../../../types/SelectType";
-
-type Props = {
-  mealsList: MealType[];
-};
+import { SuccessAlert } from "../../components/alerts/SuccessAlert";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
@@ -107,7 +104,7 @@ const index = () => {
                     <FormMeals
                       id={meal.id}
                       mealTypes={mealTypes}
-                      getMeals={getMeals}
+                      handleClear={handleClear}
                       setModal={setModal}
                     />
                   )
@@ -156,7 +153,7 @@ const index = () => {
           await Promise.resolve(
             setModalTemplate(
               <FormMeals
-                getMeals={getMeals}
+                handleClear={handleClear}
                 mealTypes={mealTypes}
                 setModal={setModal}
               />
@@ -174,20 +171,12 @@ const index = () => {
     await api
       .delete(`meals/${id}`)
       .then(async () => {
-        toast.success("Registro excluído com sucesso", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-        });
+        SuccessAlert("Registro excluído com sucesso");
         await getMeals();
         setIsLoading(false);
       })
       .catch((e: any) => {
-        toast.error(e.message);
+        ErrorAlert(e.message);
         setIsLoading(false);
       });
   };

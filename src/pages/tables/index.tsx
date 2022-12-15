@@ -9,6 +9,8 @@ import { SelectType } from "../../../types/SelectType";
 import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
+import BadgeGreen from "../../components/badges/BadgeGreen";
+import BadgeRed from "../../components/badges/BadgeRed";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
@@ -18,6 +20,7 @@ import InputTextMasked from "../../components/input/InputTextMasked";
 import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
+import FormTables from "../../components/templates/forms/FormTables";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
@@ -27,7 +30,10 @@ const index = () => {
   const [tables, setTables] = useState<TableType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router: NextRouter = useRouter();
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
+
+  const { register, handleSubmit, setValue } = useForm();
 
   const getTables = async () => {
     setPending(true);
@@ -61,25 +67,14 @@ const index = () => {
     },
   ];
 
-  const handleModalYes = async (id: string) => {
-    setIsLoading(true);
-    await api
-      .delete(`tables/${id}`)
-      .then(async () => {
-        SuccessAlert("Registro excluído com sucesso");
-        await getTables();
-        setIsLoading(false);
-      })
-      .catch((e: any) => {
-        ErrorAlert(e.message);
-        setIsLoading(false);
-      });
-  };
-
   const data: any[] = tables.map((table: TableType) => {
     return {
       number: table.number,
-      isAvailable: table.is_available ? "Disponível" : "Indisponível",
+      isAvailable: table.is_available ? (
+        <BadgeGreen text={"Disponível"} />
+      ) : (
+        <BadgeRed text="Indisponível" />
+      ),
       actions: (
         <div className={`flex flex-wrap`}>
           <div>
@@ -93,9 +88,18 @@ const index = () => {
                 />
               }
               color={"success"}
-              onClick={() => {
-                setIsLoading(true);
-                router.push(`tables/edit/${table.id}`);
+              onClick={async () => {
+                await Promise.resolve(
+                  setModalTemplate(
+                    <FormTables
+                      id={table.id}
+                      handleClear={handleClear}
+                      setModal={setModal}
+                    />
+                  )
+                ).then(() => {
+                  setModal(true);
+                });
               }}
             />
           </div>
@@ -134,14 +138,32 @@ const index = () => {
         id={"new"}
         label={"Cadastrar"}
         color={"primary"}
-        onClick={() => {
-          setIsLoading(true);
-          router.push("tables/create");
+        onClick={async () => {
+          await Promise.resolve(
+            setModalTemplate(
+              <FormTables handleClear={handleClear} setModal={setModal} />
+            )
+          ).then(() => {
+            setModal(true);
+          });
         }}
       />
     </div>
   );
-  const { register, handleSubmit, setValue } = useForm();
+  const handleModalYes = async (id: string) => {
+    setIsLoading(true);
+    await api
+      .delete(`tables/${id}`)
+      .then(async () => {
+        SuccessAlert("Registro excluído com sucesso");
+        await getTables();
+        setIsLoading(false);
+      })
+      .catch((e: any) => {
+        ErrorAlert(e.message);
+        setIsLoading(false);
+      });
+  };
 
   const handleSearch = (data: any) => {
     setPending(true);
@@ -178,6 +200,7 @@ const index = () => {
 
   return (
     <>
+      {modal && modalTemplate}
       {isLoading && <Loader />}
       <Navigation>
         <div className={`px-3 w-full`}>
@@ -196,7 +219,7 @@ const index = () => {
                         label={"Número"}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("isAvailable")}
                         id={`isAvailable`}

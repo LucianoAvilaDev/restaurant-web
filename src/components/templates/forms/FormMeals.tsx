@@ -2,26 +2,26 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { SelectType } from "../../../types/SelectType";
-import { ErrorAlert } from "../../components/alerts/ErrorAlert";
-import { SuccessAlert } from "../../components/alerts/SuccessAlert";
-import { ButtonSolid } from "../../components/buttons/ButtonSolid";
-import { BodyCard } from "../../components/cards/BodyCard";
-import InputNumber from "../../components/input/InputNumber";
-import InputSelect from "../../components/input/InputSelect";
-import InputText from "../../components/input/InputText";
-import InputTextArea from "../../components/input/InputTextArea";
-import { MealsSchema } from "../../schemas/MealsSchema";
-import { api } from "../../services/api";
+import { SelectType } from "../../../../types/SelectType";
+import { ErrorAlert } from "../../alerts/ErrorAlert";
+import { SuccessAlert } from "../../alerts/SuccessAlert";
+import { ButtonSolid } from "../../buttons/ButtonSolid";
+import { BodyCard } from "../../cards/BodyCard";
+import InputNumber from "../../input/InputNumber";
+import InputSelect from "../../input/InputSelect";
+import InputText from "../../input/InputText";
+import InputTextArea from "../../input/InputTextArea";
+import { MealsSchema } from "../../../schemas/MealsSchema";
+import { api } from "../../../services/api";
 
 type Props = {
   id?: string;
   setModal: Function;
-  getMeals: Function;
+  handleClear: Function;
   mealTypes: SelectType[];
 };
 
-export const FormMeals = ({ id, setModal, mealTypes, getMeals }: Props) => {
+export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -45,7 +45,7 @@ export const FormMeals = ({ id, setModal, mealTypes, getMeals }: Props) => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
-          await getMeals();
+          await handleClear();
           return;
         })
         .catch((e: any) => {
@@ -61,7 +61,7 @@ export const FormMeals = ({ id, setModal, mealTypes, getMeals }: Props) => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
-          await getMeals();
+          await handleClear();
           return;
         })
         .catch((e: any) => {
@@ -91,7 +91,7 @@ export const FormMeals = ({ id, setModal, mealTypes, getMeals }: Props) => {
         }
       })
       .catch((e: any) => {
-        router.push("meals");
+        ErrorAlert(e.message);
       });
   };
 

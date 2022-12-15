@@ -3,6 +3,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { SelectType } from "../../../../types/SelectType";
 import { ErrorAlert } from "../../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../../components/buttons/ButtonSolid";
@@ -17,24 +18,64 @@ import validateAuth from "../../../services/validateAuth";
 import { SanitizeCpf } from "../../../utils/SanitizeCpf";
 
 type Props = {
-  id: string;
+  id?: string;
+  setModal: Function;
+  handleClear: Function;
 };
 
-const index = ({ id }: Props) => {
-  const [client, setClient] = useState<any>();
-  const router = useRouter();
-
+export const FormClients = ({ id, handleClear, setModal }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [client, setClient] = useState<any>();
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     setValue,
   } = useForm({
     resolver: yupResolver(ClientsSchema()),
   });
+
+  const handleSave = (data: any) => {
+    setIsLoading(true);
+    if (id) {
+      api
+        .put(`clients/${id}`, { ...data, cpf: SanitizeCpf(data.cpf) })
+        .then(async () => {
+          SuccessAlert("Registro salvo com sucesso!");
+          setIsLoading(false);
+          setModal(false);
+          await handleClear();
+          return;
+        })
+        .catch((e: any) => {
+          ErrorAlert(e.message);
+          setIsLoading(false);
+          setIsLoading(false);
+          return;
+        });
+    } else {
+      api
+        .post(`clients`, { ...data, cpf: SanitizeCpf(data.cpf) })
+        .then(async () => {
+          SuccessAlert("Registro salvo com sucesso!");
+          setIsLoading(false);
+          setModal(false);
+          await handleClear();
+          return;
+        })
+        .catch((e: any) => {
+          ErrorAlert(e.message);
+          setIsLoading(false);
+          setIsLoading(false);
+          return;
+        });
+    }
+  };
+
+  const handleCancel = () => {
+    setModal(false);
+  };
 
   const getClient = async (id: string) => {
     await api
@@ -43,44 +84,28 @@ const index = ({ id }: Props) => {
         if (data) {
           setClient(data);
 
-          setValue("name", data.name);
-          setValue("cpf", data.cpf);
+          setValue("name", data.name ?? "");
+          setValue("cpf", data.cpf ?? "");
         }
       })
       .catch((e: any) => {
-        router.push("clients");
-      });
-  };
-
-  const handleSave = (data: any) => {
-    setIsLoading(true);
-    api
-      .put(`clients/${id}`, { ...data, cpf: SanitizeCpf(data.cpf) })
-      .then(() => {
-        SuccessAlert("Registro salvo com sucesso!");
-        router.push("../../clients");
-      })
-      .catch((e: any) => {
         ErrorAlert(e.message);
-        setIsLoading(false);
       });
-  };
-
-  const handleCancel = () => {
-    setIsLoading(true);
-    router.push("../../clients");
   };
 
   useEffect(() => {
-    getClient(id);
+    if (id) {
+      getClient(id);
+    }
   }, []);
 
   return (
     <>
-      {isLoading && <Loader />}
-      <Navigation>
-        <div className={`px-3 w-full`}>
-          <BodyCard title={`Editar Cliente`}>
+      <div
+        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
+      >
+        <div className={`max-h-[80vh] max-w-[80vw]`}>
+          <BodyCard title={`${id ? "Editar" : "Cadastrar"} Cliente`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
@@ -95,7 +120,7 @@ const index = ({ id }: Props) => {
                         errorMessage={errors?.name?.message}
                       />
                     </div>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-5 sm:col-span-6 col-span-12">
                       <InputTextMasked
                         register={register("cpf")}
                         id={"cpf"}
@@ -132,37 +157,7 @@ const index = ({ id }: Props) => {
             </div>
           </BodyCard>
         </div>
-      </Navigation>
+      </div>
     </>
   );
-};
-
-export default index;
-
-export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
-  if (!(await validateAuth(ctx))) {
-    return {
-      redirect: {
-        destination: "../../login",
-        permanent: false,
-      },
-    };
-  }
-
-  const id: string = ctx.params.id;
-
-  if (!id || isNaN(+id)) {
-    return {
-      redirect: {
-        destination: "../../meals",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      id: id,
-    },
-  };
 };

@@ -13,6 +13,7 @@ type Props = {
   defaultValue?: boolean;
   register?: any;
   top?: boolean;
+  setValue?: any;
 };
 
 export const Switch = ({
@@ -23,9 +24,13 @@ export const Switch = ({
   register,
   label,
   top,
+  setValue,
 }: Props) => {
-  const [toggleValue, setToggleValue] = useState<boolean>(defaultValue ?? true);
+  const [toggleValue, setToggleValue] = useState<boolean>(true);
 
+  useEffect(() => {
+    setToggleValue(defaultValue ?? false);
+  }, [defaultValue]);
   return (
     <div className="flex">
       <div className="flex flex-col items-center justify-center">
@@ -40,7 +45,10 @@ export const Switch = ({
         <div
           className="shadow-md shadow-gray-300 hover:opacity-70 hover:shadow-gray-500 items-center rounded-xl relative inline-block w-10 mr-2 align-middle select-none"
           onClick={async (e: any) => {
-            if (!disabled) setToggleValue(!toggleValue);
+            if (!disabled) {
+              setValue(name, !toggleValue);
+              setToggleValue(!toggleValue);
+            }
           }}
         >
           {/* BOLINHA */}
@@ -49,7 +57,6 @@ export const Switch = ({
             type="checkbox"
             key={v4()}
             id={id}
-            name={name}
             disabled={disabled ?? false}
             checked={toggleValue}
             className={`${

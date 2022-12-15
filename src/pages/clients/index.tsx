@@ -16,6 +16,7 @@ import InputTextMasked from "../../components/input/InputTextMasked";
 import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
+import { FormClients } from "../../components/templates/forms/FormClients";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
@@ -27,8 +28,10 @@ const index = () => {
   const [clients, setClients] = useState<ClientType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
-  const router: NextRouter = useRouter();
+  const { register, handleSubmit, setValue } = useForm();
 
   const getClients = async () => {
     setPending(true);
@@ -37,10 +40,6 @@ const index = () => {
       setPending(false);
     });
   };
-
-  useEffect(() => {
-    getClients();
-  }, []);
 
   const columns: any = [
     {
@@ -66,21 +65,6 @@ const index = () => {
     },
   ];
 
-  const handleModalYes = async (id: string) => {
-    setIsLoading(true);
-    await api
-      .delete(`clients/${id}`)
-      .then(async () => {
-        SuccessAlert("Registro excluído com sucesso");
-        await getClients();
-        setIsLoading(false);
-      })
-      .catch((e: any) => {
-        ErrorAlert(e.message);
-        setIsLoading(false);
-      });
-  };
-
   const data: any[] = clients.map((client: ClientType) => {
     return {
       name: client.name,
@@ -98,9 +82,18 @@ const index = () => {
                 />
               }
               color={"success"}
-              onClick={() => {
-                setIsLoading(true);
-                router.push(`clients/edit/${client.id}`);
+              onClick={async () => {
+                await Promise.resolve(
+                  setModalTemplate(
+                    <FormClients
+                      id={client.id}
+                      handleClear={handleClear}
+                      setModal={setModal}
+                    />
+                  )
+                ).then(() => {
+                  setModal(true);
+                });
               }}
             />
           </div>
@@ -141,15 +134,33 @@ const index = () => {
         id={"newMeal"}
         label={"Cadastrar"}
         color={"primary"}
-        onClick={() => {
-          setIsLoading(true);
-          router.push("clients/create");
+        onClick={async () => {
+          await Promise.resolve(
+            setModalTemplate(
+              <FormClients handleClear={handleClear} setModal={setModal} />
+            )
+          ).then(() => {
+            setModal(true);
+          });
         }}
       />
     </div>
   );
 
-  const { register, handleSubmit, setValue } = useForm();
+  const handleModalYes = async (id: string) => {
+    setIsLoading(true);
+    await api
+      .delete(`clients/${id}`)
+      .then(async () => {
+        SuccessAlert("Registro excluído com sucesso");
+        await getClients();
+        setIsLoading(false);
+      })
+      .catch((e: any) => {
+        ErrorAlert(e.message);
+        setIsLoading(false);
+      });
+  };
 
   const handleSearch = (data: any) => {
     setPending(true);
@@ -174,10 +185,14 @@ const index = () => {
     return;
   };
 
+  useEffect(() => {
+    getClients();
+  }, []);
+
   return (
     <>
+      {modal && modalTemplate}
       {isLoading && <Loader />}
-
       <Navigation>
         <div className={`px-3 w-full`}>
           <BodyCard title={`Clientes`} newButton={newButton}>
