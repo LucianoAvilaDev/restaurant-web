@@ -47,7 +47,7 @@ const index = () => {
     await api.get("meal-types").then(({ data }: any) => {
       setMealTypes(
         data.map((type: any) => {
-          return { value: type.name, label: type.name };
+          return { value: type.id, label: type.name };
         })
       );
     });
@@ -104,7 +104,12 @@ const index = () => {
               onClick={async () => {
                 await Promise.resolve(
                   setModalTemplate(
-                    <FormMeals id={meal.id} setModal={setModal} />
+                    <FormMeals
+                      id={meal.id}
+                      mealTypes={mealTypes}
+                      getMeals={getMeals}
+                      setModal={setModal}
+                    />
                   )
                 ).then(() => {
                   setModal(true);
@@ -149,7 +154,13 @@ const index = () => {
         color={"primary"}
         onClick={async () => {
           await Promise.resolve(
-            setModalTemplate(<FormMeals setModal={setModal} />)
+            setModalTemplate(
+              <FormMeals
+                getMeals={getMeals}
+                mealTypes={mealTypes}
+                setModal={setModal}
+              />
+            )
           ).then(() => {
             setModal(true);
           });
@@ -200,7 +211,7 @@ const index = () => {
   useEffect(() => {
     getMeals();
     getMealTypes();
-  }, [modal]);
+  }, []);
 
   return (
     <>

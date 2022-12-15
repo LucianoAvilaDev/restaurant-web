@@ -1,10 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { object, string, number } from "yup";
 import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
@@ -14,34 +11,21 @@ import InputNumber from "../../components/input/InputNumber";
 import InputSelect from "../../components/input/InputSelect";
 import InputText from "../../components/input/InputText";
 import InputTextArea from "../../components/input/InputTextArea";
-import Loader from "../../components/loader/Loader";
-import Navigation from "../../components/navigation/Navigation";
 import { MealsSchema } from "../../schemas/MealsSchema";
 import { api } from "../../services/api";
-import validateAuth from "../../services/validateAuth";
 
 type Props = {
   id?: string;
   setModal: Function;
+  getMeals: Function;
+  mealTypes: SelectType[];
 };
 
-export const FormMeals = ({ id, setModal }: Props) => {
+export const FormMeals = ({ id, setModal, mealTypes, getMeals }: Props) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [meal, setMeal] = useState<any>();
-
-  const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
-
-  const getMealTypes = async () => {
-    await api.get("meal-types").then(({ data }: any) => {
-      setMealTypes(
-        data.map((mealType: any) => {
-          return { value: mealType.id, label: mealType.name };
-        })
-      );
-    });
-  };
 
   const {
     register,
@@ -57,10 +41,11 @@ export const FormMeals = ({ id, setModal }: Props) => {
     if (id) {
       api
         .put(`meals/${id}`, data)
-        .then(() => {
+        .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
+          await getMeals();
           return;
         })
         .catch((e: any) => {
@@ -72,10 +57,11 @@ export const FormMeals = ({ id, setModal }: Props) => {
     } else {
       api
         .post(`meals`, data)
-        .then(() => {
+        .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
+          await getMeals();
           return;
         })
         .catch((e: any) => {
@@ -110,7 +96,6 @@ export const FormMeals = ({ id, setModal }: Props) => {
   };
 
   useEffect(() => {
-    getMealTypes();
     if (id) {
       getMeal(id);
     }
