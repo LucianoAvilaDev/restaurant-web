@@ -39,6 +39,9 @@ export const GetBreadcrumbMenus = (ref: string) => {
     case "edit":
       return { url: "edit", name: "Editar" };
 
+    case "login":
+      return { url: "dashboard", name: "Tela Inicial" };
+
     default:
       return { url: ref, name: ref };
   }
