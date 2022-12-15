@@ -12,6 +12,7 @@ import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
 import InputText from "../../components/input/InputText";
+import InputTextMasked from "../../components/input/InputTextMasked";
 import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
@@ -20,6 +21,7 @@ import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 import { FormatCpf } from "../../utils/FormatCpf";
+import { SanitizeCpf } from "../../utils/SanitizeCpf";
 
 const index = () => {
   const [clients, setClients] = useState<ClientType[]>([]);
@@ -147,30 +149,27 @@ const index = () => {
     </div>
   );
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
   const handleSearch = (data: any) => {
     setPending(true);
 
-    api.post("clients/filters", data).then(({ data }) => {
-      setClients(data);
-      setPending(false);
-    });
+    api
+      .post("clients/filters", {
+        ...data,
+        cpf: data.cpf ? SanitizeCpf(data.cpf) : "",
+      })
+      .then(({ data }) => {
+        setClients(data);
+        setPending(false);
+      });
   };
 
   const handleClear = () => {
-    const inputName = document.getElementById("name") as any;
-    const inputCpf = document.getElementById("cpf") as any;
+    setValue("name", "");
+    setValue("cpf", "");
 
-    inputName.value = "";
-    inputCpf.value = "";
-    reset({
-      data: ["name", "cpf"],
-    });
-
-    const inputSearch = document.getElementById("search") as any;
-
-    inputSearch.click();
+    (document.getElementById("search") as any).click();
 
     return;
   };
@@ -197,12 +196,13 @@ const index = () => {
                       />
                     </div>
                     <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
-                      <InputText
+                      <InputTextMasked
                         register={register("cpf")}
-                        id={`cpf`}
+                        id={"cpf"}
                         name={"cpf"}
-                        placeholder={"Pesquise pelo CPF..."}
-                        label={"CPF (apenas números)"}
+                        placeholder={"Digite o CPF..."}
+                        label={"CPF"}
+                        mask={"000.000.000-00"}
                       />
                     </div>
                   </div>

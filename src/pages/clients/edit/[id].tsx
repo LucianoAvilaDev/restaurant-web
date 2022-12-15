@@ -80,7 +80,7 @@ const index = ({ id }: Props) => {
       {isLoading && <Loader />}
       <Navigation>
         <div className={`px-3 w-full`}>
-          <BodyCard title={`Cadastrar Cliente`}>
+          <BodyCard title={`Editar Cliente`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>

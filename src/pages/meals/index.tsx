@@ -152,7 +152,7 @@ const index = () => {
     </div>
   );
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
   const handleYes = async (id: string) => {
     setIsLoading(true);
@@ -186,18 +186,9 @@ const index = () => {
   };
 
   const handleClear = () => {
-    const inputName = document.getElementById("name") as any;
-    const inputValue = document.getElementById("type") as any;
-
-    inputName.value = "";
-    inputValue.value = "";
-    reset({
-      data: ["name", "type"],
-    });
-
-    const inputSearch = document.getElementById("search") as any;
-
-    inputSearch.click();
+    setValue("name", "");
+    setValue("type", "");
+    (document.getElementById("search") as any).click();
 
     return;
   };

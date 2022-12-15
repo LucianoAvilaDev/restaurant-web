@@ -47,7 +47,6 @@ const InputTextMasked = ({
         {...register}
         key={id}
         id={id}
-        type="text"
         readOnly={readOnly ?? false}
         required={required ?? false}
         className="rounded-md focus:font-mono relative block w-full px-2 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none shadow-md focus:shadow-gray-500 focus:z-10 sm:text-sm"
