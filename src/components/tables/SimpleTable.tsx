@@ -19,7 +19,7 @@ const customStyles = {
   },
   headRow: {
     style: {
-      borderRadius: "0.5rem 0.5rem 0  0",
+      borderRadius: "0.3rem 0.3rem 0  0",
       fontSize: "0.8rem",
       fontWeight: "medium",
       minHeight: "32px",
@@ -42,7 +42,6 @@ const customStyles = {
     style: {
       fontSize: "12px",
       minHeight: "20px",
-      borderRadius: "0 0 0.5rem 0.5rem",
     },
   },
   noData: {
@@ -72,7 +71,7 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
 
   return (
     <>
-      <div className="border border-gray-200 rounded-lg truncate shadow-gray-300 shadow-md">
+      <div className="border border-gray-200 rounded-md truncate shadow-gray-300 shadow-md">
         <DataTable
           className="scrollbar-thin scrollbar-corner-gray-300 scrollbar-thumb-gray-300  hover:scrollbar-thumb-gray-400 scrollbar-track-gray-100 "
           columns={columns}

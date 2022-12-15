@@ -119,7 +119,7 @@ const index = () => {
               color={"danger"}
               onClick={() => {
                 toast.info(
-                  <YesNoTemplate onClickYes={() => handleModalYes(meal.id)} />,
+                  <YesNoTemplate onClickYes={() => handleYes(meal.id)} />,
                   {
                     position: "top-center",
                     autoClose: false,
@@ -154,7 +154,7 @@ const index = () => {
 
   const { register, handleSubmit, reset } = useForm();
 
-  const handleModalYes = async (id: string) => {
+  const handleYes = async (id: string) => {
     setIsLoading(true);
     await api
       .delete(`meals/${id}`)

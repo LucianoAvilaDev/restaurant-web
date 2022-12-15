@@ -6,6 +6,8 @@ import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 import { ClientType } from "../../../types/ClientType";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
@@ -67,20 +69,12 @@ const index = () => {
     await api
       .delete(`clients/${id}`)
       .then(async () => {
-        toast.success("Registro excluído com sucesso", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-        });
+        SuccessAlert("Registro excluído com sucesso");
         await getClients();
         setIsLoading(false);
       })
       .catch((e: any) => {
-        toast.error(e.message);
+        ErrorAlert(e.message);
         setIsLoading(false);
       });
   };
