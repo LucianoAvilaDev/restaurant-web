@@ -1,10 +1,12 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { v4 } from "uuid";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const UserMenu = () => {
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
+  const { user } = useContext(AuthContext);
 
   return (
     <div className={`absolute z-10 flex-col`}>
@@ -19,21 +21,24 @@ const UserMenu = () => {
       >
         {/* MENU USER NO NAVBAR */}
         {userMenuOpen ? (
-          <div className={`flex rounded-md bg-themeTextLight`}>
+          <div className={`flex rounded-md w-full bg-themeTextLight`}>
             <ul
               key={v4()}
               className={`p-1 truncate font-medium text-themeTextDark `}
             >
               <div
-                className={`flex flex-col items-center justify-center px-2 py-3`}
+                className={`flex flex-col border-b items-center justify-center px-2 py-3`}
               >
                 <FaUserCircle
                   size={48}
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                 />
-                <div>Luciano Thadeu</div>
+                <div>{user?.name}</div>
+                <div className="text-xs italic font-bold">{user?.email}</div>
               </div>
-              <div className={`text-center bg-themeTextLight text-xs`}>
+              <div
+                className={`text-center border-b divide-y bg-themeTextLight text-xs`}
+              >
                 <div>
                   <Link key={v4()} href="edit-profile">
                     <li

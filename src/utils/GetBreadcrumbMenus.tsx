@@ -33,12 +33,6 @@ export const GetBreadcrumbMenus = (ref: string) => {
     case "roles":
       return { url: "roles", name: "Perfis" };
 
-    case "create":
-      return { url: "create", name: "Cadastrar" };
-
-    case "edit":
-      return { url: "edit", name: "Editar" };
-
     case "login":
       return { url: "dashboard", name: "Tela Inicial" };
 

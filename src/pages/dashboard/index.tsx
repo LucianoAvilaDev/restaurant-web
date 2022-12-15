@@ -1,15 +1,22 @@
 import { GetServerSideProps } from "next";
 import { Head } from "next/document";
 import React, { useContext } from "react";
+import { BodyCard } from "../../components/cards/BodyCard";
 import Navigation from "../../components/navigation/Navigation";
 import { AuthContext } from "../../contexts/AuthContext";
-import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 const index = () => {
+  const { user } = useContext(AuthContext);
   return (
     <Navigation>
-      <div>dashboard</div>
+      <div className={`px-3 w-full`}>
+        <BodyCard title={`Refeições`}>
+          <div className="px-2 pt-2 pb-6">
+            <h2>Bem-vindo, {user?.name}</h2>
+          </div>
+        </BodyCard>
+      </div>
     </Navigation>
   );
 };
