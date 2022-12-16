@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
-import { NextRouter, useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -17,14 +16,12 @@ import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
 import InputSelect from "../../components/input/InputSelect";
 import InputText from "../../components/input/InputText";
-import InputTextMasked from "../../components/input/InputTextMasked";
 import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
 import FormTables from "../../components/templates/forms/FormTables";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
-import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 const index = () => {
@@ -230,6 +227,7 @@ const index = () => {
                         placeholder={"Selecione a situação..."}
                         label={"Situação"}
                         options={options}
+                        setValue={setValue}
                       />
                     </div>
                   </div>

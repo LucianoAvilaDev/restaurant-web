@@ -12,7 +12,6 @@ import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
-import InputSelect from "../../components/input/InputSelect";
 import InputText from "../../components/input/InputText";
 import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
@@ -55,6 +54,13 @@ const index = () => {
       setPending(false);
     });
   };
+
+  const getInitialData = async () => {
+    await getPermissions();
+    await getRoles();
+  };
+
+  useQuery("roles", getInitialData);
 
   const columns: any = [
     {
@@ -203,20 +209,13 @@ const index = () => {
     return;
   };
 
-  const getInitialData = async () => {
-    await getPermissions();
-    await getRoles();
-  };
-
-  useQuery("roles", getInitialData);
-
   return (
     <>
       {modal && modalTemplate}
       {isLoading && <Loader />}
       <Navigation>
         <div className={`px-3 w-full`}>
-          <BodyCard title={`Refeições`} newButton={newButton}>
+          <BodyCard title={`Perfis`} newButton={newButton}>
             <div className="px-2 pt-2 pb-6">
               <div className={`py-4`}>
                 {/* --------------FILTERS ------------------------------ */}
@@ -229,16 +228,6 @@ const index = () => {
                         name={"name"}
                         placeholder={"Pesquise pelo nome..."}
                         label={"Nome"}
-                      />
-                    </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
-                      <InputSelect
-                        register={register("permission")}
-                        id={`permission`}
-                        name={"permission"}
-                        placeholder={"Pesquise pela permissão..."}
-                        label={"Permissão"}
-                        options={permissions}
                       />
                     </div>
                   </div>

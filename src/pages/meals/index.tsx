@@ -1,27 +1,27 @@
 import { GetServerSideProps } from "next";
-import React, { useEffect, useState } from "react";
-import { MdOutlineModeEditOutline } from "react-icons/md";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 import { MealType } from "../../../types/MealType";
+import { SelectType } from "../../../types/SelectType";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { SuccessAlert } from "../../components/alerts/SuccessAlert";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
+import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
+import InputSelect from "../../components/input/InputSelect";
+import InputText from "../../components/input/InputText";
+import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
-import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
+import FormMeals from "../../components/templates/forms/FormMeals";
+import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
-import { ButtonSolid } from "../../components/buttons/ButtonSolid";
-import InputText from "../../components/input/InputText";
-import { useForm } from "react-hook-form";
-import InputSelect from "../../components/input/InputSelect";
-import Loader from "../../components/loader/Loader";
-import { toast } from "react-toastify";
-import YesNoTemplate from "../../components/templates/YesNoTemplate";
-import FormMeals from "../../components/templates/forms/FormMeals";
-import { SelectType } from "../../../types/SelectType";
-import { SuccessAlert } from "../../components/alerts/SuccessAlert";
-import { ErrorAlert } from "../../components/alerts/ErrorAlert";
-import { useQuery, UseQueryResult } from "react-query";
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
@@ -226,7 +226,7 @@ const index = () => {
                         label={"Nome"}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("type")}
                         id={`type`}

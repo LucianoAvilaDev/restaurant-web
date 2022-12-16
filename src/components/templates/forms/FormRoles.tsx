@@ -9,7 +9,7 @@ import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import InputSelect from "../../input/InputSelect";
+import InputSelectMultiple from "../../input/InputSelectMultiple";
 import InputText from "../../input/InputText";
 import Loader from "../../loader/Loader";
 
@@ -28,6 +28,7 @@ export const FormRoles = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [role, setRole] = useState<any>();
+  const [selected, setSelected] = useState<any>([]);
 
   const {
     register,
@@ -53,7 +54,6 @@ export const FormRoles = ({
         .catch((e: any) => {
           ErrorAlert(e.message);
           setIsLoading(false);
-          setIsLoading(false);
           return;
         });
     } else {
@@ -68,7 +68,6 @@ export const FormRoles = ({
         })
         .catch((e: any) => {
           ErrorAlert(e.message);
-          setIsLoading(false);
           setIsLoading(false);
           return;
         });
@@ -86,8 +85,14 @@ export const FormRoles = ({
         if (data) {
           setRole(data);
 
+          setSelected(
+            data.permissions.map((permission: any) => {
+              return { value: permission.id, label: permission.description };
+            })
+          );
+
           setValue("name", data.name ?? "");
-          setValue("permissions", data.permissions ?? "");
+          setValue("permissions", data.permissions ?? []);
         }
       })
       .catch((e: any) => {
@@ -116,7 +121,7 @@ export const FormRoles = ({
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 col-span-12">
                       <InputText
                         register={register("name")}
                         id={`name`}
@@ -126,14 +131,18 @@ export const FormRoles = ({
                         errorMessage={errors?.name?.message}
                       />
                     </div>
-                    <div className="p-2 md:col-span-4 sm:col-span-3 col-span-12">
-                      <InputSelect
+
+                    <div className="p-2 col-span-12 max-w-lg">
+                      <InputSelectMultiple
                         register={register("permissions")}
                         id={`permissions`}
                         name={"permissions"}
                         placeholder={"Selecione as permissões..."}
                         label={"Permissões"}
                         options={permissions}
+                        setValue={setValue}
+                        value={selected}
+                        errorMessage={errors?.permissions?.message}
                       />
                     </div>
                   </div>

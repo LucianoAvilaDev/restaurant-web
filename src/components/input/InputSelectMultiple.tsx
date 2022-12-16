@@ -1,4 +1,5 @@
 import Select from "react-select";
+import { SelectType } from "../../../types/SelectType";
 import ErrorLabel from "./ErrorLabel";
 
 type props = {
@@ -15,7 +16,7 @@ type props = {
   setValue: any;
 };
 
-const InputSelect = ({
+const InputSelectMultiple = ({
   id,
   name,
   readOnly,
@@ -59,9 +60,17 @@ const InputSelect = ({
         required={required ?? false}
         placeholder={placeholder}
         options={options}
+        isMulti
         value={value}
         onChange={(e: any) => {
-          setValue(name, e?.value ?? "");
+          if (e) {
+            const values: string = e.map((permission: SelectType) => {
+              return permission.value;
+            });
+            setValue(name, values);
+            return;
+          }
+          setValue(name, []);
         }}
         isClearable
       />
@@ -70,4 +79,4 @@ const InputSelect = ({
   );
 };
 
-export default InputSelect;
+export default InputSelectMultiple;

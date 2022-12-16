@@ -28,6 +28,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [meal, setMeal] = useState<any>();
+  const [mealTypeId, setMealTypeId] = useState<any>();
 
   const {
     register,
@@ -85,6 +86,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
       .then(({ data }: any) => {
         if (data) {
           setMeal(data);
+          setMealTypeId({ value: data.mealType.id, label: data.mealType.name });
 
           setValue("name", data.name ?? "");
           setValue("price", data.price ?? "");
@@ -149,7 +151,9 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
                         placeholder={"Selecione o tipo de refeição"}
                         label={"Tipo"}
                         options={mealTypes}
+                        value={mealTypeId}
                         errorMessage={errors?.mealTypeId?.message}
+                        setValue={setValue}
                       />
                     </div>
                     <div className="p-2 col-span-12">
