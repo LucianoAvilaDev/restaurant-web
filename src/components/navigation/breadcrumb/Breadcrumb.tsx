@@ -1,17 +1,13 @@
-import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiChevronsRight } from "react-icons/bi";
 import { useQuery } from "react-query";
 import { v4 } from "uuid";
-import { ref } from "yup";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { GetBreadcrumbMenus } from "../../../utils/GetBreadcrumbMenus";
 
 const Breadcrumb = () => {
   const { ref } = useContext(AuthContext);
-
-  const router = useRouter();
 
   const getItemByRef = (ref: string) => {
     return GetBreadcrumbMenus(ref);

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { ErrorAlert } from "../../../components/alerts/ErrorAlert";
@@ -11,6 +11,7 @@ import InputTextMasked from "../../../components/input/InputTextMasked";
 import { ClientsSchema } from "../../../schemas/ClientsSchema";
 import { api } from "../../../services/api";
 import { SanitizeCpf } from "../../../utils/SanitizeCpf";
+import Loader from "../../loader/Loader";
 
 type Props = {
   id?: string;
@@ -98,6 +99,7 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
 
   return (
     <>
+      {isLoading && <Loader />}
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >

@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
+import { useContext, useEffect, useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
 
-import { v4 } from "uuid";
-import { Menus, MenuType } from "./Menus";
 import Link from "next/link";
-import { AuthContext } from "../../../contexts/AuthContext";
 import { useQuery } from "react-query";
+import { v4 } from "uuid";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { Menus, MenuType } from "./Menus";
 
 const Sidebar = () => {
   const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
 
-  const { setRef } = useContext(AuthContext);
+  const { ref, setRef, setIsLoading } = useContext(AuthContext);
 
   useEffect(() => {
     setSidebarWidth(openSidebar ? "w-64" : "w-16");
@@ -44,6 +44,7 @@ const Sidebar = () => {
         onClick={() => {
           setUrlRef(menu.url);
           setRef(menu.url);
+          setIsLoading(true);
         }}
       >
         <li
@@ -72,6 +73,7 @@ const Sidebar = () => {
         onClick={() => {
           setUrlRef(menu.url);
           setRef(menu.url);
+          setIsLoading(true);
         }}
       >
         <li
@@ -95,10 +97,17 @@ const Sidebar = () => {
   // MENU COM SUBMENU
   const nestedMenu: any = (menu: MenuType) => {
     const [openMenu, setOpenMenu] = useState<boolean>(false);
+    const [openByUrlRef, setOpenByUrlRef] = useState<boolean>(false);
 
     const handleOpenMenu = () => {
       setOpenMenu(!openMenu);
+      setOpenByUrlRef(false);
     };
+
+    useEffect(() => {
+      const submenuPaths = menu.submenus.map((menu: MenuType) => menu.url);
+      setOpenByUrlRef(submenuPaths.some((v) => ref.includes(v)));
+    }, []);
 
     return (
       <li
@@ -109,9 +118,9 @@ const Sidebar = () => {
         <div className="flex flex-col w-full">
           <div
             className={`${
-              openMenu
+              openMenu || openByUrlRef
                 ? "border-themeLight text-themeTextLight"
-                : " border-transparent "
+                : " border-transparent"
             } flex py-4 border-l-4 hover:border-l-4 hover:border-themeLight hover:cursor-pointer hover:bg-themeTextLight hover:text-red-800`}
           >
             <div className={`pl-2`}>{menu.icon}</div>
@@ -119,10 +128,10 @@ const Sidebar = () => {
               <div className={`pl-2 truncate`}>{menu.name}</div>
             ) : null}
             <button className={`px-2`}>
-              {openMenu ? <BiChevronUp /> : <BiChevronDown />}
+              {openMenu || openByUrlRef ? <BiChevronUp /> : <BiChevronDown />}
             </button>
           </div>
-          {openMenu ? (
+          {openMenu || openByUrlRef ? (
             <ul className={`bg-themeDarker border-l-4 border-themeLight `}>
               {menu.submenus.map((currentMenu: MenuType) => {
                 if (currentMenu.submenus.length == 0)

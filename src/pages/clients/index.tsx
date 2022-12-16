@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
-import { NextRouter, useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -14,11 +13,11 @@ import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
 import InputText from "../../components/input/InputText";
 import InputTextMasked from "../../components/input/InputTextMasked";
-import Loader from "../../components/loader/Loader";
 import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
 import { FormClients } from "../../components/templates/forms/FormClients";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
@@ -28,11 +27,12 @@ import { SanitizeCpf } from "../../utils/SanitizeCpf";
 const index = () => {
   const [clients, setClients] = useState<ClientType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
   const { register, handleSubmit, setValue } = useForm();
+
+  const { setIsLoading } = useContext(AuthContext);
 
   const getClients = async () => {
     setPending(true);
@@ -188,6 +188,7 @@ const index = () => {
 
   const getInitialData = () => {
     getClients();
+    setIsLoading(false);
   };
 
   useQuery("clients", getInitialData);
@@ -195,7 +196,6 @@ const index = () => {
   return (
     <>
       {modal && modalTemplate}
-      {isLoading && <Loader />}
       <Navigation>
         <div className={`px-3 w-full`}>
           <BodyCard title={`Clientes`} newButton={newButton}>

@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import Content from "./content/Content";
 import Navbar from "./navbar/Navbar";
 import Sidebar from "./sidebar/Sidebar";
 
 const Navigation = ({ children }: any) => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, setIsLoading, isLoading } = useContext(AuthContext);
 
   return (
     <>

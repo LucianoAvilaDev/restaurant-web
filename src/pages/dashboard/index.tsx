@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
-import { Head } from "next/document";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { BodyCard } from "../../components/cards/BodyCard";
 import Navigation from "../../components/navigation/Navigation";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -11,7 +10,7 @@ const index = () => {
   return (
     <Navigation>
       <div className={`px-3 w-full`}>
-        <BodyCard title={`Refeições`}>
+        <BodyCard title={`Dashboard`}>
           <div className="px-2 pt-2 pb-6">
             <h2>Bem-vindo, {user?.name}</h2>
           </div>

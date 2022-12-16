@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { useRef } from "react";
+import Loader from "../components/loader/Loader";
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = useRef(new QueryClient());

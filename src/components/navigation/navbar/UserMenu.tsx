@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -21,7 +21,7 @@ const UserMenu = () => {
       >
         {/* MENU USER NO NAVBAR */}
         {userMenuOpen ? (
-          <div className={`flex rounded-md w-full bg-themeTextLight`}>
+          <div className={`flex rounded-md w-full bg-white`}>
             <ul
               key={v4()}
               className={`p-1 truncate font-medium text-themeTextDark `}
@@ -36,9 +36,7 @@ const UserMenu = () => {
                 <div>{user?.name}</div>
                 <div className="text-xs italic font-bold">{user?.email}</div>
               </div>
-              <div
-                className={`text-center border-b divide-y bg-themeTextLight text-xs`}
-              >
+              <div className={`text-center border-b divide-y bg-white text-xs`}>
                 <div>
                   <Link key={v4()} href="edit-profile">
                     <li

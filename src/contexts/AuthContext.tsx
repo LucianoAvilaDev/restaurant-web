@@ -19,6 +19,8 @@ type AuthContextType = {
   isAuthenticated: boolean;
   ref: string;
   setRef: Function;
+  isLoading: boolean;
+  setIsLoading: Function;
   user: UserType | null;
   signIn: (data: SignInType) => Promise<void>;
 };
@@ -28,6 +30,7 @@ export const AuthContext = createContext({} as AuthContextType);
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<UserType | null>(null);
   const [ref, setRef] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isAuthenticated = !!user;
 
@@ -64,7 +67,7 @@ export function AuthProvider({ children }: any) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, signIn, ref, setRef }}
+      value={{ isAuthenticated, user, signIn, ref, setRef,isLoading, setIsLoading }}
     >
       {children}
     </AuthContext.Provider>

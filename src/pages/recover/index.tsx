@@ -2,7 +2,7 @@ import { NextRouter, useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { SimpleCard } from "../../components/cards/SimpleCard";
-import { ButtonSolid } from "../../components/input/ButtonSolid";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import InputEmail from "../../components/input/InputEmail";
 import { yupResolver } from "@hookform/resolvers/yup";
 

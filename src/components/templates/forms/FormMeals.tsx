@@ -1,8 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 import { SelectType } from "../../../../types/SelectType";
+import { MealsSchema } from "../../../schemas/MealsSchema";
+import { api } from "../../../services/api";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
@@ -11,9 +14,7 @@ import InputNumber from "../../input/InputNumber";
 import InputSelect from "../../input/InputSelect";
 import InputText from "../../input/InputText";
 import InputTextArea from "../../input/InputTextArea";
-import { MealsSchema } from "../../../schemas/MealsSchema";
-import { api } from "../../../services/api";
-import { useQuery } from "react-query";
+import Loader from "../../loader/Loader";
 
 type Props = {
   id?: string;
@@ -106,6 +107,8 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
 
   return (
     <>
+      {isLoading && <Loader />}
+
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
