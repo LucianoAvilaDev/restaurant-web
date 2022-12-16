@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { ClientType } from "../../../types/ClientType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
@@ -185,9 +186,13 @@ const index = () => {
     return;
   };
 
-  useEffect(() => {
+  const getInitialData = () => {
     getClients();
-  }, []);
+  };
+
+  useQuery("clients", getInitialData);
+
+  console.log("render");
 
   return (
     <>

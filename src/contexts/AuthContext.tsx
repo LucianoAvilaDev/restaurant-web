@@ -4,6 +4,7 @@ import { createContext } from "react";
 import { api } from "../services/api";
 import { setCookie, parseCookies } from "nookies";
 import Router from "next/router";
+import { useQuery } from "react-query";
 
 type SignInType = { email: string; password: string };
 

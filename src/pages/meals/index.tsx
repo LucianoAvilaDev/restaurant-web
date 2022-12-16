@@ -21,6 +21,7 @@ import FormMeals from "../../components/templates/forms/FormMeals";
 import { SelectType } from "../../../types/SelectType";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { useQuery, UseQueryResult } from "react-query";
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
@@ -197,10 +198,12 @@ const index = () => {
     return;
   };
 
-  useEffect(() => {
-    getMeals();
-    getMealTypes();
-  }, []);
+  const getInitialData = async () => {
+    await getMeals();
+    await getMealTypes();
+  };
+
+  useQuery("meals", getInitialData);
 
   return (
     <>

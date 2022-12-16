@@ -1,20 +1,15 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { SelectType } from "../../../../types/SelectType";
+import { useQuery } from "react-query";
 import { ErrorAlert } from "../../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../../components/buttons/ButtonSolid";
 import { BodyCard } from "../../../components/cards/BodyCard";
 import InputText from "../../../components/input/InputText";
 import InputTextMasked from "../../../components/input/InputTextMasked";
-import Loader from "../../../components/loader/Loader";
-import Navigation from "../../../components/navigation/Navigation";
 import { ClientsSchema } from "../../../schemas/ClientsSchema";
 import { api } from "../../../services/api";
-import validateAuth from "../../../services/validateAuth";
 import { SanitizeCpf } from "../../../utils/SanitizeCpf";
 
 type Props = {
@@ -93,11 +88,13 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
       });
   };
 
-  useEffect(() => {
+  const getInitialData = () => {
     if (id) {
       getClient(id);
     }
-  }, []);
+  };
+
+  useQuery("formClients", getInitialData);
 
   return (
     <>

@@ -6,6 +6,7 @@ import { v4 } from "uuid";
 import { Menus, MenuType } from "./Menus";
 import Link from "next/link";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { useQuery } from "react-query";
 
 const Sidebar = () => {
   const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
@@ -18,7 +19,7 @@ const Sidebar = () => {
     setSidebarWidth(openSidebar ? "w-64" : "w-16");
   }, [openSidebar]);
 
-  useEffect(() => {
+  const getInitialData = () => {
     if (document)
       setUrlRef(
         document.location.href.replace(
@@ -26,7 +27,9 @@ const Sidebar = () => {
           ""
         )
       );
-  }, []);
+  };
+
+  useQuery("sidebar", getInitialData);
 
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);

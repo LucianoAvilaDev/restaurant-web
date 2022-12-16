@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { SelectType } from "../../../types/SelectType";
 import { TableType } from "../../../types/TableType";
@@ -183,9 +184,11 @@ const index = () => {
     return;
   };
 
-  useEffect(() => {
+  const getInitialData = () => {
     getTables();
-  }, []);
+  };
+
+  useQuery("clients", getInitialData);
 
   const options: SelectType[] = [
     {

@@ -13,6 +13,7 @@ import InputText from "../../input/InputText";
 import InputTextArea from "../../input/InputTextArea";
 import { MealsSchema } from "../../../schemas/MealsSchema";
 import { api } from "../../../services/api";
+import { useQuery } from "react-query";
 
 type Props = {
   id?: string;
@@ -95,11 +96,13 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
       });
   };
 
-  useEffect(() => {
+  const getInitialData = () => {
     if (id) {
       getMeal(id);
     }
-  }, []);
+  };
+
+  useQuery("formMeals", getInitialData);
 
   return (
     <>

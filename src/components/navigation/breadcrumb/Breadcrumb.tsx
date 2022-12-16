@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiChevronsRight } from "react-icons/bi";
+import { useQuery } from "react-query";
 import { v4 } from "uuid";
 import { ref } from "yup";
 import { AuthContext } from "../../../contexts/AuthContext";
@@ -20,7 +21,7 @@ const Breadcrumb = () => {
     { url: string; name: string }[]
   >([]);
 
-  useEffect(() => {
+  const getInitialData = () => {
     const paths: string[] = ref
       .replace(`${process.env.NEXT_PUBLIC_WEB_URL}/` ?? "", "")
       .split("/");
@@ -31,7 +32,9 @@ const Breadcrumb = () => {
       }
     );
     setBreadcrumbList(refList);
-  }, []);
+  };
+
+  useQuery("breadcrumb", getInitialData);
 
   return (
     <div className="flex w-full">

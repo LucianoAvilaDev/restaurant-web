@@ -31,6 +31,7 @@ export const Switch = ({
   useEffect(() => {
     setToggleValue(defaultValue ?? false);
   }, [defaultValue]);
+
   return (
     <div className="flex">
       <div className="flex flex-col items-center justify-center">

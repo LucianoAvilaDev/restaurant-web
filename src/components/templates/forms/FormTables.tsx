@@ -14,6 +14,7 @@ import InputTextArea from "../../input/InputTextArea";
 import { TablesSchema } from "../../../schemas/TablesSchema";
 import { api } from "../../../services/api";
 import { Switch } from "../../input/Switch";
+import { useQuery } from "react-query";
 
 type Props = {
   id?: string;
@@ -92,11 +93,13 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
       });
   };
 
-  useEffect(() => {
+  const getInitialData = () => {
     if (id) {
       getTable(id);
     }
-  }, []);
+  };
+
+  useQuery("formTables", getInitialData);
 
   return (
     <>
