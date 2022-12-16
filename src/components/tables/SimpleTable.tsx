@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -31,9 +30,8 @@ const customStyles = {
   cells: {
     style: {
       fontSize: "0.8rem",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "noWrap",
+      overflowWrap: "break-word",
+      lineBreak: "strict",
       minHeight: "50px",
     },
   },
@@ -71,7 +69,7 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
 
   return (
     <>
-      <div className="border border-gray-200 rounded-md truncate shadow-gray-300 shadow-md">
+      <div className="border border-gray-200 rounded-md  shadow-gray-300 shadow-md">
         <DataTable
           className="scrollbar-thin scrollbar-corner-gray-300 scrollbar-thumb-gray-300  hover:scrollbar-thumb-gray-400 scrollbar-track-gray-100 "
           columns={columns}
