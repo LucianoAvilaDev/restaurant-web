@@ -12,7 +12,7 @@ import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import BadgeGreen from "../../components/badges/BadgeGreen";
 import BadgeRed from "../../components/badges/BadgeRed";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
-import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
+import { TableButtonSolid } from "../../components/buttons/TableButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
 import InputSelect from "../../components/input/InputSelect";
 import InputText from "../../components/input/InputText";

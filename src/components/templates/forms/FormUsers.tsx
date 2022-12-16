@@ -3,13 +3,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { SelectType } from "../../../../types/SelectType";
-import { RolesSchema } from "../../../schemas/RolesSchema";
+import { UsersSchema } from "../../../schemas/UsersSchema";
 import { api } from "../../../services/api";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import InputSelectMultiple from "../../input/InputSelectMultiple";
+import InputEmail from "../../input/InputEmail";
+import InputPassword from "../../input/InputPassword";
+import InputSelect from "../../input/InputSelect";
 import InputText from "../../input/InputText";
 import Loader from "../../loader/Loader";
 
@@ -17,18 +19,15 @@ type Props = {
   id?: string;
   setModal: Function;
   handleClear: Function;
-  permissions: SelectType[];
+  roles: SelectType[];
 };
 
-export const FormRoles = ({
-  id,
-  setModal,
-  permissions,
-  handleClear,
-}: Props) => {
+export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [role, setRole] = useState<any>();
+  const [user, setUser] = useState<any>();
+  const [enablePassword, setEnablePassword] = useState<boolean>(false);
   const [selected, setSelected] = useState<any>([]);
+  const defaultPassword: string = "******";
 
   const {
     register,
@@ -36,14 +35,15 @@ export const FormRoles = ({
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(RolesSchema()),
+    resolver: yupResolver(UsersSchema()),
   });
 
   const handleSave = (data: any) => {
     setIsLoading(true);
+
     if (id) {
       api
-        .put(`roles/${id}`, data)
+        .put(`users/${id}`, data)
         .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -58,7 +58,7 @@ export const FormRoles = ({
         });
     } else {
       api
-        .post(`roles`, data)
+        .post(`users`, data)
         .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -78,21 +78,20 @@ export const FormRoles = ({
     setModal(false);
   };
 
-  const getRole = async (id: string) => {
+  const getUser = async (id: string) => {
     await api
-      .get(`roles/${id}`)
+      .get(`users/${id}`)
       .then(({ data }: any) => {
         if (data) {
-          setRole(data);
+          setUser(data);
 
-          setSelected(
-            data.permissions.map((permission: any) => {
-              return { value: permission.id, label: permission.description };
-            })
-          );
+          setSelected({ value: data.role.id, label: data.role.name });
 
           setValue("name", data.name ?? "");
-          setValue("permissions", data.permissions ?? []);
+          setValue("email", data.email ?? "");
+          setValue("password", data.password ? defaultPassword : "");
+          setValue("passwordConfirm", data.password ? defaultPassword : "");
+          setValue("roleId", data.role.id ?? []);
         }
       })
       .catch((e: any) => {
@@ -102,11 +101,11 @@ export const FormRoles = ({
 
   const getInitialData = () => {
     if (id) {
-      getRole(id);
+      getUser(id);
     }
   };
 
-  useQuery("formRoles", getInitialData);
+  useQuery("FormUsers", getInitialData);
 
   return (
     <>
@@ -116,12 +115,12 @@ export const FormRoles = ({
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
         <div className={`max-h-[80vh] max-w-[80vw]`}>
-          <BodyCard title={`${id ? "Editar" : "Cadastrar"} Perfil`}>
+          <BodyCard title={`${id ? "Editar" : "Cadastrar"} Usuário`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="p-2 col-span-12">
+                    <div className="p-2 sm:col-span-6 col-span-12">
                       <InputText
                         register={register("name")}
                         id={`name`}
@@ -131,18 +130,47 @@ export const FormRoles = ({
                         errorMessage={errors?.name?.message}
                       />
                     </div>
+                    <div className="p-2 sm:col-span-6 col-span-12">
+                      <InputEmail
+                        register={register("email")}
+                        id={`email`}
+                        placeholder={"Digite o e-mail..."}
+                        label={"E-mail"}
+                        errorMessage={errors?.email?.message}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputPassword
+                        register={register("password")}
+                        id={`password`}
+                        name={`password`}
+                        placeholder={"Digite a senha..."}
+                        label={"Senha"}
+                        errorMessage={errors?.password?.message}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputPassword
+                        register={register("passwordConfirm")}
+                        id={`passwordConfirm`}
+                        name={`passwordConfirm`}
+                        placeholder={"Repita a senha..."}
+                        label={"Confirmar Senha"}
+                        errorMessage={errors?.passwordConfirm?.message}
+                      />
+                    </div>
 
-                    <div className="p-2 col-span-12 max-w-lg">
-                      <InputSelectMultiple
-                        register={register("permissions")}
-                        id={`permissions`}
-                        name={"permissions"}
-                        placeholder={"Selecione as permissões..."}
-                        label={"Permissões"}
-                        options={permissions}
+                    <div className="p-2 md:col-span-4 col-span-12 max-w-lg">
+                      <InputSelect
+                        register={register("roleId")}
+                        id={`roleId`}
+                        name={"roleId"}
+                        placeholder={"Selecione o perfil..."}
+                        label={"Perfil"}
+                        options={roles}
                         setValue={setValue}
                         value={selected}
-                        errorMessage={errors?.permissions?.message}
+                        errorMessage={errors?.roleId?.message}
                       />
                     </div>
                   </div>
@@ -176,4 +204,4 @@ export const FormRoles = ({
   );
 };
 
-export default FormRoles;
+export default FormUsers;

@@ -9,7 +9,7 @@ import { ClientType } from "../../../types/ClientType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
-import { TableButtonSolid } from "../../components/buttons/TabbleButtonSolid";
+import { TableButtonSolid } from "../../components/buttons/TableButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
 import InputText from "../../components/input/InputText";
 import InputTextMasked from "../../components/input/InputTextMasked";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 <link
   rel="stylesheet"
@@ -38,13 +38,13 @@ export const Switch = ({
         {top && (
           <label
             htmlFor={id}
-            className="text-sm truncate py-1 cursor-pointer text-gray-700"
+            className="text-sm font-medium  truncate py-1 cursor-pointer text-gray-700"
           >
             {label}
           </label>
         )}
         <div
-          className="shadow-md shadow-gray-300 hover:opacity-70 hover:shadow-gray-500 items-center rounded-xl relative inline-block w-10 mr-2 align-middle select-none"
+          className="shadow-md  shadow-gray-300 hover:opacity-70 hover:shadow-gray-500 items-center rounded-xl relative inline-block w-10 mr-2 align-middle select-none"
           onClick={async (e: any) => {
             if (!disabled) {
               setValue(name, !toggleValue);
