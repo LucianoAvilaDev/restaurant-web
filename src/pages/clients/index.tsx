@@ -192,8 +192,6 @@ const index = () => {
 
   useQuery("clients", getInitialData);
 
-  console.log("render");
-
   return (
     <>
       {modal && modalTemplate}

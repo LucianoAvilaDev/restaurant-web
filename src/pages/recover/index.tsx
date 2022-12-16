@@ -23,7 +23,6 @@ export default function index() {
   } = useForm({ resolver: yupResolver(schema) });
 
   const handleSendRecoveryEmail = (data: any) => {
-    console.log(data);
     // await signIn(data);
   };
 
