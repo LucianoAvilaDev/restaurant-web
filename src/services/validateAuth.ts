@@ -1,6 +1,4 @@
 import { parseCookies } from 'nookies';
-import React from 'react'
-import { getApiClient } from './getApiClient';
 
 const validateAuth = async (ctx: any): Promise<boolean> => {
   const { ["restaurantApp.token"]: token } = parseCookies(ctx);
