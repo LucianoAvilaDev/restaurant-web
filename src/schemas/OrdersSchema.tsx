@@ -17,7 +17,7 @@ export const OrdersSchema = () => {
       .max(99999999.99, "O preço máximo é 99999999,99!"),
     clientId: number(),
     tableId: number(),
-    isAvailable: boolean().required("Campo obrigatório!"),
+    isClosed: boolean().required("Campo obrigatório!"),
     orderItems: array(),
   });
 };

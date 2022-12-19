@@ -18,6 +18,7 @@ type Props = {
   id?: string;
   setModal: Function;
   handleClear: Function;
+  meals: any;
 };
 
 export const FormOrderItems = ({ id, handleClear, setModal }: Props) => {

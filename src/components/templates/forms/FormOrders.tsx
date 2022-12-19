@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
 import { MealType } from "../../../../types/MealType";
 import { OrderItemsType } from "../../../../types/OrderItemType";
 import { SelectType } from "../../../../types/SelectType";
@@ -9,13 +10,13 @@ import { OrdersSchema } from "../../../schemas/OrdersSchema";
 import { api } from "../../../services/api";
 import { FormatDateTime } from "../../../utils/FormatDateTime";
 import { FormatMoney } from "../../../utils/FormatMoney";
-import { SanitizeCpf } from "../../../utils/SanitizeCpf";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { InfoAlert } from "../../alerts/InfoAlert";
 import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { TableButtonSolid } from "../../buttons/TableButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
+import { SimpleCard } from "../../cards/SimpleCard";
 import InputDateTime from "../../input/InputDateTime";
 import InputNumber from "../../input/InputNumber";
 import InputSelect from "../../input/InputSelect";
@@ -23,6 +24,7 @@ import InputTextArea from "../../input/InputTextArea";
 import { Switch } from "../../input/Switch";
 import SimpleTable from "../../tables/SimpleTable";
 import YesNoTemplate from "../YesNoTemplate";
+import { FormOrderItems } from "./FormOrderItems";
 
 type Props = {
   id?: string;
@@ -46,6 +48,8 @@ export const FormOrders = ({
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedTable, setSelectedTable] = useState<any>();
   const [pending, setPending] = useState<boolean>(true);
+  const [subModal, setSubModal] = useState<boolean>(true);
+  const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
   const {
     register,
@@ -108,6 +112,33 @@ export const FormOrders = ({
         <div className={`flex flex-wrap`}>
           <div>
             <TableButtonSolid
+              id={item.id}
+              tooltip={`Editar`}
+              icon={
+                <MdOutlineModeEditOutline
+                  className={`filter hover:drop-shadow m-1`}
+                  size={18}
+                />
+              }
+              color={"success"}
+              onClick={async () => {
+                await Promise.resolve(
+                  setModalTemplate(
+                    <FormOrderItems
+                      meals={meals}
+                      id={item.id}
+                      handleClear={handleClear}
+                      setModal={setSubModal}
+                    />
+                  )
+                ).then(() => {
+                  setSubModal(true);
+                });
+              }}
+            />
+          </div>
+          <div>
+            <TableButtonSolid
               id={order.id}
               tooltip={`Excluir`}
               icon={
@@ -136,10 +167,12 @@ export const FormOrders = ({
   };
 
   const handleSave = (data: any) => {
+    console.log(data);
+    return;
     setIsLoading(true);
     if (id) {
       api
-        .put(`orders/${id}`, { ...data, cpf: SanitizeCpf(data.cpf) })
+        .put(`orders/${id}`, data)
         .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -155,7 +188,7 @@ export const FormOrders = ({
         });
     } else {
       api
-        .post(`orders`, { ...data, cpf: SanitizeCpf(data.cpf) })
+        .post(`orders`, data)
         .then(async () => {
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -200,6 +233,7 @@ export const FormOrders = ({
           setValue("date", data.date ? FormatDateTime(data.date) : "");
           setValue("totalValue", data.total_value ?? "");
           setValue("paidValue", data.paid_value ?? "");
+          setValue("isClosed", data.is_closed ?? "");
           setValue("orderItems", data.orderItems ?? []);
         }
       })
@@ -241,6 +275,7 @@ export const FormOrders = ({
 
   return (
     <>
+      {subModal && modalTemplate}
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
@@ -250,15 +285,9 @@ export const FormOrders = ({
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <input
-                      type="hidden"
-                      value={order?.orderItems}
-                      {...register("orderItems")}
-                    />
-
                     <div className="p-2 sm:col-span-3 col-span-12">
                       <InputSelect
-                        register={register("client")}
+                        register={register("clientId")}
                         id={`clientId`}
                         name={"clientId"}
                         placeholder={"Selecione um cliente..."}
@@ -267,6 +296,7 @@ export const FormOrders = ({
                         setValue={setValue}
                         value={selectedClient}
                         onChange={(e: SelectType) => setSelectedClient(e)}
+                        errorMessage={errors?.clientId?.message}
                       />
                     </div>
                     <div className="p-2 sm:col-span-2 col-span-12">
@@ -280,6 +310,7 @@ export const FormOrders = ({
                         setValue={setValue}
                         value={selectedTable}
                         onChange={(e: SelectType) => setSelectedTable(e)}
+                        errorMessage={errors?.tableId?.message}
                       />
                     </div>
 
@@ -331,7 +362,7 @@ export const FormOrders = ({
                       />
                     </div>
                     <div className="p-2 col-span-12">
-                      <BodyCard title={`Itens do Pedido`}>
+                      <SimpleCard title={`Itens do Pedido`}>
                         <div className={`grid grid-cols-12`}>
                           <div className="p-2 sm:col-span-4 col-span-12">
                             <InputSelect
@@ -365,7 +396,6 @@ export const FormOrders = ({
                               onChange={(e: any) => {
                                 updatePriceByQuantity(e);
                               }}
-                              errorMessage={errors?.totalValue?.message}
                             />
                           </div>
                           <div className="p-2 sm:col-span-2 col-span-12">
@@ -396,35 +426,33 @@ export const FormOrders = ({
                               id={"add"}
                               label={"Adicionar"}
                               color={"primary"}
-                              onClick={() => {
+                              onClick={async () => {
                                 const quantity = getValues("quantity");
                                 const mealId = getValues("mealId");
                                 const observation = getValues("observation");
                                 const price = (
                                   document.getElementById("price") as any
                                 ).value;
-                                // console.log(
-                                //   quantity,
-                                //   mealId,
-                                //   observation,
-                                //   price
-                                // );
-                                setOrder({
-                                  ...order,
-                                  orderItems: [
-                                    ...order.orderItems,
-                                    {
-                                      id: "0",
-                                      meal_id: mealId,
-                                      meal: meals.find(
-                                        (meal: MealType) => meal.id == mealId
-                                      ),
-                                      quantity: quantity,
-                                      observation: observation,
-                                      price: price,
-                                      order_id: id ?? "0",
-                                    },
-                                  ],
+                                await Promise.resolve(
+                                  setOrder({
+                                    ...order,
+                                    orderItems: [
+                                      ...order.orderItems,
+                                      {
+                                        id: "0",
+                                        meal_id: mealId,
+                                        meal: meals.find(
+                                          (meal: MealType) => meal.id == mealId
+                                        ),
+                                        quantity: quantity,
+                                        observation: observation,
+                                        price: price,
+                                        order_id: id ?? "0",
+                                      },
+                                    ],
+                                  })
+                                ).then(() => {
+                                  setValue("orderItems", order.orderItems);
                                 });
                               }}
                             />
@@ -438,7 +466,7 @@ export const FormOrders = ({
                             pending={pending}
                           />
                         </div>
-                      </BodyCard>
+                      </SimpleCard>
                     </div>
                   </div>
                   <div

@@ -36,7 +36,6 @@ const InputDateTime = ({
         onChange={(e: any) => {
           setValue(name, e.target.value ?? "");
         }}
-        setValue={setValue}
       />
       {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
     </div>
