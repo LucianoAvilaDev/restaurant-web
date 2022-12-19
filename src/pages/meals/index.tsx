@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
 import { MealType } from "../../../types/MealType";
 import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
@@ -23,6 +22,7 @@ import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { FormatMoney } from "../../utils/FormatMoney";
 
 const index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
@@ -85,7 +85,7 @@ const index = () => {
   const data: any[] = meals.map((meal: MealType) => {
     return {
       name: meal.name,
-      price: (+meal.price).toLocaleString(),
+      price: FormatMoney(meal.price),
       type: meal.mealType.name,
       actions: (
         <div className={`flex flex-wrap`}>

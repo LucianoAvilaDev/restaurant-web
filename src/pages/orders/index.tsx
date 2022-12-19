@@ -25,11 +25,13 @@ import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import validateAuth from "../../services/validateAuth";
+import { FormatMoney } from "../../utils/FormatMoney";
 
 const index = () => {
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [clients, setClients] = useState<SelectType[]>([]);
   const [tables, setTables] = useState<SelectType[]>([]);
+  const [availableTables, setAvailableTables] = useState<SelectType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
 
   const [modal, setModal] = useState<boolean>(false);
@@ -72,6 +74,16 @@ const index = () => {
             label: table.number,
           };
         })
+      );
+      setAvailableTables(
+        data
+          .filter((table: TableType) => table.is_available)
+          .map((table: TableType) => {
+            return {
+              value: table.id,
+              label: table.number,
+            };
+          })
       );
       setPending(false);
     });
@@ -126,8 +138,8 @@ const index = () => {
     return {
       number: order.id,
       tableClient: `${order.table.number} - ${order.client.name}`,
-      totalValue: `R$ ${(+order.total_value).toLocaleString()}`,
-      paidValue: `R$ ${(+order.paid_value).toLocaleString()}`,
+      totalValue: FormatMoney(order.total_value),
+      paidValue: FormatMoney(order.paid_value),
       situation: order.is_closed ? (
         <BadgeRed text={"Fechado"} />
       ) : (
@@ -150,6 +162,8 @@ const index = () => {
                 await Promise.resolve(
                   setModalTemplate(
                     <FormOrders
+                      clients={clients}
+                      tables={availableTables}
                       id={order.id}
                       handleClear={handleClear}
                       setModal={setModal}
@@ -199,7 +213,12 @@ const index = () => {
         onClick={async () => {
           await Promise.resolve(
             setModalTemplate(
-              <FormOrders handleClear={handleClear} setModal={setModal} />
+              <FormOrders
+                clients={clients}
+                tables={availableTables}
+                handleClear={handleClear}
+                setModal={setModal}
+              />
             )
           ).then(() => {
             setModal(true);
@@ -254,11 +273,11 @@ const index = () => {
 
   const isClosedOptions: SelectType[] = [
     {
-      value: "true",
+      value: "false",
       label: "Aberto",
     },
     {
-      value: "false",
+      value: "true",
       label: "Fechado",
     },
   ];
@@ -276,9 +295,9 @@ const index = () => {
                   <div className={`grid grid-cols-12 py-4`}>
                     <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputText
-                        register={register("number")}
-                        id={`number`}
-                        name={"number"}
+                        register={register("id")}
+                        id={`id`}
+                        name={"id"}
                         placeholder={"Pesquise pelo número..."}
                         label={"Número"}
                       />

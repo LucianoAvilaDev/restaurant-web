@@ -1,27 +1,50 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { BiTrash } from "react-icons/bi";
 import { useQuery } from "react-query";
+import { OrderItemsType } from "../../../../types/OrderItemType";
+import { SelectType } from "../../../../types/SelectType";
 import { OrdersSchema } from "../../../schemas/OrdersSchema";
 import { api } from "../../../services/api";
+import { FormatDateTime } from "../../../utils/FormatDateTime";
+import { FormatMoney } from "../../../utils/FormatMoney";
 import { SanitizeCpf } from "../../../utils/SanitizeCpf";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
+import { InfoAlert } from "../../alerts/InfoAlert";
 import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
+import { TableButtonSolid } from "../../buttons/TableButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import InputText from "../../input/InputText";
-import InputTextMasked from "../../input/InputTextMasked";
+import InputDateTime from "../../input/InputDateTime";
+import InputSelect from "../../input/InputSelect";
 import Loader from "../../loader/Loader";
+import SimpleTable from "../../tables/SimpleTable";
+import YesNoTemplate from "../YesNoTemplate";
 
 type Props = {
   id?: string;
   setModal: Function;
   handleClear: Function;
+  clients: SelectType[];
+  tables: SelectType[];
 };
 
-export const FormOrders = ({ id, handleClear, setModal }: Props) => {
+export const FormOrders = ({
+  id,
+  clients,
+  tables,
+  handleClear,
+  setModal,
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [order, setOrder] = useState<any>();
+  const [order, setOrder] = useState<any>([]);
+  const [selectedValues, setSelectedValues] = useState<{
+    client: SelectType;
+    table: SelectType;
+  }>();
+  const [selectedtable, setSelectedtable] = useState<any>([]);
+  const [pending, setPending] = useState<boolean>(true);
 
   const {
     register,
@@ -31,6 +54,83 @@ export const FormOrders = ({ id, handleClear, setModal }: Props) => {
   } = useForm({
     resolver: yupResolver(OrdersSchema()),
   });
+
+  const columns: any = [
+    {
+      name: "Quantidade",
+      selector: (row: any) => row.quanitty,
+      sortable: true,
+      center: true,
+      width: "10%",
+    },
+    {
+      name: "Refeição",
+      selector: (row: any) => row.meal,
+      sortable: true,
+      center: true,
+      width: "30%",
+    },
+    {
+      name: "Preço",
+      selector: (row: any) => row.price,
+      sortable: true,
+      center: true,
+      width: "15%",
+    },
+    {
+      name: "Observação",
+      selector: (row: any) => row.observation,
+      sortable: true,
+      center: true,
+      width: "30%",
+    },
+    {
+      name: "Ações",
+      selector: (row: any) => row.actions,
+      center: true,
+      width: "15%",
+    },
+  ];
+
+  const data: any[] = order.orderItems?.map((item: OrderItemsType) => {
+    return {
+      quantity: item.quantity,
+      meal: item.meal.name,
+      price: FormatMoney(item.price),
+      observation: (
+        <div className={`flex flex-wrap p-1`}>
+          <div>{item.observation}</div>
+        </div>
+      ),
+      actions: (
+        <div className={`flex flex-wrap`}>
+          <div>
+            <TableButtonSolid
+              id={order.id}
+              tooltip={`Excluir`}
+              icon={
+                <BiTrash size={18} className={`filter hover:drop-shadow m-1`} />
+              }
+              color={"danger"}
+              onClick={() => {
+                InfoAlert(
+                  <YesNoTemplate onClickYes={() => handleModalYes(order.id)} />
+                );
+              }}
+            />
+          </div>
+        </div>
+      ),
+    };
+  });
+
+  const handleModalYes = (id: string) => {
+    const newItems = order.orderItems.filter(
+      (item: OrderItemsType) => item.id !== id
+    );
+
+    setOrder({ ...order, orderItems: newItems });
+  };
 
   const handleSave = (data: any) => {
     setIsLoading(true);
@@ -73,15 +173,23 @@ export const FormOrders = ({ id, handleClear, setModal }: Props) => {
     setModal(false);
   };
 
-  const getorder = async (id: string) => {
+  const getOrder = async (id: string) => {
     await api
       .get(`orders/${id}`)
       .then(({ data }: any) => {
         if (data) {
           setOrder(data);
 
-          setValue("name", data.name ?? "");
-          setValue("cpf", data.cpf ?? "");
+          setSelectedValues({
+            client: { value: data.client.id, label: data.client.name },
+            table: { value: data.table.id, label: data.table.number },
+          });
+
+          setValue("clientId", data.client.id ?? "");
+          setValue("tableId", data.table.id ?? "");
+          setValue("date", data.date ? FormatDateTime(data.date) : "");
+          setValue("totalValue", data.total_value ?? "");
+          setValue("paidValue", data.paid_value ?? []);
         }
       })
       .catch((e: any) => {
@@ -91,7 +199,7 @@ export const FormOrders = ({ id, handleClear, setModal }: Props) => {
 
   const getInitialData = () => {
     if (id) {
-      getorder(id);
+      getOrder(id);
     }
   };
 
@@ -109,25 +217,48 @@ export const FormOrders = ({ id, handleClear, setModal }: Props) => {
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="p-2 md:col-span-5 sm:col-span-6 col-span-12">
-                      <InputText
-                        register={register("name")}
-                        id={`name`}
-                        name={"name"}
-                        placeholder={"Digite o nome..."}
-                        label={"Nome"}
-                        errorMessage={errors?.name?.message}
+                    <input
+                      type="hidden"
+                      value={order.orderItems}
+                      {...register("orderItems")}
+                    />
+
+                    <div className="p-2 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("client")}
+                        id={`clientId`}
+                        name={"clientId"}
+                        placeholder={"Selecione um cliente..."}
+                        label={"Cliente"}
+                        options={clients}
+                        setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-5 sm:col-span-6 col-span-12">
-                      <InputTextMasked
-                        register={register("cpf")}
-                        id={"cpf"}
-                        name={"cpf"}
-                        placeholder={"Digite o CPF..."}
-                        label={"CPF"}
-                        mask={"000.000.000-00"}
-                        errorMessage={errors?.cpf?.message}
+                    <div className="p-2 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("tableId")}
+                        id={`tableId`}
+                        name={"tableId"}
+                        placeholder={"Selecione uma Mesa..."}
+                        label={"Mesa"}
+                        options={tables}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className="p-2 sm:col-span-6 col-span-12">
+                      <InputDateTime
+                        register={register("date")}
+                        id={`date`}
+                        name={"date"}
+                        label={"Data"}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className={`col-span-12 py-4`}>
+                      <SimpleTable
+                        columns={columns}
+                        data={data}
+                        pending={pending}
                       />
                     </div>
                   </div>
