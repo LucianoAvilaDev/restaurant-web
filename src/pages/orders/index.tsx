@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { ClientType } from "../../../types/ClientType";
 import { OrderType } from "../../../types/OrderType";
@@ -263,13 +262,11 @@ const index = () => {
     return;
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     GetTables();
     GetClients();
     getOrders();
-  };
-
-  useQuery("orders", getInitialData);
+  }, []);
 
   const isClosedOptions: SelectType[] = [
     {

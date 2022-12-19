@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { ErrorAlert } from "../../../components/alerts/ErrorAlert";
@@ -89,13 +89,11 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
       });
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (id) {
       getClient(id);
     }
-  };
-
-  useQuery("formClients", getInitialData);
+  }, []);
 
   return (
     <>

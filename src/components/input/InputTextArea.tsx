@@ -9,7 +9,7 @@ type props = {
   value?: string;
   label: string;
   register?: any;
-  errorMessage: any;
+  errorMessage?: any;
 };
 
 const InputTextArea = ({

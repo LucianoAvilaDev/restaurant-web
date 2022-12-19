@@ -13,6 +13,7 @@ type props = {
   max: number;
   step: number;
   errorMessage?: any;
+  onChange?: Function;
 };
 
 const InputNumber = ({
@@ -27,6 +28,7 @@ const InputNumber = ({
   max,
   step,
   value,
+  onChange,
   errorMessage,
 }: props) => {
   return (
@@ -47,6 +49,9 @@ const InputNumber = ({
         min={min}
         max={max}
         step={step}
+        onChange={async (e) => {
+          if (onChange) await onChange(e);
+        }}
       />
       {errorMessage && <ErrorLabel>{errorMessage}</ErrorLabel>}
     </>

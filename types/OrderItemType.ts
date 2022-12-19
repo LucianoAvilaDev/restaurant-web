@@ -4,6 +4,7 @@ export type OrderItemsType = {
   observation: string;
   quantity: number
   price: number
-  meal: MealType
-  order_id: number
+  meal?: MealType
+  meal_id: string
+  order_id: string
 };

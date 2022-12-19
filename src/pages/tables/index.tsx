@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useQuery } from "react-query";
 import { SelectType } from "../../../types/SelectType";
 import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
@@ -172,11 +171,9 @@ const index = () => {
     return;
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     getTables();
-  };
-
-  useQuery("clients", getInitialData);
+  }, []);
 
   const options: SelectType[] = [
     {

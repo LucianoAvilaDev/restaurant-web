@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import { v4 } from "uuid";
 import { RoleType } from "../../../types/RoleType";
 import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
@@ -56,12 +56,10 @@ const index = () => {
     });
   };
 
-  const getInitialData = async () => {
-    await getPermissions();
-    await getRoles();
-  };
-
-  useQuery("roles", getInitialData);
+  useEffect(() => {
+    getPermissions();
+    getRoles();
+  }, []);
 
   const columns: any = [
     {
@@ -93,7 +91,7 @@ const index = () => {
         <div className={`flex flex-wrap p-1`}>
           <div>
             {role.permissions.map((permission: any, index: number) => (
-              <li className="p-1">{`${permission.description}`}</li>
+              <li key={v4()} className="p-1">{`${permission.description}`}</li>
             ))}
           </div>
         </div>

@@ -3,7 +3,6 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
 
 import Link from "next/link";
-import { useQuery } from "react-query";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { Menus, MenuType } from "./Menus";
@@ -19,7 +18,7 @@ const Sidebar = () => {
     setSidebarWidth(openSidebar ? "w-64" : "w-16");
   }, [openSidebar]);
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (document)
       setUrlRef(
         document.location.href.replace(
@@ -27,9 +26,7 @@ const Sidebar = () => {
           ""
         )
       );
-  };
-
-  useQuery("sidebar", getInitialData);
+  }, []);
 
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);

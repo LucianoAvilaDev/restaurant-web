@@ -1,7 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
 import { TablesSchema } from "../../../schemas/TablesSchema";
 import { api } from "../../../services/api";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
@@ -89,13 +88,11 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
       });
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (id) {
       getTable(id);
     }
-  };
-
-  useQuery("formTables", getInitialData);
+  }, []);
 
   return (
     <>

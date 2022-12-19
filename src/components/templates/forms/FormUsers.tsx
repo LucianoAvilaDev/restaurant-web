@@ -1,7 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
 import { SelectType } from "../../../../types/SelectType";
 import { UsersSchema } from "../../../schemas/UsersSchema";
 import { api } from "../../../services/api";
@@ -99,13 +98,11 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
       });
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (id) {
       getUser(id);
     }
-  };
-
-  useQuery("FormUsers", getInitialData);
+  }, []);
 
   return (
     <>

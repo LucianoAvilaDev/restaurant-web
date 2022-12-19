@@ -1,8 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
 import { SelectType } from "../../../../types/SelectType";
 import { MealsSchema } from "../../../schemas/MealsSchema";
 import { api } from "../../../services/api";
@@ -34,9 +33,11 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(MealsSchema()),
+    shouldUnregister: false,
   });
 
   const handleSave = (data: any) => {
@@ -99,13 +100,11 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
       });
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (id) {
       getMeal(id);
     }
-  };
-
-  useQuery("formMeals", getInitialData);
+  }, []);
 
   return (
     <>
@@ -114,7 +113,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-[80vh] max-w-[80vw]`}>
+        <div className={`max-h-[80vh] w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Refeição`}>
             <div className="p-2">
               <div className={`py-2`}>
@@ -128,6 +127,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
                         placeholder={"Digite o nome da refeição"}
                         label={"Nome"}
                         errorMessage={errors?.name?.message}
+                        setValue={setValue}
                       />
                     </div>
                     <div className="p-2 md:col-span-4 sm:col-span-3 col-span-12">
@@ -151,9 +151,10 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
                         placeholder={"Selecione o tipo de refeição"}
                         label={"Tipo"}
                         options={mealTypes}
-                        value={mealTypeId}
                         errorMessage={errors?.mealTypeId?.message}
                         setValue={setValue}
+                        value={mealTypeId}
+                        onChange={(e: any) => setMealTypeId(e)}
                       />
                     </div>
                     <div className="p-2 col-span-12">

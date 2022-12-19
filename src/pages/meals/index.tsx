@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useQuery } from "react-query";
 import { MealType } from "../../../types/MealType";
 import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
@@ -20,7 +19,6 @@ import SimpleTable from "../../components/tables/SimpleTable";
 import FormMeals from "../../components/templates/forms/FormMeals";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
-import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 import { FormatMoney } from "../../utils/FormatMoney";
 
@@ -192,12 +190,10 @@ const index = () => {
     return;
   };
 
-  const getInitialData = async () => {
-    await getMeals();
-    await getMealTypes();
-  };
-
-  useQuery("meals", getInitialData);
+  useEffect(() => {
+    getMeals();
+    getMealTypes();
+  }, []);
 
   return (
     <>
@@ -216,7 +212,7 @@ const index = () => {
                         register={register("name")}
                         id={`name`}
                         name={"name"}
-                        placeholder={"Pesquise pelo nome da refeição"}
+                        placeholder={"Pesquise pelo nome... "}
                         label={"Nome"}
                       />
                     </div>
@@ -225,7 +221,7 @@ const index = () => {
                         register={register("type")}
                         id={`type`}
                         name={"type"}
-                        placeholder={"Pesquise pelo tipo de refeição"}
+                        placeholder={"Pesquise pelo tipo..."}
                         label={"Tipo"}
                         options={mealTypes}
                         setValue={undefined}
@@ -267,8 +263,6 @@ const index = () => {
 export default index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const apiClient = getApiClient(ctx);
-
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {

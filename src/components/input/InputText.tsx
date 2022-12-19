@@ -10,6 +10,7 @@ type props = {
   label: string;
   register?: any;
   errorMessage?: any;
+  setValue?: any;
 };
 
 const InputText = ({
@@ -22,6 +23,7 @@ const InputText = ({
   register,
   value,
   errorMessage,
+  setValue,
 }: props) => {
   return (
     <>

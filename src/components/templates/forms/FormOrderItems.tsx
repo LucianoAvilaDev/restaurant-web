@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { OrderItemsSchema } from "../../../schemas/OrderItemsSchema";
@@ -90,13 +90,11 @@ export const FormOrderItems = ({ id, handleClear, setModal }: Props) => {
       });
   };
 
-  const getInitialData = () => {
+  useEffect(() => {
     if (id) {
       getorder(id);
     }
-  };
-
-  useQuery("FormOrderItems", getInitialData);
+  }, []);
 
   return (
     <>

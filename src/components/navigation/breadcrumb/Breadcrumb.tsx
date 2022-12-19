@@ -1,7 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiChevronsRight } from "react-icons/bi";
-import { useQuery } from "react-query";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { GetBreadcrumbMenus } from "../../../utils/GetBreadcrumbMenus";
@@ -17,7 +16,7 @@ const Breadcrumb = () => {
     { url: string; name: string }[]
   >([]);
 
-  const getInitialData = () => {
+  useEffect(() => {
     const paths: string[] = ref
       .replace(`${process.env.NEXT_PUBLIC_WEB_URL}/` ?? "", "")
       .split("/");
@@ -28,9 +27,7 @@ const Breadcrumb = () => {
       }
     );
     setBreadcrumbList(refList);
-  };
-
-  useQuery("breadcrumb", getInitialData);
+  }, []);
 
   return (
     <div className="flex w-full">

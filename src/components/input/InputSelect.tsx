@@ -13,6 +13,7 @@ type props = {
   options: { label: string; value: string }[];
   errorMessage?: any;
   setValue: any;
+  onChange?: Function;
 };
 
 const InputSelect = ({
@@ -27,6 +28,7 @@ const InputSelect = ({
   errorMessage,
   value,
   setValue,
+  onChange,
 }: props) => {
   return (
     <>
@@ -62,6 +64,7 @@ const InputSelect = ({
         value={value}
         onChange={(e: any) => {
           setValue(name, e?.value ?? "");
+          if (onChange) onChange(e);
         }}
         isClearable
       />
