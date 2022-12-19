@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
 import { SelectType } from "../../../types/SelectType";
 import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import BadgeGreen from "../../components/badges/BadgeGreen";
 import BadgeRed from "../../components/badges/BadgeRed";
@@ -110,17 +110,8 @@ const index = () => {
               }
               color={"danger"}
               onClick={() => {
-                toast.info(
-                  <YesNoTemplate onClickYes={() => handleModalYes(table.id)} />,
-                  {
-                    position: "top-center",
-                    autoClose: false,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                  }
+                InfoAlert(
+                  <YesNoTemplate onClickYes={() => handleModalYes(table.id)} />
                 );
               }}
             />

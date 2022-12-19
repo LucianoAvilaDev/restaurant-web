@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { api } from "../../../services/api";
+import { InfoAlert } from "../../alerts/InfoAlert";
 import YesNoTemplate from "../../templates/YesNoTemplate";
 
 const UserMenu = () => {
@@ -65,20 +66,11 @@ const UserMenu = () => {
                     key={v4()}
                     onClick={() => {
                       console.log("clicou");
-                      toast.info(
+                      InfoAlert(
                         <YesNoTemplate
                           text="Deseja realmente sair?"
                           onClickYes={handleLogout}
-                        />,
-                        {
-                          position: "top-center",
-                          autoClose: false,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: false,
-                          draggable: false,
-                          progress: undefined,
-                        }
+                        />
                       );
                     }}
                   >

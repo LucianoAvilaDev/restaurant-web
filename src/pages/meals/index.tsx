@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { MealType } from "../../../types/MealType";
 import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TableButtonSolid";
@@ -124,17 +125,10 @@ const index = () => {
               }
               color={"danger"}
               onClick={() => {
-                toast.info(
-                  <YesNoTemplate onClickYes={() => handleYes(meal.id)} />,
-                  {
-                    position: "top-center",
-                    autoClose: false,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                  }
+                InfoAlert(
+                  <>
+                    <YesNoTemplate onClickYes={() => handleYes(meal.id)} />
+                  </>
                 );
               }}
             />
