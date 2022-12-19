@@ -1,22 +1,357 @@
 import { GetServerSideProps } from "next";
-import React from "react";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { BiTrash } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { useQuery } from "react-query";
+import { toast } from "react-toastify";
+import { ClientType } from "../../../types/ClientType";
+import { OrderType } from "../../../types/OrderType";
+import { SelectType } from "../../../types/SelectType";
+import { TableType } from "../../../types/TableType";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert";
+import { SuccessAlert } from "../../components/alerts/SuccessAlert";
+import BadgeGreen from "../../components/badges/BadgeGreen";
+import BadgeRed from "../../components/badges/BadgeRed";
+import { ButtonSolid } from "../../components/buttons/ButtonSolid";
+import { TableButtonSolid } from "../../components/buttons/TableButtonSolid";
+import { BodyCard } from "../../components/cards/BodyCard";
+import InputSelect from "../../components/input/InputSelect";
+import InputText from "../../components/input/InputText";
 import Navigation from "../../components/navigation/Navigation";
-import { getApiClient } from "../../services/getApiClient";
+import SimpleTable from "../../components/tables/SimpleTable";
+import { FormOrders } from "../../components/templates/forms/FormOrders";
+import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import { AuthContext } from "../../contexts/AuthContext";
+import { api } from "../../services/api";
 import validateAuth from "../../services/validateAuth";
 
 const index = () => {
+  const [orders, setOrders] = useState<OrderType[]>([]);
+  const [clients, setClients] = useState<SelectType[]>([]);
+  const [tables, setTables] = useState<SelectType[]>([]);
+  const [pending, setPending] = useState<boolean>(true);
+
+  const [modal, setModal] = useState<boolean>(false);
+  const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
+
+  const { register, handleSubmit, setValue } = useForm();
+
+  const { setIsLoading } = useContext(AuthContext);
+
+  const getOrders = async () => {
+    setPending(true);
+    await api.get("orders").then(({ data }: any) => {
+      setOrders(data);
+      setPending(false);
+    });
+  };
+
+  const GetClients = async () => {
+    setPending(true);
+    await api.get("clients").then(({ data }: any) => {
+      setClients(
+        data.map((client: ClientType) => {
+          return {
+            value: client.id,
+            label: client.name,
+          };
+        })
+      );
+      setPending(false);
+    });
+  };
+
+  const GetTables = async () => {
+    setPending(true);
+    await api.get("tables").then(({ data }: any) => {
+      setTables(
+        data.map((table: TableType) => {
+          return {
+            value: table.id,
+            label: table.number,
+          };
+        })
+      );
+      setPending(false);
+    });
+  };
+
+  const columns: any = [
+    {
+      name: "Número",
+      selector: (row: any) => row.number,
+      sortable: true,
+      center: true,
+      width: "10%",
+    },
+    {
+      name: "Mesa/Cliente",
+      selector: (row: any) => row.tableClient,
+      sortable: true,
+      center: true,
+      width: "30%",
+    },
+    {
+      name: "Valor total",
+      selector: (row: any) => row.totalValue,
+      sortable: true,
+      center: true,
+      width: "15%",
+    },
+    {
+      name: "Valor pago",
+      selector: (row: any) => row.paidValue,
+      sortable: true,
+      center: true,
+      width: "15%",
+    },
+    {
+      name: "Situação",
+      selector: (row: any) => row.situation,
+      sortable: true,
+      center: true,
+      width: "10%",
+    },
+
+    {
+      name: "Ações",
+      selector: (row: any) => row.actions,
+      center: true,
+      width: "20%",
+    },
+  ];
+
+  const data: any[] = orders.map((order: OrderType) => {
+    return {
+      number: order.id,
+      tableClient: `${order.table.number} - ${order.client.name}`,
+      totalValue: `R$ ${(+order.total_value).toLocaleString()}`,
+      paidValue: `R$ ${(+order.paid_value).toLocaleString()}`,
+      situation: order.is_closed ? (
+        <BadgeRed text={"Fechado"} />
+      ) : (
+        <BadgeGreen text="Aberto" />
+      ),
+      actions: (
+        <div className={`flex flex-wrap`}>
+          <div>
+            <TableButtonSolid
+              id={order.id}
+              tooltip={`Editar`}
+              icon={
+                <MdOutlineModeEditOutline
+                  className={`filter hover:drop-shadow m-1`}
+                  size={18}
+                />
+              }
+              color={"success"}
+              onClick={async () => {
+                await Promise.resolve(
+                  setModalTemplate(
+                    <FormOrders
+                      id={order.id}
+                      handleClear={handleClear}
+                      setModal={setModal}
+                    />
+                  )
+                ).then(() => {
+                  setModal(true);
+                });
+              }}
+            />
+          </div>
+          <div>
+            <TableButtonSolid
+              id={order.id}
+              tooltip={`Excluir`}
+              icon={
+                <BiTrash size={18} className={`filter hover:drop-shadow m-1`} />
+              }
+              color={"danger"}
+              onClick={() => {
+                toast.info(
+                  <YesNoTemplate onClickYes={() => handleModalYes(order.id)} />,
+                  {
+                    position: "top-center",
+                    autoClose: false,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                  }
+                );
+              }}
+            />
+          </div>
+        </div>
+      ),
+    };
+  });
+
+  const newButton: JSX.Element = (
+    <div className={`flex p-2`}>
+      <ButtonSolid
+        id={"new"}
+        label={"Cadastrar"}
+        color={"primary"}
+        onClick={async () => {
+          await Promise.resolve(
+            setModalTemplate(
+              <FormOrders handleClear={handleClear} setModal={setModal} />
+            )
+          ).then(() => {
+            setModal(true);
+          });
+        }}
+      />
+    </div>
+  );
+
+  const handleModalYes = async (id: string) => {
+    setIsLoading(true);
+    await api
+      .delete(`orders/${id}`)
+      .then(async () => {
+        SuccessAlert("Registro excluído com sucesso");
+        await getOrders();
+        setIsLoading(false);
+      })
+      .catch((e: any) => {
+        ErrorAlert(e.message);
+        setIsLoading(false);
+      });
+  };
+
+  const handleSearch = (data: any) => {
+    setPending(true);
+
+    api.post("orders/filters", data).then(({ data }) => {
+      setOrders(data);
+      setPending(false);
+    });
+  };
+
+  const handleClear = () => {
+    setValue("number", "");
+    setValue("client", "");
+    setValue("table", "");
+    setValue("isClosed", "");
+
+    (document.getElementById("search") as any).click();
+
+    return;
+  };
+
+  const getInitialData = () => {
+    GetTables();
+    GetClients();
+    getOrders();
+  };
+
+  useQuery("orders", getInitialData);
+
+  const isClosedOptions: SelectType[] = [
+    {
+      value: "true",
+      label: "Aberto",
+    },
+    {
+      value: "false",
+      label: "Fechado",
+    },
+  ];
+
   return (
-    <Navigation>
-      <div>orders</div>
-    </Navigation>
+    <>
+      {modal && modalTemplate}
+      <Navigation>
+        <div className={`px-3 w-full`}>
+          <BodyCard title={`Pedidos`} newButton={newButton}>
+            <div className="px-2 pt-2 pb-6">
+              <div className={`py-4`}>
+                {/* --------------FILTERS ------------------------------ */}
+                <form onSubmit={handleSubmit(handleSearch)}>
+                  <div className={`grid grid-cols-12 py-4`}>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputText
+                        register={register("number")}
+                        id={`number`}
+                        name={"number"}
+                        placeholder={"Pesquise pelo número..."}
+                        label={"Número"}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("client")}
+                        id={`client`}
+                        name={"client"}
+                        placeholder={"Selecione um cliente..."}
+                        label={"Cliente"}
+                        options={clients}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("table")}
+                        id={`table`}
+                        name={"table"}
+                        placeholder={"Selecione uma mesa..."}
+                        label={"Mesa"}
+                        options={tables}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("isClosed")}
+                        id={`isClosed`}
+                        name={"isClosed"}
+                        placeholder={"Selecione a situação..."}
+                        label={"Situação"}
+                        options={isClosedOptions}
+                        setValue={setValue}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className={`flex w-full space-x-2 items-end justify-end`}
+                  >
+                    <div className={`sm:w-36 w-44`}>
+                      <ButtonSolid
+                        id={"search"}
+                        label={"Pesquisar"}
+                        color={"secondary"}
+                        type={"submit"}
+                      />
+                    </div>
+                    <div className={`sm:w-36 w-44`}>
+                      <ButtonSolid
+                        id={"clear"}
+                        label={"Limpar"}
+                        color={"warning"}
+                        onClick={() => handleClear()}
+                      />
+                    </div>
+                  </div>
+                </form>
+                {/* ----------------------------------------------------- */}
+              </div>
+              <SimpleTable columns={columns} data={data} pending={pending} />
+            </div>
+          </BodyCard>
+        </div>
+      </Navigation>
+    </>
   );
 };
 
 export default index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const apiClient = getApiClient(ctx);
-
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
