@@ -12,7 +12,7 @@ type props = {
   value?: any;
   options: { label: string; value: string }[];
   errorMessage?: any;
-  setValue: any;
+  setValue?: any;
 };
 
 const InputSelect = ({

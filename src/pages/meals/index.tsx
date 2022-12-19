@@ -234,6 +234,7 @@ const index = () => {
                         placeholder={"Pesquise pelo tipo de refeição"}
                         label={"Tipo"}
                         options={mealTypes}
+                        setValue={undefined}
                       />
                     </div>
                   </div>

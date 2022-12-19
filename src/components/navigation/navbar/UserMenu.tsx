@@ -1,12 +1,25 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { destroyCookie } from "nookies";
 import { useContext, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { api } from "../../../services/api";
+import YesNoTemplate from "../../templates/YesNoTemplate";
 
 const UserMenu = () => {
+  const router = useRouter();
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
   const { user } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    await api.post("logout").then(() => {
+      destroyCookie(undefined, "restaurantApp.token");
+      router.push("login");
+    });
+  };
 
   return (
     <div className={`absolute z-10 flex-col`}>
@@ -48,14 +61,34 @@ const UserMenu = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link key={v4()} href="logout">
+                  <div
+                    key={v4()}
+                    onClick={() => {
+                      console.log("clicou");
+                      toast.info(
+                        <YesNoTemplate
+                          text="Deseja realmente sair?"
+                          onClickYes={handleLogout}
+                        />,
+                        {
+                          position: "top-center",
+                          autoClose: false,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: false,
+                          draggable: false,
+                          progress: undefined,
+                        }
+                      );
+                    }}
+                  >
                     <li
                       key={v4()}
                       className={`px-2 py-1 cursor-pointer rounded-sm hover:text-themeTextLight hover:bg-themeDark`}
                     >
                       Sair
                     </li>
-                  </Link>
+                  </div>
                 </div>
               </div>
             </ul>
