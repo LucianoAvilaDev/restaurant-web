@@ -66,20 +66,23 @@ const index = () => {
       selector: (row: any) => row.name,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Permissões",
       selector: (row: any) => row.permissions,
       sortable: true,
       center: true,
-      width: "40%",
+
+      allowOverflow: true,
     },
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
   ];
 

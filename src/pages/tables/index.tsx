@@ -47,21 +47,24 @@ const index = () => {
       selector: (row: any) => row.number,
       sortable: true,
       center: true,
-      width: "40%",
+
+      allowOverflow: true,
     },
     {
       name: "Situação",
       selector: (row: any) => row.isAvailable,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
 
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
   ];
 

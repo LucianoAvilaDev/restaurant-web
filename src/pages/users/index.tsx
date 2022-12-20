@@ -57,28 +57,32 @@ const index = () => {
       selector: (row: any) => row.name,
       soruser: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "E-mail",
       selector: (row: any) => row.email,
       soruser: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Perfil",
       selector: (row: any) => row.role,
       soruser: true,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
 
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
   ];
 

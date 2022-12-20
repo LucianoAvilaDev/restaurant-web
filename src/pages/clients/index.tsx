@@ -48,21 +48,24 @@ const index = () => {
       selector: (row: any) => row.name,
       sortable: true,
       center: true,
-      width: "50%",
+
+      allowOverflow: true,
     },
     {
       name: "CPF",
       selector: (row: any) => row.cpf,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
 
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
   ];
 

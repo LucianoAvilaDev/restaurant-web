@@ -83,42 +83,48 @@ const index = () => {
       selector: (row: any) => row.number,
       sortable: true,
       center: true,
-      width: "10%",
+
+      allowOverflow: true,
     },
     {
       name: "Mesa/Cliente",
       selector: (row: any) => row.tableClient,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Valor total",
       selector: (row: any) => row.totalValue,
       sortable: true,
       center: true,
-      width: "15%",
+
+      allowOverflow: true,
     },
     {
       name: "Valor pago",
       selector: (row: any) => row.paidValue,
       sortable: true,
       center: true,
-      width: "15%",
+
+      allowOverflow: true,
     },
     {
       name: "Situação",
       selector: (row: any) => row.situation,
       sortable: true,
       center: true,
-      width: "10%",
+
+      allowOverflow: true,
     },
 
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
   ];
 

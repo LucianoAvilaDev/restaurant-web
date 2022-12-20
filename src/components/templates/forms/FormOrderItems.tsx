@@ -72,7 +72,6 @@ export const FormOrderItems = ({
 
     const editedItem: any = {
       id: item.id,
-      key: item.key,
       meal_id: data.mealId,
       meal: meals.find((meal: MealType) => meal.id == data.mealId),
       quantity: data.quantity,
@@ -80,9 +79,22 @@ export const FormOrderItems = ({
       price: data.price,
     };
 
+    const allOrderItems: any[] = [...itemsWithoutEdited, editedItem];
+
+    let newTotal: number = 0.0;
+
+    allOrderItems.forEach((item: any) => {
+      newTotal += parseFloat(item.price);
+    });
+
     setIsLoading(true);
-    setOrder({ ...order, orderItems: [...itemsWithoutEdited, editedItem] });
+    setOrder({
+      ...order,
+      orderItems: [...itemsWithoutEdited, editedItem],
+      total_value: newTotal,
+    });
     parentSetValue("orderItems", [...itemsWithoutEdited, editedItem]);
+    parentSetValue("totalValue", newTotal);
     setModal(false);
   };
 
@@ -155,9 +167,9 @@ export const FormOrderItems = ({
                         name={"quantity"}
                         placeholder={""}
                         label={"Quantidade"}
-                        min={0.01}
+                        min={1}
                         max={999999.99}
-                        step={0.01}
+                        step={1}
                         onChange={(e: any) => {
                           const quantity = e.target.value;
                           const currentMeal: MealType | undefined = meals.find(

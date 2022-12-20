@@ -57,27 +57,31 @@ const index = () => {
       selector: (row: any) => row.name,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Preço",
       selector: (row: any) => row.price,
       sortable: true,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
     {
       name: "Tipo",
       selector: (row: any) => row.type,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "20%",
+
+      allowOverflow: true,
     },
   ];
 

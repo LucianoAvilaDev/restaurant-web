@@ -69,34 +69,39 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
       selector: (row: any) => row.quantity,
       sortable: true,
       center: true,
-      width: "10%",
+
+      allowOverflow: true,
     },
     {
       name: "Refeição",
       selector: (row: any) => row.meal,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Preço",
       selector: (row: any) => row.price,
       sortable: true,
       center: true,
-      width: "15%",
+
+      allowOverflow: true,
     },
     {
       name: "Observação",
       selector: (row: any) => row.observation,
       sortable: true,
       center: true,
-      width: "30%",
+
+      allowOverflow: true,
     },
     {
       name: "Ações",
       selector: (row: any) => row.actions,
       center: true,
-      width: "15%",
+
+      allowOverflow: true,
     },
   ];
 
@@ -533,6 +538,19 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
                         errorMessage={errors?.paidValue?.message}
                       />
                     </div>
+                    <div className="pt-8 p-2 items-end md:col-span-1 col-span-10">
+                      <ButtonSolid
+                        id={"add"}
+                        label={"Pagar"}
+                        color={"primary"}
+                        onClick={() => {
+                          (document.getElementById("paidValue") as any).value =
+                            (
+                              document.getElementById("totalValue") as any
+                            ).value;
+                        }}
+                      />
+                    </div>
                     <div className="p-2 md:col-span-1 sm:col-span-2 col-span-12">
                       <Switch
                         register={register("isClosed")}
@@ -573,9 +591,9 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
                               name={"quantity"}
                               placeholder={""}
                               label={"Quantidade"}
-                              min={0.01}
+                              min={1}
                               max={999999.99}
-                              step={0.01}
+                              step={1}
                               onChange={(e: any) => {
                                 updatePriceByQuantity(e);
                               }}

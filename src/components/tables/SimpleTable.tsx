@@ -30,8 +30,7 @@ const customStyles = {
   cells: {
     style: {
       fontSize: "0.8rem",
-      overflowWrap: "break-word",
-      lineBreak: "strict",
+
       minHeight: "50px",
     },
   },
@@ -71,15 +70,14 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
     <>
       <div className="border border-gray-200 rounded-md  shadow-gray-300 shadow-md">
         <DataTable
+          responsive
           className="scrollbar-thin scrollbar-corner-gray-300 scrollbar-thumb-gray-300  hover:scrollbar-thumb-gray-400 scrollbar-track-gray-100 "
           columns={columns}
           data={data}
           fixedHeader
           fixedHeaderScrollHeight="300px"
-          responsive
           striped
           highlightOnHover
-          subHeaderWrap
           customStyles={customStyles}
           progressPending={pending}
           progressComponent={progressComponent}
