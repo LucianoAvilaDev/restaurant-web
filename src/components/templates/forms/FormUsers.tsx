@@ -174,6 +174,7 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
                         options={roles}
                         setValue={setValue}
                         value={selected}
+                        onChange={(e: any) => setSelected(e)}
                         errorMessage={errors?.roleId?.message}
                       />
                     </div>
