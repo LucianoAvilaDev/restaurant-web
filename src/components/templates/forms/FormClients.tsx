@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
 import { ErrorAlert } from "../../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../../components/buttons/ButtonSolid";
@@ -44,8 +44,11 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;
@@ -60,8 +63,11 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;

@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -271,8 +272,11 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;
@@ -289,8 +293,11 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;
@@ -405,8 +412,11 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
             setValue("orderItems", data.orderItems ?? []);
           }
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
         });
     } else {
       setValue("date", moment().format("YYYY-MM-DDTHH:mm"));

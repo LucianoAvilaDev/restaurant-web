@@ -54,8 +54,6 @@ export const FormOrderItems = ({
   });
 
   const handleSave = (data: any) => {
-    console.log(data);
-
     const itemsWithoutEdited = order.orderItems.filter(
       (currentItem: any) =>
         currentItem.id !== item.id && currentItem.meal.id !== originalMealId

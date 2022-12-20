@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { destroyCookie } from "nookies";
 import { useContext, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { v4 } from "uuid";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { api } from "../../../services/api";
@@ -65,7 +64,6 @@ const UserMenu = () => {
                   <div
                     key={v4()}
                     onClick={() => {
-                      console.log("clicou");
                       InfoAlert(
                         <YesNoTemplate
                           text="Deseja realmente sair?"

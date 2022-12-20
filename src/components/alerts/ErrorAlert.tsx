@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 
 export const ErrorAlert = (msg?: string) =>
-  toast.error(msg ?? "Erro", {
+  toast.error(msg ?? "Houve um erro! Tente novamente mais Tarde.", {
     position: "top-center",
-    autoClose: 1500,
+    autoClose: 2500,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: false,

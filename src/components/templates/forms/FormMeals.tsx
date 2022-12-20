@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -52,8 +53,11 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;
@@ -68,8 +72,11 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           setIsLoading(false);
           return;

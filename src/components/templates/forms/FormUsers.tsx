@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectType } from "../../../../types/SelectType";
@@ -50,8 +51,11 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           return;
         });
@@ -65,8 +69,11 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
           await handleClear();
           return;
         })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
           setIsLoading(false);
           return;
         });
