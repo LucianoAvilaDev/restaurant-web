@@ -14,6 +14,7 @@ type props = {
   options: { label: string; value: string }[];
   errorMessage?: any;
   setValue: any;
+  onChange?: Function;
 };
 
 const InputSelectMultiple = ({
@@ -28,6 +29,7 @@ const InputSelectMultiple = ({
   errorMessage,
   value,
   setValue,
+  onChange,
 }: props) => {
   return (
     <>
@@ -64,13 +66,15 @@ const InputSelectMultiple = ({
         value={value}
         onChange={(e: any) => {
           if (e) {
-            const values: string = e.map((permission: SelectType) => {
-              return permission.value;
+            const values: string = e.map((item: SelectType) => {
+              return item.value;
             });
+            if (onChange) onChange(e);
             setValue(name, values);
             return;
           }
           setValue(name, []);
+          if (onChange) onChange([]);
         }}
         isClearable
       />

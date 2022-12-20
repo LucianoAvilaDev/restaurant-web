@@ -84,6 +84,7 @@ const SimpleTable = ({ columns, data, pending }: Props) => {
           progressPending={pending}
           progressComponent={progressComponent}
           noDataComponent={noDataComponent}
+          defaultSortFieldId={1}
         />
       </div>
     </>

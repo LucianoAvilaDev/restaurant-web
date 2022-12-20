@@ -146,6 +146,7 @@ export const FormRoles = ({
                         options={permissions}
                         setValue={setValue}
                         value={selected}
+                        onChange={(e: any) => setSelected(e)}
                         errorMessage={errors?.permissions?.message}
                       />
                     </div>

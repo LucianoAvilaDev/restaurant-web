@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { toast } from "react-toastify";
 import { v4 } from "uuid";
 import { RoleType } from "../../../types/RoleType";
 import { SelectType } from "../../../types/SelectType";
@@ -134,10 +133,8 @@ const index = () => {
               }
               color={"danger"}
               onClick={() => {
-                toast.info(
-                  InfoAlert(
-                    <YesNoTemplate onClickYes={() => handleYes(role.id)} />
-                  )
+                InfoAlert(
+                  <YesNoTemplate onClickYes={() => handleYes(role.id)} />
                 );
               }}
             />

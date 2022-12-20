@@ -50,7 +50,6 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
               "Houve um erro! Tente novamente mais tarde."
           );
           setIsLoading(false);
-          setIsLoading(false);
           return;
         });
     } else {
@@ -79,26 +78,31 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
     setModal(false);
   };
 
-  const getTable = async (id: string) => {
-    await api
-      .get(`tables/${id}`)
-      .then(({ data }: any) => {
-        if (data) {
-          setTable(data);
+  const getTable = async (id?: string) => {
+    if (id) {
+      await api
+        .get(`tables/${id}`)
+        .then(({ data }: any) => {
+          if (data) {
+            setTable(data);
 
-          setValue("number", data.number ?? "");
-          setValue("isAvailable", data.is_available ?? "");
-        }
-      })
-      .catch((e: any) => {
-        ErrorAlert(e.message);
-      });
+            setValue("number", data.number);
+            setValue("isAvailable", data.is_available);
+          }
+        })
+        .catch(({ response }: AxiosError) => {
+          ErrorAlert(
+            (response?.data as string) ??
+              "Houve um erro! Tente novamente mais tarde."
+          );
+        });
+    } else {
+      setValue("isAvailable", 1);
+    }
   };
 
   useEffect(() => {
-    if (id) {
-      getTable(id);
-    }
+    getTable(id);
   }, []);
 
   return (
@@ -132,7 +136,9 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
                         label={"Disponível"}
                         setValue={setValue}
                         top
-                        defaultValue={getValues().isAvailable as boolean}
+                        defaultValue={
+                          (getValues().isAvailable as boolean) ?? true
+                        }
                       />
                     </div>
                   </div>
