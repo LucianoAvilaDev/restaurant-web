@@ -1,133 +1,201 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
+import { MealType } from "../../../../types/MealType";
+import { OrderItemsType } from "../../../../types/OrderItemType";
 import { OrderItemsSchema } from "../../../schemas/OrderItemsSchema";
-import { OrdersSchema } from "../../../schemas/OrdersSchema";
-import { api } from "../../../services/api";
-import { SanitizeCpf } from "../../../utils/SanitizeCpf";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
-import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import InputText from "../../input/InputText";
-import InputTextMasked from "../../input/InputTextMasked";
+import InputNumber from "../../input/InputNumber";
+import InputSelect from "../../input/InputSelect";
+import InputTextArea from "../../input/InputTextArea";
 import Loader from "../../loader/Loader";
 
 type Props = {
-  id?: string;
+  item: any;
   setModal: Function;
   handleClear: Function;
+  setOrder: Function;
+  parentSetValue: Function;
+  order: any;
   meals: any;
+  updatePriceByMeal: Function;
+  updatePriceByQuantity: Function;
 };
 
-export const FormOrderItems = ({ id, handleClear, setModal }: Props) => {
+export const FormOrderItems = ({
+  item,
+  meals,
+  updatePriceByMeal,
+  updatePriceByQuantity,
+  handleClear,
+  setModal,
+  setOrder,
+  parentSetValue,
+  order,
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [orderType, setOrderItem] = useState<any>();
+  const [orderItem, setOrderItem] = useState<OrderItemsType>(item);
+  const [mealId, setMealId] = useState<any>({
+    value: item.meal.id,
+    label: item.meal.name,
+  });
+  const [originalMealId, setOriginalMealId] = useState<string>(item.meal.id);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm({
     resolver: yupResolver(OrderItemsSchema()),
   });
 
   const handleSave = (data: any) => {
-    setIsLoading(true);
-    if (id) {
-      api
-        .put(`orders/${id}`, { ...data, cpf: SanitizeCpf(data.cpf) })
-        .then(async () => {
-          SuccessAlert("Registro salvo com sucesso!");
-          setIsLoading(false);
-          setModal(false);
-          await handleClear();
-          return;
-        })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
-          setIsLoading(false);
-          setIsLoading(false);
-          return;
-        });
-    } else {
-      api
-        .post(`orders`, { ...data, cpf: SanitizeCpf(data.cpf) })
-        .then(async () => {
-          SuccessAlert("Registro salvo com sucesso!");
-          setIsLoading(false);
-          setModal(false);
-          await handleClear();
-          return;
-        })
-        .catch((e: any) => {
-          ErrorAlert(e.message);
-          setIsLoading(false);
-          setIsLoading(false);
-          return;
-        });
+    console.log(data);
+
+    const itemsWithoutEdited = order.orderItems.filter(
+      (currentItem: any) =>
+        currentItem.id !== item.id && currentItem.meal.id !== originalMealId
+    );
+
+    let repeated: boolean = false;
+
+    itemsWithoutEdited.forEach((currentItem: any) => {
+      if (currentItem.meal.id == data.mealId) repeated = true;
+    });
+
+    if (repeated) {
+      ErrorAlert("Refeição já adicionada!");
+      return;
     }
+
+    const editedItem: any = {
+      id: item.id,
+      key: item.key,
+      meal_id: data.mealId,
+      meal: meals.find((meal: MealType) => meal.id == data.mealId),
+      quantity: data.quantity,
+      observation: data.observation,
+      price: data.price,
+    };
+
+    setIsLoading(true);
+    setOrder({ ...order, orderItems: [...itemsWithoutEdited, editedItem] });
+    parentSetValue("orderItems", [...itemsWithoutEdited, editedItem]);
+    setModal(false);
   };
 
   const handleCancel = () => {
     setModal(false);
   };
 
-  const getorder = async (id: string) => {
-    await api
-      .get(`orders/${id}`)
-      .then(({ data }: any) => {
-        if (data) {
-          setOrderItem(data);
+  const getOrderItem = async () => {
+    setOrderItem(item);
 
-          setValue("name", data.name ?? "");
-          setValue("cpf", data.cpf ?? "");
-        }
-      })
-      .catch((e: any) => {
-        ErrorAlert(e.message);
-      });
+    setValue("mealId", item.meal.id);
+    setValue("quantity", item.quantity);
+    setValue("price", item.price);
+    setValue("observation", item.observation);
   };
 
   useEffect(() => {
-    if (id) {
-      getorder(id);
-    }
+    getOrderItem();
   }, []);
 
   return (
     <>
       {isLoading && <Loader />}
       <div
-        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
+        className={`fixed z-50 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-[80vh] max-w-[80vw]`}>
-          <BodyCard title={`${id ? "Editar" : "Cadastrar"} ordere`}>
+        <div className={`max-h-screen max-w-[80vw]`}>
+          <BodyCard title={`Editar Item de Pedido`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="p-2 md:col-span-5 sm:col-span-6 col-span-12">
-                      <InputText
-                        register={register("name")}
-                        id={`name`}
-                        name={"name"}
-                        placeholder={"Digite o nome..."}
-                        label={"Nome"}
-                        errorMessage={errors?.name?.message}
+                    <div className="p-2 md:col-span-6 sm:col-span-6 col-span-12">
+                      <InputSelect
+                        register={register("mealId")}
+                        id={`mealId`}
+                        name={"mealId"}
+                        placeholder={"Selecione uma Refeição..."}
+                        label={"Refeição"}
+                        options={meals.map((meal: MealType) => {
+                          return {
+                            value: meal.id,
+                            label: meal.name,
+                          };
+                        })}
+                        onChange={(e: any) => {
+                          const quantity = getValues("quantity");
+                          const currentMeal: MealType = meals.filter(
+                            (meal: MealType) => meal.id == getValues("mealId")
+                          )[0];
+
+                          (document.getElementById("price") as any).value = (
+                            +currentMeal.price * quantity
+                          ).toFixed(2);
+
+                          setValue("price", +currentMeal.price * quantity);
+                          setMealId({
+                            value: currentMeal.id,
+                            label: currentMeal.name,
+                          });
+                        }}
+                        setValue={setValue}
+                        value={mealId}
                       />
                     </div>
-                    <div className="p-2 md:col-span-5 sm:col-span-6 col-span-12">
-                      <InputTextMasked
-                        register={register("cpf")}
-                        id={"cpf"}
-                        name={"cpf"}
-                        placeholder={"Digite o CPF..."}
-                        label={"CPF"}
-                        mask={"000.000.000-00"}
-                        errorMessage={errors?.cpf?.message}
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                      <InputNumber
+                        register={register("quantity")}
+                        id={`quantity`}
+                        name={"quantity"}
+                        placeholder={""}
+                        label={"Quantidade"}
+                        min={0.01}
+                        max={999999.99}
+                        step={0.01}
+                        onChange={(e: any) => {
+                          const quantity = e.target.value;
+                          const currentMeal: MealType | undefined = meals.find(
+                            (meal: MealType) => meal.id == getValues("mealId")
+                          );
+
+                          if (currentMeal) {
+                            (document.getElementById("price") as any).value = (
+                              +currentMeal.price * quantity
+                            ).toFixed(2);
+
+                            setValue("price", +currentMeal.price * quantity);
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="p-2 sm:col-span-3 col-span-12">
+                      <InputNumber
+                        register={register("price")}
+                        id={`price`}
+                        name={"price"}
+                        placeholder={""}
+                        label={"Preço"}
+                        min={0.01}
+                        max={999999.99}
+                        step={0.01}
+                        readOnly
+                      />
+                    </div>
+                    <div className="p-2 col-span-12">
+                      <InputTextArea
+                        register={register("observation")}
+                        id={`observation`}
+                        name={"observation"}
+                        placeholder={"Digite uma observação..."}
+                        label={"Observação (opcional)"}
                       />
                     </div>
                   </div>

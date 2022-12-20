@@ -1,5 +1,3 @@
-import React from "react";
-
 const BadgeBlack = ({ text }: { text: string }) => {
   return (
     <div

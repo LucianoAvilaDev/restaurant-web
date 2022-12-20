@@ -1,8 +1,7 @@
-import { array, boolean, number, object, string } from "yup";
+import { number, object, string } from "yup";
 
 export const OrderItemsSchema = () => {
   return object({
-    observation: string(),
     quantity: number()
       .typeError("Valor inválido")
       .required("Campo obrigatório!")
@@ -16,8 +15,6 @@ export const OrderItemsSchema = () => {
       .min(0.01, "O preço mínimo é 0!")
       .max(99999999.99, "O preço máximo é 99999999,99!"),
     mealId: number(),
-    orderId: number(),
-    isAvailable: boolean().required("Campo obrigatório!"),
-    orderItems: array(),
+    observation: string(),
   });
 };

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { v4 } from "uuid";
 import { MealType } from "../../../../types/MealType";
 import { OrderItemsType } from "../../../../types/OrderItemType";
 import { OrderType } from "../../../../types/OrderType";
@@ -127,9 +128,14 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
                       setModalTemplate(
                         <FormOrderItems
                           meals={meals}
-                          id={item.id}
+                          item={item}
+                          parentSetValue={setValue}
+                          order={order}
+                          setOrder={setOrder}
                           handleClear={handleClear}
                           setModal={setSubModal}
+                          updatePriceByMeal={updatePriceByMeal}
+                          updatePriceByQuantity={updatePriceByQuantity}
                         />
                       )
                     ).then(() => {
@@ -193,7 +199,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
     setValue("totalValue", newTotal);
   };
 
-  const saveOrderItems = async (id: string, orderItems: any[]) => {
+  const saveOrderItems = async (orderId: string, orderItems: any[]) => {
     try {
       orderItems
         .filter((item: any) => item.id == "0")
@@ -203,7 +209,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
             quantity: item.quantity,
             price: item.price,
             mealId: item.meal_id,
-            order_id: id,
+            orderId: orderId,
           });
           return item.id;
         });
@@ -216,16 +222,17 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
             quantity: item.quantity,
             price: item.price,
             mealId: item.meal_id,
-            order_id: id,
+            orderId: orderId,
           });
           return item.id;
         });
 
       // DIFERNÇA DO ORDERITEMS(VALOR ORIGINAL) E O EDIT(VALOR ALTERADO)
+
       originalOrderItemsIds
         .filter((id: string) => !editedItemsIds.includes(id))
-        .forEach((item: any) => {
-          api.delete(`order-items/${item.id}`);
+        .forEach((item: string) => {
+          api.delete(`order-items/${item}`);
         });
     } catch (e: any) {
       ErrorAlert(e.message);
@@ -234,12 +241,13 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
   };
 
   const handleSave = (data: any) => {
-    console.log(data);
-
     if (!data.orderItems || data.orderItems.length == 0) {
       ErrorAlert("Adicione no mínimo UM item ao pedido!");
       return;
     }
+
+    const orderItemsToSave: any = data.orderItems;
+
     const saveOrder: any = {
       date: data.date,
       totalValue: data.totalValue,
@@ -254,7 +262,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
       api
         .put(`orders/${id}`, saveOrder)
         .then(async () => {
-          await saveOrderItems(id, data.orderItems);
+          await saveOrderItems(id, orderItemsToSave);
 
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -273,7 +281,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
       api
         .post(`orders`, saveOrder)
         .then(async ({ data }: any) => {
-          await saveOrderItems(data.id, data.orderItems);
+          await saveOrderItems(data.id, orderItemsToSave);
 
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
@@ -323,6 +331,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
 
     const newItem: any = {
       id: "0",
+      key: v4(),
       meal_id: mealId,
       meal: meals.find((meal: MealType) => meal.id == mealId),
       quantity: quantity,
@@ -362,7 +371,12 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
         .get(`orders/${id}`)
         .then(({ data }: any) => {
           if (data) {
-            setOrder(data);
+            setOrder({
+              ...data,
+              orderItems: data.orderItems.map((item: any) => {
+                return { ...item, key: v4() };
+              }),
+            });
             setTables([
               ...tables,
               {
@@ -397,6 +411,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
     } else {
       setValue("date", moment().format("YYYY-MM-DDTHH:mm"));
       setValue("totalValue", 0.0);
+      setValue("paidValue", 0.0);
     }
   };
 
@@ -436,7 +451,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-[80vh] w-[90vw]`}>
+        <div className={`max-h-[90vh] max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Pedido`}>
             <div className="p-2">
               <div className={`py-2`}>

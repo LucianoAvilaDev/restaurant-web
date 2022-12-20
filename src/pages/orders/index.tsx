@@ -30,7 +30,6 @@ const index = () => {
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [clients, setClients] = useState<SelectType[]>([]);
   const [tables, setTables] = useState<SelectType[]>([]);
-  const [availableTables, setAvailableTables] = useState<SelectType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
 
   const [modal, setModal] = useState<boolean>(false);
@@ -73,16 +72,6 @@ const index = () => {
             label: table.number,
           };
         })
-      );
-      setAvailableTables(
-        data
-          .filter((table: TableType) => table.is_available)
-          .map((table: TableType) => {
-            return {
-              value: table.id,
-              label: table.number,
-            };
-          })
       );
       setPending(false);
     });
@@ -162,7 +151,6 @@ const index = () => {
                   setModalTemplate(
                     <FormOrders
                       clients={clients}
-                      tables={availableTables}
                       id={order.id}
                       handleClear={handleClear}
                       setModal={setModal}
@@ -214,7 +202,6 @@ const index = () => {
             setModalTemplate(
               <FormOrders
                 clients={clients}
-                tables={availableTables}
                 handleClear={handleClear}
                 setModal={setModal}
               />
