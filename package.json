@@ -24,6 +24,7 @@
     "eslint": "^8.29.0",
     "eslint-config-next": "13.0.6",
     "material-table": "^2.0.3",
+    "moment": "^2.29.4",
     "mui-datatables": "^4.2.2",
     "next": "13.0.6",
     "nookies": "^2.5.2",

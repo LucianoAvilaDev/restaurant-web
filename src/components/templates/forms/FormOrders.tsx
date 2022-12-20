@@ -1,14 +1,16 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { MealType } from "../../../../types/MealType";
 import { OrderItemsType } from "../../../../types/OrderItemType";
+import { OrderType } from "../../../../types/OrderType";
 import { SelectType } from "../../../../types/SelectType";
+import { TableType } from "../../../../types/TableType";
 import { OrdersSchema } from "../../../schemas/OrdersSchema";
 import { api } from "../../../services/api";
-import { FormatDateTime } from "../../../utils/FormatDateTime";
 import { FormatMoney } from "../../../utils/FormatMoney";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { InfoAlert } from "../../alerts/InfoAlert";
@@ -16,7 +18,7 @@ import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { TableButtonSolid } from "../../buttons/TableButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import { SimpleCard } from "../../cards/SimpleCard";
+import { InnerCard } from "../../cards/InnerCard";
 import InputDateTime from "../../input/InputDateTime";
 import InputNumber from "../../input/InputNumber";
 import InputSelect from "../../input/InputSelect";
@@ -31,23 +33,21 @@ type Props = {
   setModal: Function;
   handleClear: Function;
   clients: SelectType[];
-  tables: SelectType[];
 };
 
-export const FormOrders = ({
-  id,
-  clients,
-  tables,
-  handleClear,
-  setModal,
-}: Props) => {
+export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [order, setOrder] = useState<any>();
-  const [orderItems, setOrderItems] = useState<OrderItemsType[]>([]);
+  const [order, setOrder] = useState<OrderType>({} as OrderType);
+  const [originalOrderItemsIds, setOriginalOrderItemsIds] = useState<string[]>(
+    []
+  );
   const [meals, setMeals] = useState<MealType[]>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedTable, setSelectedTable] = useState<any>();
   const [pending, setPending] = useState<boolean>(true);
+
+  const [tables, setTables] = useState<any>([]);
+
   const [subModal, setSubModal] = useState<boolean>(true);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
@@ -98,85 +98,168 @@ export const FormOrders = ({
     },
   ];
 
-  const data = order?.orderItems.map((item: OrderItemsType) => {
-    return {
-      quantity: item.quantity,
-      meal: item?.meal?.name ?? "",
-      price: FormatMoney(item.price),
-      observation: (
-        <div className={`flex flex-wrap p-1`}>
-          <div>{item.observation}</div>
-        </div>
-      ),
-      actions: (
-        <div className={`flex flex-wrap`}>
-          <div>
-            <TableButtonSolid
-              id={item.id}
-              tooltip={`Editar`}
-              icon={
-                <MdOutlineModeEditOutline
-                  className={`filter hover:drop-shadow m-1`}
-                  size={18}
-                />
-              }
-              color={"success"}
-              onClick={async () => {
-                await Promise.resolve(
-                  setModalTemplate(
-                    <FormOrderItems
-                      meals={meals}
-                      id={item.id}
-                      handleClear={handleClear}
-                      setModal={setSubModal}
+  const data = order
+    ? order.orderItems?.map((item: OrderItemsType) => {
+        return {
+          quantity: item.quantity,
+          meal: item?.meal?.name ?? "",
+          price: FormatMoney(item.price),
+          observation: (
+            <div className={`flex flex-wrap p-1`}>
+              <div>{item.observation}</div>
+            </div>
+          ),
+          actions: (
+            <div className={`flex flex-wrap`}>
+              <div>
+                <TableButtonSolid
+                  id={item.id}
+                  tooltip={`Editar`}
+                  icon={
+                    <MdOutlineModeEditOutline
+                      className={`filter hover:drop-shadow m-1`}
+                      size={18}
                     />
-                  )
-                ).then(() => {
-                  setSubModal(true);
-                });
-              }}
-            />
-          </div>
-          <div>
-            <TableButtonSolid
-              id={order.id}
-              tooltip={`Excluir`}
-              icon={
-                <BiTrash size={18} className={`filter hover:drop-shadow m-1`} />
-              }
-              color={"danger"}
-              onClick={() => {
-                InfoAlert(
-                  <YesNoTemplate onClickYes={() => handleModalYes(order.id)} />
-                );
-              }}
-            />
-          </div>
-        </div>
-      ),
-    };
-  });
+                  }
+                  color={"success"}
+                  onClick={async () => {
+                    await Promise.resolve(
+                      setModalTemplate(
+                        <FormOrderItems
+                          meals={meals}
+                          id={item.id}
+                          handleClear={handleClear}
+                          setModal={setSubModal}
+                        />
+                      )
+                    ).then(() => {
+                      setSubModal(true);
+                    });
+                  }}
+                />
+              </div>
+              <div>
+                <TableButtonSolid
+                  id={order.id}
+                  tooltip={`Excluir`}
+                  icon={
+                    <BiTrash
+                      size={18}
+                      className={`filter hover:drop-shadow m-1`}
+                    />
+                  }
+                  color={"danger"}
+                  onClick={() => {
+                    InfoAlert(
+                      <YesNoTemplate
+                        onClickYes={() => handleModalYes(item.id, item.meal.id)}
+                      />
+                    );
+                  }}
+                />
+              </div>
+            </div>
+          ),
+        };
+      })
+    : [];
 
-  const handleModalYes = (id: string) => {
+  const getAvailableTables = async () => {
+    api.get("available-tables").then(({ data }: any) => {
+      setTables(
+        data.map((table: TableType) => {
+          return {
+            value: table.id,
+            label: table.number,
+          };
+        })
+      );
+    });
+  };
+
+  const handleModalYes = (id: string, mealId: string) => {
     const newItems = order.orderItems.filter(
-      (item: OrderItemsType) => item.id !== id
+      (item: OrderItemsType) => item.id !== id || item.meal_id !== mealId
     );
-
     setOrder({ ...order, orderItems: newItems });
-    setOrderItems(order.orderItems);
+    setValue("orderItems", newItems);
+
+    let newTotal: number = 0.0;
+
+    newItems.forEach((item: any) => {
+      newTotal += parseFloat(item.price);
+    });
+
+    setValue("totalValue", newTotal);
+  };
+
+  const saveOrderItems = async (id: string, orderItems: any[]) => {
+    try {
+      orderItems
+        .filter((item: any) => item.id == "0")
+        .forEach((item: any) => {
+          api.post("order-items", {
+            observation: item.observation,
+            quantity: item.quantity,
+            price: item.price,
+            mealId: item.meal_id,
+            order_id: id,
+          });
+          return item.id;
+        });
+
+      const editedItemsIds: any = orderItems
+        .filter((item: any) => item.id != "0")
+        .map((item: any) => {
+          api.put(`order-items/${item.id}`, {
+            observation: item.observation,
+            quantity: item.quantity,
+            price: item.price,
+            mealId: item.meal_id,
+            order_id: id,
+          });
+          return item.id;
+        });
+
+      // DIFERNÇA DO ORDERITEMS(VALOR ORIGINAL) E O EDIT(VALOR ALTERADO)
+      originalOrderItemsIds
+        .filter((id: string) => !editedItemsIds.includes(id))
+        .forEach((item: any) => {
+          api.delete(`order-items/${item.id}`);
+        });
+    } catch (e: any) {
+      ErrorAlert(e.message);
+      setIsLoading(false);
+    }
   };
 
   const handleSave = (data: any) => {
     console.log(data);
-    return;
+
+    if (!data.orderItems || data.orderItems.length == 0) {
+      ErrorAlert("Adicione no mínimo UM item ao pedido!");
+      return;
+    }
+    const saveOrder: any = {
+      date: data.date,
+      totalValue: data.totalValue,
+      paidValue: data.paidValue,
+      clientId: data.clientId,
+      tableId: data.tableId,
+      isClosed: data.isClosed,
+    };
     setIsLoading(true);
+
     if (id) {
       api
-        .put(`orders/${id}`, data)
+        .put(`orders/${id}`, saveOrder)
         .then(async () => {
+          await saveOrderItems(id, data.orderItems);
+
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
+
           await handleClear();
           return;
         })
@@ -188,8 +271,10 @@ export const FormOrders = ({
         });
     } else {
       api
-        .post(`orders`, data)
-        .then(async () => {
+        .post(`orders`, saveOrder)
+        .then(async ({ data }: any) => {
+          await saveOrderItems(data.id, data.orderItems);
+
           SuccessAlert("Registro salvo com sucesso!");
           setIsLoading(false);
           setModal(false);
@@ -215,31 +300,104 @@ export const FormOrders = ({
     });
   };
 
-  const getOrder = async (id: string) => {
-    await api
-      .get(`orders/${id}`)
-      .then(({ data }: any) => {
-        if (data) {
-          setOrder(data);
-          setOrderItems(data.orderItems ?? []);
+  const handleAddItem = async () => {
+    setIsLoading(true);
+    const quantity = getValues("quantity");
+    const mealId = getValues("mealId");
+    const observation = getValues("observation");
+    const price = (document.getElementById("price") as any).value;
 
-          setSelectedClient({ value: data.client.id, label: data.client.name });
-          setSelectedTable({
-            value: data.table.id,
-            label: data.table.number,
-          });
-          setValue("clientId", data.client.id ?? "");
-          setValue("tableId", data.table.id ?? "");
-          setValue("date", data.date ? FormatDateTime(data.date) : "");
-          setValue("totalValue", data.total_value ?? "");
-          setValue("paidValue", data.paid_value ?? "");
-          setValue("isClosed", data.is_closed ?? "");
-          setValue("orderItems", data.orderItems ?? []);
-        }
-      })
-      .catch((e: any) => {
-        ErrorAlert(e.message);
+    let repeated: boolean = false;
+
+    order?.orderItems?.forEach((item: any) => {
+      if (item.meal_id == mealId) {
+        repeated = true;
+      }
+    });
+
+    if (repeated) {
+      ErrorAlert("Refeição já adicionada ao pedido!");
+      setIsLoading(false);
+      return;
+    }
+
+    const newItem: any = {
+      id: "0",
+      meal_id: mealId,
+      meal: meals.find((meal: MealType) => meal.id == mealId),
+      quantity: quantity,
+      observation: observation,
+      price: price,
+      order_id: id ?? "0",
+    };
+
+    setValue(
+      "totalValue",
+      parseFloat(getValues().totalValue) + parseFloat(price)
+    );
+
+    if (order.orderItems) {
+      setOrder({
+        ...order,
+        orderItems: [...order.orderItems, newItem],
       });
+      setValue("orderItems", [...order?.orderItems, newItem]);
+
+      setIsLoading(false);
+      return;
+    }
+
+    setOrder({
+      ...order,
+      orderItems: [newItem],
+    });
+    setValue("orderItems", [newItem]);
+    setIsLoading(false);
+    return;
+  };
+
+  const getOrder = async (id?: string) => {
+    if (id) {
+      await api
+        .get(`orders/${id}`)
+        .then(({ data }: any) => {
+          if (data) {
+            setOrder(data);
+            setTables([
+              ...tables,
+              {
+                value: data.table.id,
+                label: data.table.number,
+              },
+            ]);
+            setOriginalOrderItemsIds(
+              data.orderItems ? data.orderItems.map((item: any) => item.id) : []
+            );
+
+            setSelectedClient({
+              value: data.client.id,
+              label: data.client.name,
+            });
+            setSelectedTable({
+              value: data.table.id,
+              label: data.table.number,
+            });
+            setValue("clientId", data.client.id ?? "");
+            setValue("tableId", data.table.id ?? "");
+            setValue("date", moment(data.date).format("YYYY-MM-DDTHH:mm"));
+            setValue("totalValue", data.total_value);
+            setValue("paidValue", data.paid_value ?? 0);
+            setValue("isClosed", data.is_closed ?? false);
+            setValue("orderItems", data.orderItems ?? []);
+          }
+        })
+        .catch((e: any) => {
+          ErrorAlert(e.message);
+        });
+    } else {
+      setValue("date", moment().format("YYYY-MM-DDTHH:mm"));
+      setValue("totalValue", 0.0);
+    }
   };
 
   const updatePriceByQuantity = (e: any) => {
@@ -266,9 +424,8 @@ export const FormOrders = ({
   };
 
   useEffect(() => {
-    if (id) {
-      getOrder(id);
-    }
+    getAvailableTables();
+    getOrder(id);
     getMeals();
     setPending(false);
   }, []);
@@ -285,7 +442,7 @@ export const FormOrders = ({
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="p-2 sm:col-span-3 col-span-12">
+                    <div className="z-20 p-2 sm:col-span-3 col-span-12">
                       <InputSelect
                         register={register("clientId")}
                         id={`clientId`}
@@ -299,7 +456,7 @@ export const FormOrders = ({
                         errorMessage={errors?.clientId?.message}
                       />
                     </div>
-                    <div className="p-2 sm:col-span-2 col-span-12">
+                    <div className="z-20 p-2 sm:col-span-2 col-span-12">
                       <InputSelect
                         register={register("tableId")}
                         id={`tableId`}
@@ -314,7 +471,7 @@ export const FormOrders = ({
                       />
                     </div>
 
-                    <div className="pt-2.5 p-2 sm:col-span-2 col-span-12">
+                    <div className="p-2 sm:col-span-2 col-span-12">
                       <InputDateTime
                         register={register("date")}
                         id={`date`}
@@ -331,9 +488,10 @@ export const FormOrders = ({
                         name={"totalValue"}
                         placeholder={""}
                         label={"Valor Total"}
-                        min={0.01}
+                        min={0.0}
                         max={999999.99}
                         step={0.01}
+                        readOnly
                         errorMessage={errors?.totalValue?.message}
                       />
                     </div>
@@ -362,7 +520,7 @@ export const FormOrders = ({
                       />
                     </div>
                     <div className="p-2 col-span-12">
-                      <SimpleCard title={`Itens do Pedido`}>
+                      <InnerCard title={`Itens do Pedido`}>
                         <div className={`grid grid-cols-12`}>
                           <div className="p-2 sm:col-span-4 col-span-12">
                             <InputSelect
@@ -426,35 +584,7 @@ export const FormOrders = ({
                               id={"add"}
                               label={"Adicionar"}
                               color={"primary"}
-                              onClick={async () => {
-                                const quantity = getValues("quantity");
-                                const mealId = getValues("mealId");
-                                const observation = getValues("observation");
-                                const price = (
-                                  document.getElementById("price") as any
-                                ).value;
-                                await Promise.resolve(
-                                  setOrder({
-                                    ...order,
-                                    orderItems: [
-                                      ...order.orderItems,
-                                      {
-                                        id: "0",
-                                        meal_id: mealId,
-                                        meal: meals.find(
-                                          (meal: MealType) => meal.id == mealId
-                                        ),
-                                        quantity: quantity,
-                                        observation: observation,
-                                        price: price,
-                                        order_id: id ?? "0",
-                                      },
-                                    ],
-                                  })
-                                ).then(() => {
-                                  setValue("orderItems", order.orderItems);
-                                });
-                              }}
+                              onClick={handleAddItem}
                             />
                           </div>
                         </div>
@@ -466,7 +596,7 @@ export const FormOrders = ({
                             pending={pending}
                           />
                         </div>
-                      </SimpleCard>
+                      </InnerCard>
                     </div>
                   </div>
                   <div
