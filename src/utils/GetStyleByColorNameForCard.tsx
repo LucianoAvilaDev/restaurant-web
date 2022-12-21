@@ -16,7 +16,7 @@ export const GetStyleByColorNameForCard = (color: string) => {
       return "bg-red-600 text-white hover:bg-red-500";
 
     case "info":
-      return "bg-cyan-400 text-black hover:bg-cyan-300";
+      return "bg-cyan-400 text-white hover:bg-cyan-300";
 
     case "warning":
       return "bg-amber-400 text-black hover:bg-amber-300";

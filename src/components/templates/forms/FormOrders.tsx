@@ -32,12 +32,19 @@ import { FormOrderItems } from "./FormOrderItems";
 
 type Props = {
   id?: string;
+  table?: TableType;
   setModal: Function;
   handleClear: Function;
   clients: SelectType[];
 };
 
-export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
+export const FormOrders = ({
+  id,
+  table,
+  clients,
+  handleClear,
+  setModal,
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [order, setOrder] = useState<OrderType>({} as OrderType);
   const [originalOrderItemsIds, setOriginalOrderItemsIds] = useState<string[]>(
@@ -409,7 +416,7 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
               label: data.table.number,
             });
             setValue("clientId", data.client.id ?? "");
-            setValue("tableId", data.table.id ?? "");
+            setValue("tableId", data.table.id);
             setValue("date", moment(data.date).format("YYYY-MM-DDTHH:mm"));
             setValue("totalValue", data.total_value);
             setValue("paidValue", data.paid_value ?? 0);
@@ -425,8 +432,15 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
         });
     } else {
       setValue("date", moment().format("YYYY-MM-DDTHH:mm"));
+      setValue("tableId", table?.id ?? "");
       setValue("totalValue", 0.0);
       setValue("paidValue", 0.0);
+
+      if (table)
+        setSelectedTable({
+          value: table.id,
+          label: table.number,
+        });
     }
   };
 
@@ -538,6 +552,18 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
                         errorMessage={errors?.paidValue?.message}
                       />
                     </div>
+
+                    <div className="p-2 md:col-span-1 sm:col-span-2 col-span-12">
+                      <Switch
+                        register={register("isClosed")}
+                        id={"isClosed"}
+                        name={"isClosed"}
+                        label={"Fechado"}
+                        setValue={setValue}
+                        top
+                        defaultValue={getValues().isClosed as boolean}
+                      />
+                    </div>
                     <div className="pt-8 p-2 items-end md:col-span-1 col-span-10">
                       <ButtonSolid
                         id={"add"}
@@ -548,18 +574,9 @@ export const FormOrders = ({ id, clients, handleClear, setModal }: Props) => {
                             (
                               document.getElementById("totalValue") as any
                             ).value;
+
+                          (document.getElementById("isClosed") as any).click();
                         }}
-                      />
-                    </div>
-                    <div className="p-2 md:col-span-1 sm:col-span-2 col-span-12">
-                      <Switch
-                        register={register("isClosed")}
-                        id={"isClosed"}
-                        name={"isClosed"}
-                        label={"Fechado"}
-                        setValue={setValue}
-                        top
-                        defaultValue={getValues().isClosed as boolean}
                       />
                     </div>
                     <div className="p-2 col-span-12">
