@@ -1,3 +1,8 @@
+type Props = {
+  title: string;
+  children: any;
+};
+
 export const InnerCard = ({ title, children }: any) => {
   return (
     <>
@@ -8,9 +13,6 @@ export const InnerCard = ({ title, children }: any) => {
           </div>
         </header>
         <main className={`px-4`}>{children}</main>
-        <footer
-          className={`flex border-t text-sm flex-col items-center justify-center mx-2`}
-        ></footer>
       </div>
     </>
   );

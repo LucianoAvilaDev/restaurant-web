@@ -1,3 +1,4 @@
+import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +16,7 @@ import BadgeRed from "../../components/badges/BadgeRed";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
 import { TableButtonSolid } from "../../components/buttons/TableButtonSolid";
 import { BodyCard } from "../../components/cards/BodyCard";
+import InputDate from "../../components/input/InputDate";
 import InputSelect from "../../components/input/InputSelect";
 import InputText from "../../components/input/InputText";
 import Navigation from "../../components/navigation/Navigation";
@@ -95,6 +97,14 @@ const index = () => {
       allowOverflow: true,
     },
     {
+      name: "Data/Hora",
+      selector: (row: any) => row.date,
+      sortable: true,
+      center: true,
+
+      allowOverflow: true,
+    },
+    {
       name: "Valor total",
       selector: (row: any) => row.totalValue,
       sortable: true,
@@ -132,6 +142,7 @@ const index = () => {
     return {
       number: order.id,
       tableClient: `${order.table.number} - ${order.client.name}`,
+      date: moment(order.date).format("DD/MM/YYYY - HH:mm"),
       totalValue: FormatMoney(order.total_value),
       paidValue: FormatMoney(order.paid_value),
       situation: order.is_closed ? (
@@ -238,6 +249,8 @@ const index = () => {
   const handleSearch = (data: any) => {
     setPending(true);
 
+    if (data.date) data.date = moment(data.date).format("YYYY-MM-DD");
+
     api.post("orders/filters", data).then(({ data }) => {
       setOrders(data);
       setPending(false);
@@ -245,10 +258,11 @@ const index = () => {
   };
 
   const handleClear = () => {
-    setValue("number", "");
-    setValue("client", "");
-    setValue("table", "");
-    setValue("isClosed", "");
+    setValue("id", undefined);
+    setValue("date", undefined);
+    setValue("client", undefined);
+    setValue("table", undefined);
+    setValue("isClosed", undefined);
 
     (document.getElementById("search") as any).click();
 
@@ -283,7 +297,7 @@ const index = () => {
                 {/* --------------FILTERS ------------------------------ */}
                 <form onSubmit={handleSubmit(handleSearch)}>
                   <div className={`grid grid-cols-12 py-4`}>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputText
                         register={register("id")}
                         id={`id`}
@@ -292,7 +306,7 @@ const index = () => {
                         label={"Número"}
                       />
                     </div>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("client")}
                         id={`client`}
@@ -303,7 +317,16 @@ const index = () => {
                         setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                      <InputDate
+                        register={register("date")}
+                        id={`date`}
+                        name={"date"}
+                        label={"Data"}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("table")}
                         id={`table`}
@@ -314,7 +337,7 @@ const index = () => {
                         setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-4 sm:col-span-6 col-span-12">
+                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("isClosed")}
                         id={`isClosed`}
