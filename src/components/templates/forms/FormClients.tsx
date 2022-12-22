@@ -22,6 +22,7 @@ type Props = {
 export const FormClients = ({ id, handleClear, setModal }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [client, setClient] = useState<any>();
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const {
     register,
@@ -76,7 +77,8 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getClient = async (id: string) => {
@@ -107,7 +109,7 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Cliente`}>
             <div className="p-2">
               <div className={`py-2`}>
@@ -151,7 +153,7 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
                         id={"cancel"}
                         label={"Cancelar"}
                         color={"default"}
-                        onClick={() => handleCancel()}
+                        onClick={async () => handleCancel()}
                       />
                     </div>
                   </div>

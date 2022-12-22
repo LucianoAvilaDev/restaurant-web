@@ -27,9 +27,6 @@ type Props = {
 export const FormOrderItems = ({
   item,
   meals,
-  updatePriceByMeal,
-  updatePriceByQuantity,
-  handleClear,
   setModal,
   setOrder,
   parentSetValue,
@@ -42,6 +39,7 @@ export const FormOrderItems = ({
     label: item.meal.name,
   });
   const [originalMealId, setOriginalMealId] = useState<string>(item.meal.id);
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const {
     register,
@@ -99,7 +97,8 @@ export const FormOrderItems = ({
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getOrderItem = async () => {
@@ -121,7 +120,7 @@ export const FormOrderItems = ({
       <div
         className={`fixed z-50 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen max-w-[80vw]`}>
           <BodyCard title={`Editar Item de Pedido`}>
             <div className="p-2">
               <div className={`py-2`}>

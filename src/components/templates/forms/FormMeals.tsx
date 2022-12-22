@@ -1,6 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AxiosError } from "axios";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { SelectType } from "../../../../types/SelectType";
@@ -24,17 +23,15 @@ type Props = {
 };
 
 export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
-  const router = useRouter();
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [meal, setMeal] = useState<any>();
   const [mealTypeId, setMealTypeId] = useState<any>();
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const {
     register,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(MealsSchema()),
@@ -85,7 +82,8 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getMeal = async (id: string) => {
@@ -120,7 +118,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Refeição`}>
             <div className="p-2">
               <div className={`py-2`}>

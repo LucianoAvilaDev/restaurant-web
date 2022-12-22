@@ -29,6 +29,7 @@ export const FormRoles = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [role, setRole] = useState<any>();
   const [selected, setSelected] = useState<any>([]);
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const {
     register,
@@ -81,7 +82,8 @@ export const FormRoles = ({
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getRole = async (id: string) => {
@@ -119,7 +121,7 @@ export const FormRoles = ({
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Perfil`}>
             <div className="p-2">
               <div className={`py-2`}>

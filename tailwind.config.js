@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        fade: "fadeIn 300ms ease-in-out",
+        fadeIn: "fadeIn 300ms ease-in-out",
+        fadeOut: "fadeOut 300ms ease-in-out",
       },
 
       keyframes: (theme) => ({
@@ -14,7 +15,12 @@ module.exports = {
           "0%": { opacity: "0%", transform: "translateY(-3rem)" },
           "100%": { opacity: 100 },
         },
+        fadeOut: {
+          "0%": { opacity: 100 },
+          "100%": { opacity: "0%", transform: "translateY(-3rem)" },
+        },
       }),
+
       colors: {
         themeBgBody: "rgb(229 231 235)",
 

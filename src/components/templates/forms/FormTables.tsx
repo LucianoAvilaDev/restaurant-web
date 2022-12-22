@@ -21,6 +21,7 @@ type Props = {
 export const FormTables = ({ id, setModal, handleClear }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [table, setTable] = useState<any>();
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const {
     register,
@@ -75,7 +76,8 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getTable = async (id?: string) => {
@@ -112,7 +114,7 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Mesa`}>
             <div className="p-2">
               <div className={`py-2`}>

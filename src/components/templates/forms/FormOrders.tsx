@@ -54,6 +54,7 @@ export const FormOrders = ({
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedTable, setSelectedTable] = useState<any>();
   const [pending, setPending] = useState<boolean>(true);
+  const [animation, setAnimation] = useState<string>("animate-fadeIn");
 
   const [tables, setTables] = useState<any>([]);
 
@@ -318,7 +319,8 @@ export const FormOrders = ({
   };
 
   const handleCancel = () => {
-    setModal(false);
+    setAnimation("animate-fadeOut");
+    setTimeout(() => setModal(false), 250);
   };
 
   const getMeals = async () => {
@@ -480,7 +482,7 @@ export const FormOrders = ({
       <div
         className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`max-h-[90vh] max-w-[80vw]`}>
+        <div className={`${animation} max-h-[90vh] max-w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Pedido`}>
             <div className="p-2">
               <div className={`py-2`}>
