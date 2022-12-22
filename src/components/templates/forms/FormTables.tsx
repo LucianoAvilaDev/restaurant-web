@@ -112,9 +112,9 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
       {isLoading && <Loader />}
 
       <div
-        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
+        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-full flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`${animation} max-h-screen max-w-[80vw]`}>
+        <div className={`${animation} max-h-screen w-[100vw] md:w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Mesa`}>
             <div className="p-2">
               <div className={`py-2`}>

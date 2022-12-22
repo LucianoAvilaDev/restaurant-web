@@ -25,7 +25,11 @@ const UserMenu = () => {
       <div
         className={`cursor-pointer rounded-full bg-navbarTextColor hover:bg-themeLight hover:shadow-lg hover:text-themeTextLight text-themeTextLight`}
       >
-        <FaUserCircle size={30} onMouseEnter={() => setUserMenuOpen(true)} />
+        <FaUserCircle
+          size={30}
+          onMouseEnter={() => setUserMenuOpen(true)}
+          onClick={() => setUserMenuOpen(!userMenuOpen)}
+        />
       </div>
       <div
         className={`fixed rounded-md shadow-md right-3 bg-white`}
@@ -41,10 +45,7 @@ const UserMenu = () => {
               <div
                 className={`flex flex-col border-b items-center justify-center px-2 py-3`}
               >
-                <FaUserCircle
-                  size={48}
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                />
+                <FaUserCircle size={48} />
                 <div>{user?.name}</div>
                 <div className="text-xs italic font-bold">{user?.email}</div>
               </div>

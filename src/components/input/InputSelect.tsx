@@ -51,7 +51,9 @@ const InputSelect = ({
           container: (baseStyles, state) => ({
             ...baseStyles,
             cursor: "pointer",
-
+            // overflow: "hidden",
+            // textOverflow: "ellipsis",
+            // whiteSpace: "nowrap",
             boxShadow: state.isFocused
               ? "0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5)"
               : "",

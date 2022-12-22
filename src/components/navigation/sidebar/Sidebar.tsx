@@ -9,6 +9,7 @@ import { Menus, MenuType } from "./Menus";
 
 const Sidebar = () => {
   const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
+  const [pageMarginLeft, setPageMarginLeft] = useState<string>("md:ml-64");
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
 
@@ -16,6 +17,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     setSidebarWidth(openSidebar ? "w-64" : "w-16");
+    setPageMarginLeft(openSidebar ? "md:ml-64 ml-16" : "ml-16");
   }, [openSidebar]);
 
   useEffect(() => {
@@ -146,8 +148,9 @@ const Sidebar = () => {
   return (
     <>
       {/* SIDEBAR */}
+      <div className={`${pageMarginLeft} `}></div>
       <div
-        className={`${sidebarWidth} transition-all z-20 shadow-md bg-themeDark min-h-screen`}
+        className={`${sidebarWidth} fixed transition-all h-full z-20 shadow-md bg-themeDark min-h-screen`}
       >
         {/* HEADER */}
         <div className={`flex shadow-md bg-themeMedium py-2 justify-center`}>

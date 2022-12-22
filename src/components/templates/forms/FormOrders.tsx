@@ -20,7 +20,6 @@ import { SuccessAlert } from "../../alerts/SuccessAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { TableButtonSolid } from "../../buttons/TableButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
-import { InnerCard } from "../../cards/InnerCard";
 import InputDateTime from "../../input/InputDateTime";
 import InputNumber from "../../input/InputNumber";
 import InputSelect from "../../input/InputSelect";
@@ -480,15 +479,15 @@ export const FormOrders = ({
     <>
       {subModal && modalTemplate}
       <div
-        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-screen flex space-x-2 justify-center align-center items-center`}
+        className={`fixed z-40 bg-black/50 scrollbar w-full min-h-full flex space-x-2 justify-center align-center items-center`}
       >
-        <div className={`${animation} max-h-[90vh] max-w-[80vw]`}>
+        <div className={`${animation} max-h-[90vh] w-[100vw] md:w-[80vw]`}>
           <BodyCard title={`${id ? "Editar" : "Cadastrar"} Pedido`}>
             <div className="p-2">
               <div className={`py-2`}>
                 <form onSubmit={handleSubmit(handleSave)}>
                   <div className={`grid grid-cols-12 pt-2 pb-8`}>
-                    <div className="z-20 p-2 sm:col-span-3 col-span-12">
+                    <div className="lg:col-span-6 md:col-span-4 sm:col-span-6 col-span-12 z-20 p-2 ">
                       <InputSelect
                         register={register("clientId")}
                         id={`clientId`}
@@ -502,7 +501,7 @@ export const FormOrders = ({
                         errorMessage={errors?.clientId?.message}
                       />
                     </div>
-                    <div className="z-20 p-2 sm:col-span-2 col-span-12">
+                    <div className="z-20 p-2 lg:col-span-4 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("tableId")}
                         id={`tableId`}
@@ -517,7 +516,18 @@ export const FormOrders = ({
                       />
                     </div>
 
-                    <div className="p-2 sm:col-span-2 col-span-12">
+                    <div className="p-2 flex justify-center items-center lg:col-span-2 md:col-span-3 sm:col-span-6 col-span-12">
+                      <Switch
+                        register={register("isClosed")}
+                        id={"isClosed"}
+                        name={"isClosed"}
+                        label={"Fechado"}
+                        setValue={setValue}
+                        top
+                        defaultValue={getValues().isClosed as boolean}
+                      />
+                    </div>
+                    <div className="p-2 lg:col-span-4 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputDateTime
                         register={register("date")}
                         id={`date`}
@@ -526,8 +536,7 @@ export const FormOrders = ({
                         setValue={setValue}
                       />
                     </div>
-
-                    <div className="p-2 sm:col-span-2 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputNumber
                         register={register("totalValue")}
                         id={`totalValue`}
@@ -541,7 +550,7 @@ export const FormOrders = ({
                         errorMessage={errors?.totalValue?.message}
                       />
                     </div>
-                    <div className="p-2 sm:col-span-2 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-3 sm:col-span-6 col-span-12">
                       <InputNumber
                         register={register("paidValue")}
                         id={`paidValue`}
@@ -555,18 +564,7 @@ export const FormOrders = ({
                       />
                     </div>
 
-                    <div className="p-2 md:col-span-1 sm:col-span-2 col-span-12">
-                      <Switch
-                        register={register("isClosed")}
-                        id={"isClosed"}
-                        name={"isClosed"}
-                        label={"Fechado"}
-                        setValue={setValue}
-                        top
-                        defaultValue={getValues().isClosed as boolean}
-                      />
-                    </div>
-                    <div className="pt-8 p-2 items-end md:col-span-1 col-span-10">
+                    <div className="pt-8 p-2 pb-4  items-end md:col-span-2 sm:col-span-6  col-span-10">
                       <ButtonSolid
                         id={"add"}
                         label={"Pagar"}
@@ -581,84 +579,85 @@ export const FormOrders = ({
                         }}
                       />
                     </div>
-                    <div className="p-2 col-span-12">
-                      <InnerCard title={`Itens do Pedido`}>
-                        <div className={`grid grid-cols-12`}>
-                          <div className="p-2 sm:col-span-4 col-span-12">
-                            <InputSelect
-                              register={register("mealId")}
-                              id={`mealId`}
-                              name={"mealId"}
-                              placeholder={"Selecione uma Refeição..."}
-                              label={"Refeição"}
-                              options={meals.map((meal: MealType) => {
-                                return {
-                                  value: meal.id,
-                                  label: meal.name,
-                                };
-                              })}
-                              onChange={(e: any) => {
-                                updatePriceByMeal(e);
-                              }}
-                              setValue={setValue}
-                            />
-                          </div>
-                          <div className="p-2 sm:col-span-2 col-span-12">
-                            <InputNumber
-                              register={register("quantity")}
-                              id={`quantity`}
-                              name={"quantity"}
-                              placeholder={""}
-                              label={"Quantidade"}
-                              min={1}
-                              max={999999.99}
-                              step={1}
-                              onChange={(e: any) => {
-                                updatePriceByQuantity(e);
-                              }}
-                            />
-                          </div>
-                          <div className="p-2 sm:col-span-2 col-span-12">
-                            <InputNumber
-                              register={register("price")}
-                              id={`price`}
-                              name={"price"}
-                              placeholder={""}
-                              label={"Preço"}
-                              min={0.01}
-                              max={999999.99}
-                              step={0.01}
-                              readOnly
-                            />
-                          </div>
-                          <div className="p-2 sm:col-span-4 col-span-12">
-                            <InputTextArea
-                              register={register("observation")}
-                              id={`observation`}
-                              name={"observation"}
-                              placeholder={"Digite uma observação..."}
-                              label={"Observação (opcional)"}
-                            />
-                          </div>
-                          <div className="md:col-span-10 col-span-2"></div>
-                          <div className="pt-7 p-2 items-end md:col-span-2 col-span-10">
-                            <ButtonSolid
-                              id={"add"}
-                              label={"Adicionar"}
-                              color={"primary"}
-                              onClick={handleAddItem}
-                            />
-                          </div>
-                        </div>
+                    <div className="border-t col-span-12 ">
+                      <div className={`px-2 font-medium text-xl py-4 `}>
+                        Itens do Pedido
+                      </div>
 
-                        <div className={`col-span-12 py-4`}>
-                          <SimpleTable
-                            columns={columns}
-                            data={data}
-                            pending={pending}
+                      <div className={`grid grid-cols-12`}>
+                        <div className="p-2 sm:col-span-6 col-span-12">
+                          <InputSelect
+                            register={register("mealId")}
+                            id={`mealId`}
+                            name={"mealId"}
+                            placeholder={"Selecione uma Refeição..."}
+                            label={"Refeição"}
+                            options={meals.map((meal: MealType) => {
+                              return {
+                                value: meal.id,
+                                label: meal.name,
+                              };
+                            })}
+                            onChange={(e: any) => {
+                              updatePriceByMeal(e);
+                            }}
+                            setValue={setValue}
                           />
                         </div>
-                      </InnerCard>
+                        <div className="p-2 sm:col-span-3 col-span-12">
+                          <InputNumber
+                            register={register("quantity")}
+                            id={`quantity`}
+                            name={"quantity"}
+                            placeholder={""}
+                            label={"Quantidade"}
+                            min={1}
+                            max={999999.99}
+                            step={1}
+                            onChange={(e: any) => {
+                              updatePriceByQuantity(e);
+                            }}
+                          />
+                        </div>
+                        <div className="p-2 sm:col-span-3 col-span-12">
+                          <InputNumber
+                            register={register("price")}
+                            id={`price`}
+                            name={"price"}
+                            placeholder={""}
+                            label={"Preço"}
+                            min={0.01}
+                            max={999999.99}
+                            step={0.01}
+                            readOnly
+                          />
+                        </div>
+                        <div className="p-2 sm:col-span-10 col-span-12">
+                          <InputTextArea
+                            register={register("observation")}
+                            id={`observation`}
+                            name={"observation"}
+                            placeholder={"Digite uma observação..."}
+                            label={"Observação (opcional)"}
+                          />
+                        </div>
+                        <div className="pt-7 p-2 items-end md:col-span-2 col-span-10">
+                          <ButtonSolid
+                            id={"add"}
+                            label={"Adicionar"}
+                            color={"primary"}
+                            onClick={handleAddItem}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={`col-span-12 py-4`}>
+                        <SimpleTable
+                          columns={columns}
+                          data={data}
+                          pending={pending}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div

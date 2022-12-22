@@ -18,7 +18,7 @@ const InputDate = ({
   setValue,
 }: Props) => {
   return (
-    <div className="'flex flex-col">
+    <div className="'flex pt-0.5 flex-col">
       {label && (
         <label
           htmlFor="id"

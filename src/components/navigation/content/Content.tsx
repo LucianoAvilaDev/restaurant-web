@@ -1,4 +1,3 @@
-import React from "react";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
 
 const Content = ({ children }: any) => {
@@ -6,7 +5,7 @@ const Content = ({ children }: any) => {
     <div className={`bg-themeBgBody h-full w-full`}>
       <Breadcrumb />
 
-      <div>{children}</div>
+      <div className={`h-`}>{children}</div>
     </div>
   );
 };

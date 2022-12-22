@@ -41,7 +41,7 @@ const InputSelectMultiple = ({
       <Select
         {...register}
         id={id}
-        className="flex z-10 cursor-pointer shadow-md focus:shadow-gray-500 sm:text-sm"
+        className="flex z-10 truncate cursor-pointer shadow-md focus:shadow-gray-500 sm:text-sm"
         styles={{
           control: (baseStyles, state) => ({
             ...baseStyles,

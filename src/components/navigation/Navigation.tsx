@@ -12,9 +12,9 @@ const Navigation = ({ children }: any) => {
       {isAuthenticated ? (
         <div className={`flex w-full`}>
           <Sidebar />
-          <div className={`flex flex-col justify-center w-full`}>
+          <div className={`flex flex-col  justify-center w-full`}>
             <Navbar />
-            <Content>{children}</Content>
+            <Content className={`h-full`}>{children}</Content>
           </div>
         </div>
       ) : (

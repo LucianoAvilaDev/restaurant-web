@@ -297,7 +297,7 @@ const index = () => {
                 {/* --------------FILTERS ------------------------------ */}
                 <form onSubmit={handleSubmit(handleSearch)}>
                   <div className={`grid grid-cols-12 py-4`}>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputText
                         register={register("id")}
                         id={`id`}
@@ -306,7 +306,7 @@ const index = () => {
                         label={"Número"}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("client")}
                         id={`client`}
@@ -317,7 +317,7 @@ const index = () => {
                         setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 lg:col-span-34 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputDate
                         register={register("date")}
                         id={`date`}
@@ -326,7 +326,7 @@ const index = () => {
                         setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("table")}
                         id={`table`}
@@ -337,7 +337,7 @@ const index = () => {
                         setValue={setValue}
                       />
                     </div>
-                    <div className="p-2 md:col-span-3 sm:col-span-6 col-span-12">
+                    <div className="p-2 lg:col-span-3 md:col-span-4 sm:col-span-6 col-span-12">
                       <InputSelect
                         register={register("isClosed")}
                         id={`isClosed`}

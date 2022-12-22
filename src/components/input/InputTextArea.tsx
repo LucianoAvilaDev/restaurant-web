@@ -31,7 +31,6 @@ const InputTextArea = ({
       )}
       <textarea
         {...register}
-        rows={2}
         key={id}
         id={id}
         readOnly={readOnly ?? false}

@@ -95,8 +95,10 @@ const index = () => {
       {modal && modalTemplate}
       <Navigation>
         <div className={`w-full`}>
-          <div className="flex flex-col space-y-4">
-            <div className={`text-2xl font-medium px-3 space-y-2 w-full`}>
+          <div className="flex flex-col md:space-y-4">
+            <div
+              className={`hidden md:flex text-lg md:text-2xl font-medium px-3 space-y-2 w-full`}
+            >
               {`Bem-vindo, ${user?.name}!`}
             </div>
             <div className="flex">
@@ -106,11 +108,11 @@ const index = () => {
                     "DD/MM/YYYY [às] HH:mm"
                   )}`}
                 >
-                  <div className="px-2  flex-wrap space-x-4 py-4 grid grid-cols-12">
+                  <div className="px-2 flex-wrap space-y-4 sm:space-y-0 md:space-x-4 py-4 grid grid-cols-12">
                     {[...tableCards, ...orderCards].map((card: CardType) => {
                       return (
                         <div
-                          className={`col-span-6 sm:col-span-4 md:col-span-3`}
+                          className={`col-span-12 sm:col-span-4 lg:col-span-3 xl:col-span-2`}
                         >
                           <SmallCard title={card.title} value={card.value} />
                         </div>
@@ -119,18 +121,17 @@ const index = () => {
                   </div>
                 </InnerCard>
                 <InnerCard title={`Mesas`}>
-                  <ul className={`text-sm space-y-0.5 py-1`}>
-                    <li>
-                      Cique em uma mesa{" "}
-                      <span className={`text-green-600 font-bold`}>
-                        DISPONÍVEL
-                      </span>{" "}
-                      para Cadastrar um novo Pedido, ou em uma mesa{" "}
-                      <span className={`text-red-500 font-bold`}>OCUPADA</span>{" "}
-                      para Editar o Pedido.
-                    </li>
-                  </ul>
-                  <div className={`flex flex-wrap justify-start p-2`}>
+                  <div className={`text-xs md:text-sm text-justify`}>
+                    Cique em uma mesa para{" "}
+                    <span className={`text-green-600 font-bold`}>
+                      CADASTRAR
+                    </span>{" "}
+                    ou <span className={`text-red-500 font-bold`}>EDITAR</span>{" "}
+                    um Pedido.
+                  </div>
+                  <div
+                    className={`flex flex-wrap justify-center md:justify-start p-2`}
+                  >
                     {tables.map((table: any) => {
                       return (
                         <DashboardTable
