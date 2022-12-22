@@ -26,7 +26,7 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [meal, setMeal] = useState<any>();
   const [mealTypeId, setMealTypeId] = useState<any>();
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const {
     register,
@@ -82,8 +82,8 @@ export const FormMeals = ({ id, setModal, mealTypes, handleClear }: Props) => {
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getMeal = async (id: string) => {

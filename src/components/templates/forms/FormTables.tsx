@@ -21,7 +21,7 @@ type Props = {
 export const FormTables = ({ id, setModal, handleClear }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [table, setTable] = useState<any>();
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const {
     register,
@@ -76,8 +76,8 @@ export const FormTables = ({ id, setModal, handleClear }: Props) => {
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getTable = async (id?: string) => {

@@ -6,18 +6,18 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        fadeIn: "fadeIn 300ms ease-in-out",
-        fadeOut: "fadeOut 300ms ease-in-out",
+        showIn: "showIn 200ms ease-in-out",
+        showOut: "showOut 200ms ease-in-out",
       },
 
       keyframes: (theme) => ({
-        fadeIn: {
-          "0%": { opacity: "0%", transform: "translateY(-3rem)" },
-          "100%": { opacity: 100 },
+        showIn: {
+          "0%": { transform: "scale(0)" },
+          "100%": {},
         },
-        fadeOut: {
-          "0%": { opacity: 100 },
-          "100%": { opacity: "0%", transform: "translateY(-3rem)" },
+        showOut: {
+          "0%": {},
+          "100%": { transform: "scale(0)" },
         },
       }),
 

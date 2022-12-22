@@ -39,7 +39,7 @@ export const FormOrderItems = ({
     label: item.meal.name,
   });
   const [originalMealId, setOriginalMealId] = useState<string>(item.meal.id);
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const {
     register,
@@ -97,8 +97,8 @@ export const FormOrderItems = ({
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getOrderItem = async () => {

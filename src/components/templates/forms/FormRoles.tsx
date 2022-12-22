@@ -29,7 +29,7 @@ export const FormRoles = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [role, setRole] = useState<any>();
   const [selected, setSelected] = useState<any>([]);
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const {
     register,
@@ -82,8 +82,8 @@ export const FormRoles = ({
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getRole = async (id: string) => {

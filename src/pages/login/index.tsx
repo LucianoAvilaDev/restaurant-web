@@ -55,7 +55,7 @@ export default function index() {
         <Head>
           <title>Login</title>
         </Head>
-        <div className="flex justify-center transition-all w-full animate-fadeIn">
+        <div className="flex justify-center transition-all w-full animate-showIn">
           <SimpleCard title="Realizar Login">
             <form
               className="pt-6 pb-2 space-y-4 px-4"

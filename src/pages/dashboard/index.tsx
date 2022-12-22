@@ -56,12 +56,10 @@ const index = () => {
           {
             title: "Mesas Ocupadas",
             value: `${occupiedTables} / ${data.length}`,
-            color: "primary",
           },
           {
             title: "Mesas Disponíveis",
             value: `${data.length - occupiedTables} / ${data.length}`,
-            color: "secondary",
           },
         ]);
       })
@@ -77,7 +75,6 @@ const index = () => {
           {
             title: "Pedidos abertos",
             value: `${openOrders} / ${data.length}`,
-            color: "info",
           },
         ]);
       })
@@ -115,18 +112,25 @@ const index = () => {
                         <div
                           className={`col-span-6 sm:col-span-4 md:col-span-3`}
                         >
-                          <SmallCard
-                            title={card.title}
-                            value={card.value}
-                            color={card.color}
-                          />
+                          <SmallCard title={card.title} value={card.value} />
                         </div>
                       );
                     })}
                   </div>
                 </InnerCard>
                 <InnerCard title={`Mesas`}>
-                  <div className={`flex flex-wrap justify-center p-2`}>
+                  <ul className={`text-sm space-y-0.5 py-1`}>
+                    <li>
+                      Cique em uma mesa{" "}
+                      <span className={`text-green-600 font-bold`}>
+                        DISPONÍVEL
+                      </span>{" "}
+                      para Cadastrar um novo Pedido, ou em uma mesa{" "}
+                      <span className={`text-red-500 font-bold`}>OCUPADA</span>{" "}
+                      para Editar o Pedido.
+                    </li>
+                  </ul>
+                  <div className={`flex flex-wrap justify-start p-2`}>
                     {tables.map((table: any) => {
                       return (
                         <DashboardTable

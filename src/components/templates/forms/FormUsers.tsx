@@ -27,7 +27,7 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
   const [user, setUser] = useState<any>();
   const [enablePassword, setEnablePassword] = useState<boolean>(false);
   const [selected, setSelected] = useState<any>([]);
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const defaultPassword: string = "******";
 
@@ -83,8 +83,8 @@ export const FormUsers = ({ id, setModal, handleClear, roles }: Props) => {
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getUser = async (id: string) => {

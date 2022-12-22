@@ -54,7 +54,7 @@ export const FormOrders = ({
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedTable, setSelectedTable] = useState<any>();
   const [pending, setPending] = useState<boolean>(true);
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const [tables, setTables] = useState<any>([]);
 
@@ -319,8 +319,8 @@ export const FormOrders = ({
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getMeals = async () => {

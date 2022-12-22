@@ -22,7 +22,7 @@ type Props = {
 export const FormClients = ({ id, handleClear, setModal }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [client, setClient] = useState<any>();
-  const [animation, setAnimation] = useState<string>("animate-fadeIn");
+  const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const {
     register,
@@ -77,8 +77,8 @@ export const FormClients = ({ id, handleClear, setModal }: Props) => {
   };
 
   const handleCancel = () => {
-    setAnimation("animate-fadeOut");
-    setTimeout(() => setModal(false), 250);
+    setAnimation("animate-showOut");
+    setTimeout(() => setModal(false), 150);
   };
 
   const getClient = async (id: string) => {

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { destroyCookie } from "nookies";
 import { useContext, useState } from "react";
@@ -51,14 +50,12 @@ const UserMenu = () => {
               </div>
               <div className={`text-center border-b divide-y bg-white text-xs`}>
                 <div>
-                  <Link key={v4()} href="edit-profile">
-                    <li
-                      key={v4()}
-                      className={`px-2 py-1 cursor-pointer rounded-sm hover:text-themeTextLight hover:bg-themeDark`}
-                    >
-                      Meus Dados
-                    </li>
-                  </Link>
+                  <li
+                    key={v4()}
+                    className={`px-2 py-1 cursor-pointer rounded-sm hover:text-themeTextLight hover:bg-themeDark`}
+                  >
+                    Meus Dados
+                  </li>
                 </div>
                 <div>
                   <div
