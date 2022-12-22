@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export const ErrorAlert = (msg?: string) =>
+export const WarningAlert = (msg?: string) =>
   toast.warning(msg ?? "Atenção!", {
     position: "top-center",
     autoClose: 2500,
