@@ -38,7 +38,7 @@ const Sidebar = () => {
   };
 
   // MENU SEM SUBMENU
-  const simpleMenu: any = (menu: MenuType) => {
+  const SimpleMenu: any = (menu: MenuType) => {
     return (
       <Link
         href={menu.url}
@@ -67,7 +67,7 @@ const Sidebar = () => {
   };
 
   //SUBMENU
-  const subMenu: any = (menu: MenuType) => {
+  const SubMenu: any = (menu: MenuType) => {
     return (
       <Link
         key={v4()}
@@ -97,7 +97,7 @@ const Sidebar = () => {
   };
 
   // MENU COM SUBMENU
-  const nestedMenu: any = (menu: MenuType) => {
+  const NestedMenu: any = (menu: MenuType) => {
     const [openMenu, setOpenMenu] = useState<boolean>(false);
     const [openByUrlRef, setOpenByUrlRef] = useState<boolean>(false);
 
@@ -137,9 +137,9 @@ const Sidebar = () => {
             <ul className={`bg-themeDarker border-l-4 border-themeLight `}>
               {menu.submenus.map((currentMenu: MenuType) => {
                 if (currentMenu.submenus.length == 0)
-                  return subMenu(currentMenu);
+                  return SubMenu(currentMenu);
 
-                return nestedMenu(currentMenu);
+                return NestedMenu(currentMenu);
               })}
             </ul>
           ) : null}
@@ -181,9 +181,9 @@ const Sidebar = () => {
         <div className={`flex flex-col my-4 transition-all`}>
           <ul>
             {Menus.map((menu: MenuType) => {
-              if (menu.submenus.length == 0) return simpleMenu(menu);
+              if (menu.submenus.length == 0) return SimpleMenu(menu);
 
-              return nestedMenu(menu);
+              return NestedMenu(menu);
             })}
           </ul>
         </div>

@@ -23,7 +23,7 @@ import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
-const index = ({loadedUsers,loadedRoles}:any) => {
+const Index = ({loadedUsers,loadedRoles}:any) => {
   const [users, setUsers] = useState<UserType[]>(loadedUsers);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -227,7 +227,6 @@ const index = ({loadedUsers,loadedRoles}:any) => {
                     </div>
                   </div>
                 </form>
-                {/* ----------------------------------------------------- */}
               </div>
               <SimpleTable columns={columns} data={data} pending={pending} />
             </div>
@@ -238,7 +237,7 @@ const index = ({loadedUsers,loadedRoles}:any) => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
   const apiClient = getApiClient(ctx)

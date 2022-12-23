@@ -4,6 +4,7 @@ import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { v4 } from "uuid";
 import { CardType } from "../../../types/CardType";
 import { ClientType } from "../../../types/ClientType";
 import { OrderType } from "../../../types/OrderType";
@@ -21,7 +22,7 @@ import validateAuth from "../../services/validateAuth";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const index = () => {
+const Index = () => {
   const { user } = useContext(AuthContext);
 
   const [tableCards, setTableCards] = useState<CardType[]>([]);
@@ -112,6 +113,7 @@ const index = () => {
                     {[...tableCards, ...orderCards].map((card: CardType) => {
                       return (
                         <div
+                          key={v4()}
                           className={`col-span-12 sm:col-span-4 lg:col-span-3 xl:col-span-2`}
                         >
                           <SmallCard title={card.title} value={card.value} />
@@ -134,30 +136,32 @@ const index = () => {
                   >
                     {tables.map((table: any) => {
                       return (
-                        <DashboardTable
-                          table={table}
-                          onClick={async () => {
-                            await Promise.resolve(
-                              setModalTemplate(
-                                <FormOrders
-                                  clients={clients}
-                                  id={
-                                    table.orders
-                                      ? table.orders[0].id
-                                      : undefined
-                                  }
-                                  handleClear={async () => {
-                                    getData();
-                                  }}
-                                  setModal={setModal}
-                                  table={table}
-                                />
-                              )
-                            ).then(() => {
-                              setModal(true);
-                            });
-                          }}
-                        />
+                        <div key={v4()}>
+                          <DashboardTable
+                            table={table}
+                            onClick={async () => {
+                              await Promise.resolve(
+                                setModalTemplate(
+                                  <FormOrders
+                                    clients={clients}
+                                    id={
+                                      table.orders
+                                        ? table.orders[0].id
+                                        : undefined
+                                    }
+                                    handleClear={async () => {
+                                      getData();
+                                    }}
+                                    setModal={setModal}
+                                    table={table}
+                                  />
+                                )
+                              ).then(() => {
+                                setModal(true);
+                              });
+                            }}
+                          />
+                        </div>
                       );
                     })}
                   </div>
@@ -171,7 +175,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!(await validateAuth(ctx))) {

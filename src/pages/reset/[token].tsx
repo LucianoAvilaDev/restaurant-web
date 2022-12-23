@@ -19,7 +19,7 @@ type Props = {
   recoveryToken: string;
 };
 
-export default function index({ recoveryToken }: Props) {
+export default function Index({ recoveryToken }: Props) {
   const router: NextRouter = useRouter();
 
   const getUser = async () => {

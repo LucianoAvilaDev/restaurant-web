@@ -1,7 +1,3 @@
-type Props = {
-  table: any;
-};
-
 const DashboardTable = ({ table, ...props }: any) => {
   return (
     <div className={`col-span-4 py-4 px-2 cursor-pointer`}>
