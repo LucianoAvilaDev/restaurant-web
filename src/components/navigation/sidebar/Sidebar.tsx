@@ -11,6 +11,7 @@ const Sidebar = () => {
   const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
   const [pageMarginLeft, setPageMarginLeft] = useState<string>("md:ml-64");
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
+  const [isMediumScreen, setIsMediumScreen] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
 
   const { ref, setRef, setIsLoading } = useContext(AuthContext);
@@ -21,13 +22,15 @@ const Sidebar = () => {
   }, [openSidebar]);
 
   useEffect(() => {
-    if (document)
+    if (document){
       setUrlRef(
         document.location.href.replace(
           process.env.NEXT_PUBLIC_API_URL ?? "",
           ""
         )
-      );
+      )
+      setIsMediumScreen(window.innerWidth <= 768)
+    }
   }, []);
 
   const handleOpenSidebar = () => {
@@ -148,9 +151,9 @@ const Sidebar = () => {
   return (
     <>
       {/* SIDEBAR */}
-      <div className={`${pageMarginLeft} `}></div>
+      {isMediumScreen && <div className={`${pageMarginLeft} bg-themeBgBody`}></div>}
       <div
-        className={`${sidebarWidth} fixed transition-all h-full z-20 shadow-md bg-themeDark min-h-screen`}
+        className={`${sidebarWidth} fixed md:relative transition-all h-full z-20 shadow-md bg-themeDark min-h-screen`}
       >
         {/* HEADER */}
         <div className={`flex shadow-md bg-themeMedium py-2 justify-center`}>

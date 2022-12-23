@@ -94,7 +94,7 @@ const index = () => {
     <>
       {modal && modalTemplate}
       <Navigation>
-        <div className={`w-full`}>
+        <div className={`w-full min-h-screen`}>
           <div className="flex flex-col md:space-y-4">
             <div
               className={`hidden md:flex text-lg md:text-2xl font-medium px-3 space-y-2 w-full`}

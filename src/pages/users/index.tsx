@@ -1,5 +1,6 @@
+import { AxiosResponse } from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -19,37 +20,17 @@ import SimpleTable from "../../components/tables/SimpleTable";
 import FormUsers from "../../components/templates/forms/FormUsers";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
-const index = () => {
-  const [users, setUsers] = useState<UserType[]>([]);
-  const [roles, setRoles] = useState<SelectType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+const index = ({loadedUsers,loadedRoles}:any) => {
+  const [users, setUsers] = useState<UserType[]>(loadedUsers);
+  const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
   const { register, handleSubmit, setValue } = useForm();
-
-  const getUsers = async () => {
-    setPending(true);
-    await api.get("users").then(({ data }: any) => {
-      setUsers(data);
-      setPending(false);
-    });
-  };
-
-  const getRolesForSelect = async () => {
-    setPending(true);
-    await api.get("roles").then(({ data }: any) => {
-      setRoles(
-        data.map((role: RoleType) => {
-          return { value: role.id, label: role.name };
-        })
-      );
-      setPending(false);
-    });
-  };
 
   const columns: any = [
     {
@@ -111,7 +92,7 @@ const index = () => {
                       id={user.id}
                       handleClear={handleClear}
                       setModal={setModal}
-                      roles={roles}
+                      roles={loadedRoles}
                     />
                   )
                 ).then(() => {
@@ -151,7 +132,7 @@ const index = () => {
             setModalTemplate(
               <FormUsers
                 handleClear={handleClear}
-                roles={roles}
+                roles={loadedRoles}
                 setModal={setModal}
               />
             )
@@ -168,7 +149,7 @@ const index = () => {
       .delete(`users/${id}`)
       .then(async () => {
         SuccessAlert("Registro excluído com sucesso");
-        await getUsers();
+        document.getElementById('search')?.click();
         setIsLoading(false);
       })
       .catch((e: any) => {
@@ -179,7 +160,6 @@ const index = () => {
 
   const handleSearch = (data: any) => {
     setPending(true);
-
     api.post("users/filters", data).then(({ data }) => {
       setUsers(data);
       setPending(false);
@@ -195,17 +175,12 @@ const index = () => {
     return;
   };
 
-  useEffect(() => {
-    getRolesForSelect();
-    getUsers();
-  }, []);
-
   return (
     <>
       {modal && modalTemplate}
       {isLoading && <Loader />}
       <Navigation>
-        <div className={`px-3 w-full`}>
+        <div className={`px-3 w-full min-h-screen`}>
           <BodyCard title={`Usuários`} newButton={newButton}>
             <div className="px-2 pt-2 pb-6">
               <div className={`py-4`}>
@@ -265,7 +240,9 @@ const index = () => {
 
 export default index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
+  const apiClient = getApiClient(ctx)
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -275,7 +252,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const loadedUsers:UserType[] = await apiClient.get('users').then(({data}:AxiosResponse) => data)
+
+  const loadedRoles:SelectType[] = await apiClient.get("roles").then(({ data }: any) => {
+      return data.map((role: RoleType) => {
+        return { value: role.id, label: role.name };
+        })
+  });
+
+
   return {
-    props: {},
+    props: {
+      loadedUsers:loadedUsers,
+      loadedRoles:loadedRoles
+    },
   };
 };

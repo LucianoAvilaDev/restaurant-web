@@ -206,7 +206,7 @@ const index = () => {
       {modal && modalTemplate}
       {isLoading && <Loader />}
       <Navigation>
-        <div className={`px-3 w-full`}>
+        <div className={`px-3 w-full min-h-screen`}>
           <BodyCard title={`Perfis`} newButton={newButton}>
             <div className="px-2 pt-2 pb-6">
               <div className={`py-4`}>
