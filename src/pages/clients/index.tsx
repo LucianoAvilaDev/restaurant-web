@@ -24,7 +24,7 @@ import validateAuth from "../../services/validateAuth";
 import { FormatCpf } from "../../utils/FormatCpf";
 import { SanitizeCpf } from "../../utils/SanitizeCpf";
 
-const index = () => {
+const Index = () => {
   const [clients, setClients] = useState<ClientType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [modal, setModal] = useState<boolean>(false);
@@ -260,7 +260,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apiClient = getApiClient(ctx);

@@ -24,7 +24,7 @@ import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import validateAuth from "../../services/validateAuth";
 
-const index = () => {
+const Index = () => {
   const [tables, setTables] = useState<TableType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -258,7 +258,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!(await validateAuth(ctx))) {

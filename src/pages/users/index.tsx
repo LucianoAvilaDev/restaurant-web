@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,9 +20,10 @@ import SimpleTable from "../../components/tables/SimpleTable";
 import FormUsers from "../../components/templates/forms/FormUsers";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
-const index = () => {
+const Index = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [roles, setRoles] = useState<SelectType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
@@ -263,9 +265,11 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const apiClient = getApiClient(ctx);
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -273,6 +277,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         permanent: false,
       },
     };
+  }
+  try {
+    const getUsers = await apiClient.get("users");
+  } catch (e: any) {
+    const error = e as AxiosError;
+    console.log(error?.response?.data);
   }
 
   return {

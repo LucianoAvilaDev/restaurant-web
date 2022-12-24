@@ -13,7 +13,7 @@ import { Link } from "../../components/input/Link";
 import Loader from "../../components/loader/Loader";
 import { AuthContext } from "../../contexts/AuthContext";
 
-export default function index() {
+export default function Index() {
   const { signIn } = useContext(AuthContext);
 
   const schema = object({

@@ -23,7 +23,7 @@ import { api } from "../../services/api";
 import validateAuth from "../../services/validateAuth";
 import { FormatMoney } from "../../utils/FormatMoney";
 
-const index = () => {
+const Index = () => {
   const [meals, setMeals] = useState<MealType[]>([]);
   const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
   const [pending, setPending] = useState<boolean>(true);
@@ -268,7 +268,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!(await validateAuth(ctx))) {
