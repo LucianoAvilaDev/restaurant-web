@@ -24,9 +24,13 @@ import validateAuth from "../../services/validateAuth";
 import { FormatCpf } from "../../utils/FormatCpf";
 import { SanitizeCpf } from "../../utils/SanitizeCpf";
 
-const Index = () => {
-  const [clients, setClients] = useState<ClientType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+type Props = {
+  loadedClients:ClientType[]
+}
+
+const Index = ({loadedClients}:Props) => {
+  const [clients, setClients] = useState<ClientType[]>(loadedClients);
+  const [pending, setPending] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
 
@@ -192,11 +196,6 @@ const Index = () => {
     return;
   };
 
-  useEffect(() => {
-    getClients();
-    setIsLoading(false);
-  }, []);
-
   return (
     <>
       {modal && modalTemplate}
@@ -274,7 +273,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const clients:ClientType[] = await apiClient.get("clients").then(({ data }: any) => data) 
+
   return {
-    props: {},
+    props: {loadedClients:clients},
   };
 };

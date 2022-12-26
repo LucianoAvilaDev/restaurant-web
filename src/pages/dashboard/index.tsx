@@ -18,9 +18,8 @@ import DashboardTable from "../../components/templates/DashboardTable";
 import { FormOrders } from "../../components/templates/forms/FormOrders";
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Index = () => {
   const { user } = useContext(AuthContext);
@@ -178,6 +177,8 @@ const Index = () => {
 export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const apiClient:any = getApiClient(ctx)
+  
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
