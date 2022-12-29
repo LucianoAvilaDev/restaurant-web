@@ -22,13 +22,15 @@ import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
-const Index = () => {
-  const [roles, setRoles] = useState<RoleType[]>([]);
-  const [permissions, setPermissions] = useState<SelectType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+
+const Index = ({loadedRoles,loadedPermissions}:any) => {
+  const [roles, setRoles] = useState<RoleType[]>(loadedRoles);
+  const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
+  
+  const permissions = loadedPermissions
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -39,26 +41,6 @@ const Index = () => {
       setPending(false);
     });
   };
-
-  const getPermissions = async () => {
-    setPending(true);
-    await api.get("permissions").then(({ data }: any) => {
-      setPermissions(
-        data.map((permission: any) => {
-          return {
-            value: permission.id,
-            label: permission.description,
-          };
-        })
-      );
-      setPending(false);
-    });
-  };
-
-  useEffect(() => {
-    getPermissions();
-    getRoles();
-  }, []);
 
   const columns: any = [
     {
@@ -269,7 +251,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const permissions:SelectType[] = await apiClient.get("permissions").then(({ data }: any) => {
+        return data.map((permission: any) => {
+          return {
+            value: permission.id,
+            label: permission.description,
+          };
+        })
+    });
+
+  const roles:RoleType[] = await apiClient.get("roles").then(({ data }: any) => data );
+
   return {
-    props: {},
+    props: {
+      loadedRoles:roles,
+      loadedPermissions:permissions
+    },
   };
 };

@@ -14,35 +14,15 @@ import InputPassword from "../../components/input/InputPassword";
 import Loader from "../../components/loader/Loader";
 import { UsersSchema } from "../../schemas/UsersSchema";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
+import { UserType } from "../../../types/UserType";
 
 type Props = {
-  recoveryToken: string;
+  loadedUser: UserType;
 };
 
-export default function Index({ recoveryToken }: Props) {
+export default function Index({ loadedUser }: Props) {
   const router: NextRouter = useRouter();
-
-  const getUser = async () => {
-    api
-      .post("reset", { token: recoveryToken })
-      .then(({ data }: any) => {
-        setValue("id", data.id);
-        setValue("name", data.name);
-        setValue("email", data.email);
-        setValue("password", "");
-        setValue("passwordConfirm", "");
-        setValue("roleId", data.role.id ?? []);
-      })
-      .catch(({ response }: AxiosError) => {
-        ErrorAlert(
-          (response?.data as string) ??
-            "Houve um erro! Tente novamente mais tarde."
-        );
-        router.push("login");
-      });
-  };
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
@@ -53,6 +33,18 @@ export default function Index({ recoveryToken }: Props) {
   } = useForm({
     resolver: yupResolver(UsersSchema()),
   });
+
+  useEffect(()=> {
+    setValue("id", loadedUser.id);
+    setValue("name", loadedUser.name);
+    setValue("email", loadedUser.email);
+    setValue("password", "");
+    setValue("passwordConfirm", "");
+    setValue("roleId", loadedUser.role.id ?? []);
+  }
+  ,[])
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSave = (data: any) => {
     setIsLoading(true);
@@ -81,10 +73,6 @@ export default function Index({ recoveryToken }: Props) {
   const handleCancel = () => {
     router.push("login");
   };
-
-  useEffect(() => {
-    getUser();
-  }, []);
 
   return (
     <>
@@ -116,7 +104,7 @@ export default function Index({ recoveryToken }: Props) {
                   register={register("password")}
                   name={"password"}
                   placeholder={"Digite a senha"}
-                  label={"Nova Senha:"}
+                  label={"Nova Senha"}
                   errorMessage={errors?.password?.message}
                 />
               </div>
@@ -156,10 +144,15 @@ export default function Index({ recoveryToken }: Props) {
 }
 export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const recoveryToken: string = ctx.params.token;
+  const apiClient = getApiClient(ctx)
+
+  const user:UserType = await apiClient
+    .post("reset", { token: recoveryToken })
+    .then(({ data }: any) => data)
 
   return {
     props: {
-      recoveryToken: recoveryToken,
+      loadedUser: user,
     },
   };
 };

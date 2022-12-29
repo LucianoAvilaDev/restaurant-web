@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { AxiosError, AxiosInstance } from "axios";
 import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,34 +20,26 @@ import SimpleTable from "../../components/tables/SimpleTable";
 import FormMeals from "../../components/templates/forms/FormMeals";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 import { FormatMoney } from "../../utils/FormatMoney";
 
-const Index = () => {
-  const [meals, setMeals] = useState<MealType[]>([]);
-  const [mealTypes, setMealTypes] = useState<SelectType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+const Index = ({loadedMeals,loadedMealTypes}:any) => {
+  const [meals, setMeals] = useState<MealType[]>(loadedMeals);
+  const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-
+  
   const { register, handleSubmit, setValue } = useForm();
-
+  
+  const mealTypes:SelectType[] = loadedMealTypes;
+  
   const getMeals = async () => {
     setPending(true);
     await api.get("meals").then(({ data }: any) => {
       setMeals(data);
       setPending(false);
-    });
-  };
-
-  const getMealTypes = async () => {
-    await api.get("meal-types").then(({ data }: any) => {
-      setMealTypes(
-        data.map((type: any) => {
-          return { value: type.id, label: type.name };
-        })
-      );
     });
   };
 
@@ -198,11 +190,6 @@ const Index = () => {
     return;
   };
 
-  useEffect(() => {
-    getMeals();
-    getMealTypes();
-  }, []);
-
   return (
     <>
       {modal && modalTemplate}
@@ -270,7 +257,10 @@ const Index = () => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
+
+  const apiClient:AxiosInstance = getApiClient(ctx)
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -280,7 +270,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const loadedMeals = await apiClient.get("meals").then(({ data }: any) => data)
+  const loadedMealTypes = await apiClient.get("meal-types").then(({ data }: any) => data.map((type: any) => {
+          return { value: type.id, label: type.name };
+        }))
+
   return {
-    props: {},
+    props: {
+      loadedMeals:loadedMeals,
+      loadedMealTypes:loadedMealTypes
+    }
   };
 };

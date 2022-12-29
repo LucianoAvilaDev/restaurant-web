@@ -5,7 +5,7 @@ const Content = ({ children }: any) => {
     <div className={`bg-themeBgBody h-full w-full`}>
       <Breadcrumb />
 
-      <div className={`h-`}>{children}</div>
+      {children}
     </div>
   );
 };

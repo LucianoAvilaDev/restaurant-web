@@ -29,7 +29,7 @@ export default function Index() {
 
   const handleSendRecoveryEmail = (data: any) => {
     api.post("recovery", data).then(() => {
-      SuccessAlert("Registro salvo com sucesso!");
+      SuccessAlert("E-mail enviado com sucesso!");
       setIsLoading(false);
       router.push("../login");
       return;

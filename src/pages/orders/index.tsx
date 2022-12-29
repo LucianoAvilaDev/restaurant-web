@@ -1,3 +1,4 @@
+import { AxiosInstance } from "axios";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useContext, useEffect, useState } from "react";
@@ -25,17 +26,21 @@ import { FormOrders } from "../../components/templates/forms/FormOrders";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 import { FormatMoney } from "../../utils/FormatMoney";
 
-const Index = () => {
-  const [orders, setOrders] = useState<OrderType[]>([]);
-  const [clients, setClients] = useState<SelectType[]>([]);
-  const [tables, setTables] = useState<SelectType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+const Index = ({loadedTables,loadedClients,loadedOrders}:any) => {
 
+  const [orders, setOrders] = useState<OrderType[]>(loadedOrders);
+
+  const [pending, setPending] = useState<boolean>(false);
+  
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
+  
+  const clients:SelectType[] = loadedClients;
+  const tables:SelectType[] = loadedTables;
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -45,36 +50,6 @@ const Index = () => {
     setPending(true);
     await api.get("orders").then(({ data }: any) => {
       setOrders(data);
-      setPending(false);
-    });
-  };
-
-  const GetClients = async () => {
-    setPending(true);
-    await api.get("clients").then(({ data }: any) => {
-      setClients(
-        data.map((client: ClientType) => {
-          return {
-            value: client.id,
-            label: client.name,
-          };
-        })
-      );
-      setPending(false);
-    });
-  };
-
-  const GetTables = async () => {
-    setPending(true);
-    await api.get("tables").then(({ data }: any) => {
-      setTables(
-        data.map((table: TableType) => {
-          return {
-            value: table.id,
-            label: table.number,
-          };
-        })
-      );
       setPending(false);
     });
   };
@@ -269,12 +244,6 @@ const Index = () => {
     return;
   };
 
-  useEffect(() => {
-    GetTables();
-    GetClients();
-    getOrders();
-  }, []);
-
   const isClosedOptions: SelectType[] = [
     {
       value: "false",
@@ -383,7 +352,10 @@ const Index = () => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
+
+  const apiClient:AxiosInstance = getApiClient(ctx)
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -393,7 +365,31 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const loadedTables:SelectType[]|void = await apiClient.get("tables").then(({ data }: any) => 
+    data.map((table: TableType) => {
+      return {
+        value: table.id,
+        label: table.number,
+      };
+    })
+  );
+  
+   const loadedClients:SelectType[]|void = await apiClient.get("clients").then(({ data }: any) => 
+    data.map((client: ClientType) => {
+        return {
+          value: client.id,
+          label: client.name,
+        };
+    }))
+
+  const loadedOrders:OrderType[] = await apiClient.get("orders").then(({ data }: any) => data)
+
+
   return {
-    props: {},
+    props: {
+      loadedTables:loadedTables,
+      loadedClients:loadedClients,
+      loadedOrders:loadedOrders
+    },
   };
 };

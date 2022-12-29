@@ -22,11 +22,12 @@ import SimpleTable from "../../components/tables/SimpleTable";
 import FormTables from "../../components/templates/forms/FormTables";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
+import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
-const Index = () => {
-  const [tables, setTables] = useState<TableType[]>([]);
-  const [pending, setPending] = useState<boolean>(true);
+const Index = ({loadedTables}:any) => {
+  const [tables, setTables] = useState<TableType[]>(loadedTables);
+  const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
@@ -178,10 +179,6 @@ const Index = () => {
     return;
   };
 
-  useEffect(() => {
-    getTables();
-  }, []);
-
   const options: SelectType[] = [
     {
       value: "true",
@@ -260,7 +257,9 @@ const Index = () => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
+  const apiClient = getApiClient(ctx)
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {
@@ -270,7 +269,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const loadedTables:TableType[] = await apiClient.get("tables").then(({ data }: any) => data);
+
   return {
-    props: {},
+    props: {
+      loadedTables:loadedTables
+    },
   };
 };

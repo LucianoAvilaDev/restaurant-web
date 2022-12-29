@@ -52,7 +52,7 @@ export const FormOrders = ({
   const [meals, setMeals] = useState<MealType[]>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedTable, setSelectedTable] = useState<any>();
-  const [pending, setPending] = useState<boolean>(true);
+  const [pending, setPending] = useState<boolean>(false);
   const [animation, setAnimation] = useState<string>("animate-showIn");
 
   const [tables, setTables] = useState<any>([]);

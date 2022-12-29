@@ -8,8 +8,8 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { Menus, MenuType } from "./Menus";
 
 const Sidebar = () => {
-  const [sidebarWidth, setSidebarWidth] = useState<string>("w-64");
-  const [pageMarginLeft, setPageMarginLeft] = useState<string>("md:ml-64");
+  const [sidebarWidth, setSidebarWidth] = useState<string>("w-60");
+  const [pageMarginLeft, setPageMarginLeft] = useState<string>("md:pl-60");
   const [openSidebar, setOpenSidebar] = useState<boolean>(true);
   const [isMediumScreen, setIsMediumScreen] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
@@ -17,8 +17,8 @@ const Sidebar = () => {
   const { ref, setRef, setIsLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    setSidebarWidth(openSidebar ? "w-64" : "w-16");
-    setPageMarginLeft(openSidebar ? "md:ml-64 ml-16" : "ml-16");
+    setSidebarWidth(openSidebar ? "w-60" : "w-16");
+    setPageMarginLeft(openSidebar ? "md:pl-60 pl-16" : "pl-16");
   }, [openSidebar]);
 
   useEffect(() => {
@@ -149,11 +149,11 @@ const Sidebar = () => {
   };
 
   return (
-    <>
+    <div>
       {/* SIDEBAR */}
-      {isMediumScreen && <div className={`${pageMarginLeft} bg-themeBgBody`}></div>}
+      {isMediumScreen && <div className={`${pageMarginLeft}`}></div>}
       <div
-        className={`${sidebarWidth} fixed md:relative transition-all h-full z-20 shadow-md bg-themeDark min-h-screen`}
+        className={`${sidebarWidth} fixed md:relative transition-all min-h-screen h-full z-20 shadow-md bg-themeDark`}
       >
         {/* HEADER */}
         <div className={`flex shadow-md bg-themeMedium py-2 justify-center`}>
@@ -188,7 +188,7 @@ const Sidebar = () => {
           </ul>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
