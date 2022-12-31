@@ -14,7 +14,7 @@ const Sidebar = () => {
   const [isMediumScreen, setIsMediumScreen] = useState<boolean>(true);
   const [urlRef, setUrlRef] = useState<string>("");
 
-  const { ref, setRef, setIsLoading } = useContext(AuthContext);
+  const { user, ref, setRef, setIsLoading } = useContext(AuthContext);
 
   useEffect(() => {
     setSidebarWidth(openSidebar ? "w-60" : "w-16");
@@ -32,6 +32,10 @@ const Sidebar = () => {
       setIsMediumScreen(window.innerWidth <= 768)
     }
   }, []);
+
+  const userHasPermissions = (permissions:string[]) => {
+    return permissions.length == 0  || user?.permissions.some( userPermission => permissions.includes(userPermission) )
+  }
 
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);
@@ -136,10 +140,12 @@ const Sidebar = () => {
           {openMenu || openByUrlRef ? (
             <ul className={`bg-themeDarker border-l-4 border-themeLight `}>
               {menu.submenus.map((currentMenu: MenuType) => {
-                if (currentMenu.submenus.length == 0)
-                  return SubMenu(currentMenu);
+                if(userHasPermissions(currentMenu.permissions)){
+                  if (currentMenu.submenus.length == 0)
+                    return SubMenu(currentMenu);
 
-                return NestedMenu(currentMenu);
+                  return NestedMenu(currentMenu);
+                }
               })}
             </ul>
           ) : null}
@@ -181,9 +187,11 @@ const Sidebar = () => {
         <div className={`flex flex-col my-4 transition-all`}>
           <ul>
             {Menus.map((menu: MenuType) => {
-              if (menu.submenus.length == 0) return SimpleMenu(menu);
-
-              return NestedMenu(menu);
+              if(userHasPermissions(menu.permissions)){
+                if (menu.submenus.length == 0) return SimpleMenu(menu);
+  
+                return NestedMenu(menu);
+              }
             })}
           </ul>
         </div>

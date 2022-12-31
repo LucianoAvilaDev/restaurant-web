@@ -27,13 +27,11 @@ const UserMenu = () => {
       >
         <FaUserCircle
           size={30}
-          onMouseEnter={() => setUserMenuOpen(true)}
           onClick={() => setUserMenuOpen(!userMenuOpen)}
         />
       </div>
       <div
         className={`fixed rounded-md shadow-md right-3 bg-white`}
-        onMouseLeave={() => setUserMenuOpen(false)}
       >
         {/* MENU USER NO NAVBAR */}
         {userMenuOpen ? (

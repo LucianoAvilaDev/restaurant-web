@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { GetServerSideProps } from "next";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -19,11 +20,20 @@ import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
 import FormUsers from "../../components/templates/forms/FormUsers";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 const Index = ({loadedUsers,loadedRoles}:any) => {
+
+  const { user } = useContext(AuthContext);
+
+  const router = useRouter()
+
+  if(!user?.permissions.includes('manage_users'))
+    router.push('../dashboard')
+    
   const [users, setUsers] = useState<UserType[]>(loadedUsers);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);

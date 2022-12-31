@@ -1,6 +1,7 @@
 import { AxiosError, AxiosInstance } from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import Router, { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -19,12 +20,21 @@ import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
 import FormMeals from "../../components/templates/forms/FormMeals";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 import { FormatMoney } from "../../utils/FormatMoney";
 
 const Index = ({loadedMeals,loadedMealTypes}:any) => {
+
+  const { user } = useContext(AuthContext);
+
+  const router = useRouter()
+
+  if(!user?.permissions.includes('manage_meals'))
+    router.push('../dashboard')
+
   const [meals, setMeals] = useState<MealType[]>(loadedMeals);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);

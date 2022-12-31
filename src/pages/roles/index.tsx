@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -18,12 +19,20 @@ import Navigation from "../../components/navigation/Navigation";
 import SimpleTable from "../../components/tables/SimpleTable";
 import FormRoles from "../../components/templates/forms/FormRoles";
 import YesNoTemplate from "../../components/templates/YesNoTemplate";
+import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
 
 
 const Index = ({loadedRoles,loadedPermissions}:any) => {
+  const { user } = useContext(AuthContext);
+
+  const router = useRouter()
+
+  if(!user?.permissions.includes('manage_roles'))
+    router.push('../dashboard')
+    
   const [roles, setRoles] = useState<RoleType[]>(loadedRoles);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);

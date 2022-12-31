@@ -30,7 +30,6 @@ const Index = () => {
   const [clients, setClients] = useState<SelectType[]>([]);
   const [modal, setModal] = useState<boolean>();
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-  const router = useRouter();
 
   const GetClients = async () => {
     await api.get("clients").then(({ data }: any) => {
@@ -122,14 +121,14 @@ const Index = () => {
                   </div>
                 </InnerCard>
                 <InnerCard title={`Mesas`}>
-                  <div className={`text-xs md:text-sm text-justify`}>
+                  {user?.permissions.includes('manage_orders') && <div className={`text-xs md:text-sm text-justify`}>
                     Cique em uma mesa para{" "}
                     <span className={`text-green-600 font-bold`}>
                       CADASTRAR
                     </span>{" "}
                     ou <span className={`text-red-500 font-bold`}>EDITAR</span>{" "}
                     um Pedido.
-                  </div>
+                  </div>}
                   <div
                     className={`flex flex-wrap justify-center md:justify-start p-2`}
                   >
@@ -139,6 +138,7 @@ const Index = () => {
                           <DashboardTable
                             table={table}
                             onClick={async () => {
+                              if(!user?.permissions.includes('manage_orders')) return
                               await Promise.resolve(
                                 setModalTemplate(
                                   <FormOrders
