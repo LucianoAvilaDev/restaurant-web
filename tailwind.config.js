@@ -2,7 +2,7 @@ const { color } = require("@mui/system");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./pages/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx,png}", "./pages/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       animation: {

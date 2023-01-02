@@ -2,15 +2,11 @@ import { AxiosInstance } from "axios";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { toast } from "react-toastify";
-import { ClientType } from "../../../types/ClientType";
-import { OrderType } from "../../../types/OrderType";
-import { SelectType } from "../../../types/SelectType";
-import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import BadgeGreen from "../../components/badges/BadgeGreen";
@@ -29,26 +25,28 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { ClientType } from "../../types/ClientType";
+import { OrderType } from "../../types/OrderType";
+import { SelectType } from "../../types/SelectType";
+import { TableType } from "../../types/TableType";
 import { FormatMoney } from "../../utils/FormatMoney";
 
-const Index = ({loadedTables,loadedClients,loadedOrders}:any) => {
-
+const Index = ({ loadedTables, loadedClients, loadedOrders }: any) => {
   const { user } = useContext(AuthContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  if(!user?.permissions.includes('manage_orders'))
-    router.push('../dashboard')
+  if (!user?.permissions.includes("manage_orders")) router.push("../dashboard");
 
   const [orders, setOrders] = useState<OrderType[]>(loadedOrders);
 
   const [pending, setPending] = useState<boolean>(false);
-  
+
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-  
-  const clients:SelectType[] = loadedClients;
-  const tables:SelectType[] = loadedTables;
+
+  const clients: SelectType[] = loadedClients;
+  const tables: SelectType[] = loadedTables;
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -360,9 +358,8 @@ const Index = ({loadedTables,loadedClients,loadedOrders}:any) => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
-
-  const apiClient:AxiosInstance = getApiClient(ctx)
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const apiClient: AxiosInstance = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {
     return {
@@ -373,31 +370,37 @@ export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
     };
   }
 
-  const loadedTables:SelectType[]|void = await apiClient.get("tables").then(({ data }: any) => 
-    data.map((table: TableType) => {
-      return {
-        value: table.id,
-        label: table.number,
-      };
-    })
-  );
-  
-   const loadedClients:SelectType[]|void = await apiClient.get("clients").then(({ data }: any) => 
-    data.map((client: ClientType) => {
+  const loadedTables: SelectType[] | void = await apiClient
+    .get("tables")
+    .then(({ data }: any) =>
+      data.map((table: TableType) => {
+        return {
+          value: table.id,
+          label: table.number,
+        };
+      })
+    );
+
+  const loadedClients: SelectType[] | void = await apiClient
+    .get("clients")
+    .then(({ data }: any) =>
+      data.map((client: ClientType) => {
         return {
           value: client.id,
           label: client.name,
         };
-    }))
+      })
+    );
 
-  const loadedOrders:OrderType[] = await apiClient.get("orders").then(({ data }: any) => data)
-
+  const loadedOrders: OrderType[] = await apiClient
+    .get("orders")
+    .then(({ data }: any) => data);
 
   return {
     props: {
-      loadedTables:loadedTables,
-      loadedClients:loadedClients,
-      loadedOrders:loadedOrders
+      loadedTables: loadedTables,
+      loadedClients: loadedClients,
+      loadedOrders: loadedOrders,
     },
   };
 };

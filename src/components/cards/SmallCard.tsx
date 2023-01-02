@@ -1,4 +1,4 @@
-import { CardType } from "../../../types/CardType";
+import { CardType } from "../../types/CardType";
 
 const SmallCard = ({ title, value }: CardType) => {
   return (

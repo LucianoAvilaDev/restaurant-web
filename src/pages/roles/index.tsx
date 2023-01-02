@@ -1,12 +1,10 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { v4 } from "uuid";
-import { RoleType } from "../../../types/RoleType";
-import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
@@ -23,23 +21,23 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { RoleType } from "../../types/RoleType";
+import { SelectType } from "../../types/SelectType";
 
-
-const Index = ({loadedRoles,loadedPermissions}:any) => {
+const Index = ({ loadedRoles, loadedPermissions }: any) => {
   const { user } = useContext(AuthContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  if(!user?.permissions.includes('manage_roles'))
-    router.push('../dashboard')
-    
+  if (!user?.permissions.includes("manage_roles")) router.push("../dashboard");
+
   const [roles, setRoles] = useState<RoleType[]>(loadedRoles);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-  
-  const permissions = loadedPermissions
+
+  const permissions = loadedPermissions;
 
   const { register, handleSubmit, setValue } = useForm();
 
@@ -260,21 +258,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const permissions:SelectType[] = await apiClient.get("permissions").then(({ data }: any) => {
-        return data.map((permission: any) => {
-          return {
-            value: permission.id,
-            label: permission.description,
-          };
-        })
+  const permissions: SelectType[] = await apiClient
+    .get("permissions")
+    .then(({ data }: any) => {
+      return data.map((permission: any) => {
+        return {
+          value: permission.id,
+          label: permission.description,
+        };
+      });
     });
 
-  const roles:RoleType[] = await apiClient.get("roles").then(({ data }: any) => data );
+  const roles: RoleType[] = await apiClient
+    .get("roles")
+    .then(({ data }: any) => data);
 
   return {
     props: {
-      loadedRoles:roles,
-      loadedPermissions:permissions
+      loadedRoles: roles,
+      loadedPermissions: permissions,
     },
   };
 };

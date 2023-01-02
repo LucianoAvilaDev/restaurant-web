@@ -16,6 +16,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 export default function Index() {
   const { signIn } = useContext(AuthContext);
 
+  const backgroundImage: string = `bg-[url('../src/assets/images/foto3.png')]`;
+
   const schema = object({
     email: string().required("Campo obrigatório!").email("E-mail inválido"),
     password: string().required("Campo obrigatório!"),
@@ -47,10 +49,7 @@ export default function Index() {
     <>
       {isLoading && <Loader />}
       <div
-        className="bg-cover min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
-        style={{
-          backgroundImage: `url(${process.env.NEXT_PUBLIC_WEB_URL}/foto3.png)`,
-        }}
+        className={`bg-cover ${backgroundImage} min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8`}
       >
         <Head>
           <title>Login</title>

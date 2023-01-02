@@ -1,12 +1,11 @@
 import { AxiosError } from "axios";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { toast } from "react-toastify";
-import { ClientType } from "../../../types/ClientType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
 import { ButtonSolid } from "../../components/buttons/ButtonSolid";
@@ -22,27 +21,26 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { ClientType } from "../../types/ClientType";
 import { FormatCpf } from "../../utils/FormatCpf";
 import { SanitizeCpf } from "../../utils/SanitizeCpf";
 
 type Props = {
-  loadedClients:ClientType[]
-}
+  loadedClients: ClientType[];
+};
 
-const Index = ({loadedClients}:Props) => {
+const Index = ({ loadedClients }: Props) => {
   const { user, setIsLoading } = useContext(AuthContext);
 
-  if(!user?.permissions.includes('manage_clients'))
-    Router.push('../dashboard')
-  
-  
+  if (!user?.permissions.includes("manage_clients"))
+    Router.push("../dashboard");
+
   const { register, handleSubmit, setValue } = useForm();
 
   const [clients, setClients] = useState<ClientType[]>(loadedClients);
   const [pending, setPending] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-
 
   const columns: any = [
     {
@@ -141,7 +139,6 @@ const Index = ({loadedClients}:Props) => {
       setPending(false);
     });
   };
-
 
   const newButton: JSX.Element = (
     <div className={`flex p-2`}>
@@ -268,7 +265,7 @@ const Index = ({loadedClients}:Props) => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const apiClient = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {
@@ -280,9 +277,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
     };
   }
 
-  const clients:ClientType[] = await apiClient.get("clients").then(({ data }: any) => data) 
+  const clients: ClientType[] = await apiClient
+    .get("clients")
+    .then(({ data }: any) => data);
 
   return {
-    props: {loadedClients:clients},
+    props: { loadedClients: clients },
   };
 };

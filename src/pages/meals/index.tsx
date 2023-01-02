@@ -1,12 +1,10 @@
 import { AxiosError, AxiosInstance } from "axios";
 import { GetServerSideProps } from "next";
-import Router, { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { MealType } from "../../../types/MealType";
-import { SelectType } from "../../../types/SelectType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
@@ -24,27 +22,27 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { MealType } from "../../types/MealType";
+import { SelectType } from "../../types/SelectType";
 import { FormatMoney } from "../../utils/FormatMoney";
 
-const Index = ({loadedMeals,loadedMealTypes}:any) => {
-
+const Index = ({ loadedMeals, loadedMealTypes }: any) => {
   const { user } = useContext(AuthContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  if(!user?.permissions.includes('manage_meals'))
-    router.push('../dashboard')
+  if (!user?.permissions.includes("manage_meals")) router.push("../dashboard");
 
   const [meals, setMeals] = useState<MealType[]>(loadedMeals);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [modalTemplate, setModalTemplate] = useState<JSX.Element>(<></>);
-  
+
   const { register, handleSubmit, setValue } = useForm();
-  
-  const mealTypes:SelectType[] = loadedMealTypes;
-  
+
+  const mealTypes: SelectType[] = loadedMealTypes;
+
   const getMeals = async () => {
     setPending(true);
     await api.get("meals").then(({ data }: any) => {
@@ -267,9 +265,8 @@ const Index = ({loadedMeals,loadedMealTypes}:any) => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
-
-  const apiClient:AxiosInstance = getApiClient(ctx)
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const apiClient: AxiosInstance = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {
     return {
@@ -280,15 +277,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
     };
   }
 
-  const loadedMeals = await apiClient.get("meals").then(({ data }: any) => data)
-  const loadedMealTypes = await apiClient.get("meal-types").then(({ data }: any) => data.map((type: any) => {
-          return { value: type.id, label: type.name };
-        }))
+  const loadedMeals = await apiClient
+    .get("meals")
+    .then(({ data }: any) => data);
+  const loadedMealTypes = await apiClient
+    .get("meal-types")
+    .then(({ data }: any) =>
+      data.map((type: any) => {
+        return { value: type.id, label: type.name };
+      })
+    );
 
   return {
     props: {
-      loadedMeals:loadedMeals,
-      loadedMealTypes:loadedMealTypes
-    }
+      loadedMeals: loadedMeals,
+      loadedMealTypes: loadedMealTypes,
+    },
   };
 };

@@ -5,9 +5,6 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { RoleType } from "../../../types/RoleType";
-import { SelectType } from "../../../types/SelectType";
-import { UserType } from "../../../types/UserType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
@@ -24,16 +21,17 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { RoleType } from "../../types/RoleType";
+import { SelectType } from "../../types/SelectType";
+import { UserType } from "../../types/UserType";
 
-const Index = ({loadedUsers,loadedRoles}:any) => {
-
+const Index = ({ loadedUsers, loadedRoles }: any) => {
   const { user } = useContext(AuthContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  if(!user?.permissions.includes('manage_users'))
-    router.push('../dashboard')
-    
+  if (!user?.permissions.includes("manage_users")) router.push("../dashboard");
+
   const [users, setUsers] = useState<UserType[]>(loadedUsers);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -159,7 +157,7 @@ const Index = ({loadedUsers,loadedRoles}:any) => {
       .delete(`users/${id}`)
       .then(async () => {
         SuccessAlert("Registro excluído com sucesso");
-        document.getElementById('search')?.click();
+        document.getElementById("search")?.click();
         setIsLoading(false);
       })
       .catch((e: any) => {
@@ -249,8 +247,8 @@ const Index = ({loadedUsers,loadedRoles}:any) => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
-  const apiClient = getApiClient(ctx)
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const apiClient = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {
     return {
@@ -261,19 +259,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
     };
   }
 
-  const loadedUsers:UserType[] = await apiClient.get('users').then(({data}:AxiosResponse) => data)
+  const loadedUsers: UserType[] = await apiClient
+    .get("users")
+    .then(({ data }: AxiosResponse) => data);
 
-  const loadedRoles:SelectType[] = await apiClient.get("roles").then(({ data }: any) => {
+  const loadedRoles: SelectType[] = await apiClient
+    .get("roles")
+    .then(({ data }: any) => {
       return data.map((role: RoleType) => {
         return { value: role.id, label: role.name };
-        })
-  });
-
+      });
+    });
 
   return {
     props: {
-      loadedUsers:loadedUsers,
-      loadedRoles:loadedRoles
+      loadedUsers: loadedUsers,
+      loadedRoles: loadedRoles,
     },
   };
 };

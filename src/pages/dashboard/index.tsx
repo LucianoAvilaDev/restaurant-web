@@ -1,15 +1,8 @@
 import { AxiosError } from "axios";
-import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import moment from "moment";
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { v4 } from "uuid";
-import { CardType } from "../../../types/CardType";
-import { ClientType } from "../../../types/ClientType";
-import { OrderType } from "../../../types/OrderType";
-import { SelectType } from "../../../types/SelectType";
-import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { InnerCard } from "../../components/cards/InnerCard";
 import SmallCard from "../../components/cards/SmallCard";
@@ -20,6 +13,11 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { CardType } from "../../types/CardType";
+import { ClientType } from "../../types/ClientType";
+import { OrderType } from "../../types/OrderType";
+import { SelectType } from "../../types/SelectType";
+import { TableType } from "../../types/TableType";
 
 const Index = () => {
   const { user } = useContext(AuthContext);
@@ -121,14 +119,17 @@ const Index = () => {
                   </div>
                 </InnerCard>
                 <InnerCard title={`Mesas`}>
-                  {user?.permissions.includes('manage_orders') && <div className={`text-xs md:text-sm text-justify`}>
-                    Cique em uma mesa para{" "}
-                    <span className={`text-green-600 font-bold`}>
-                      CADASTRAR
-                    </span>{" "}
-                    ou <span className={`text-red-500 font-bold`}>EDITAR</span>{" "}
-                    um Pedido.
-                  </div>}
+                  {user?.permissions.includes("manage_orders") && (
+                    <div className={`text-xs md:text-sm text-justify`}>
+                      Cique em uma mesa para{" "}
+                      <span className={`text-green-600 font-bold`}>
+                        CADASTRAR
+                      </span>{" "}
+                      ou{" "}
+                      <span className={`text-red-500 font-bold`}>EDITAR</span>{" "}
+                      um Pedido.
+                    </div>
+                  )}
                   <div
                     className={`flex flex-wrap justify-center md:justify-start p-2`}
                   >
@@ -138,7 +139,8 @@ const Index = () => {
                           <DashboardTable
                             table={table}
                             onClick={async () => {
-                              if(!user?.permissions.includes('manage_orders')) return
+                              if (!user?.permissions.includes("manage_orders"))
+                                return;
                               await Promise.resolve(
                                 setModalTemplate(
                                   <FormOrders
@@ -177,8 +179,8 @@ const Index = () => {
 export default Index;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const apiClient:any = getApiClient(ctx)
-  
+  const apiClient: any = getApiClient(ctx);
+
   if (!(await validateAuth(ctx))) {
     return {
       redirect: {

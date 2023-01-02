@@ -1,5 +1,5 @@
 import Select from "react-select";
-import { SelectType } from "../../../types/SelectType";
+import { SelectType } from "../../types/SelectType";
 import ErrorLabel from "./ErrorLabel";
 
 type props = {

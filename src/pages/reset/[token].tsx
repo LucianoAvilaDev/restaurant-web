@@ -15,7 +15,7 @@ import Loader from "../../components/loader/Loader";
 import { UsersSchema } from "../../schemas/UsersSchema";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
-import { UserType } from "../../../types/UserType";
+import { UserType } from "../../types/UserType";
 
 type Props = {
   loadedUser: UserType;
@@ -34,15 +34,14 @@ export default function Index({ loadedUser }: Props) {
     resolver: yupResolver(UsersSchema()),
   });
 
-  useEffect(()=> {
+  useEffect(() => {
     setValue("id", loadedUser.id);
     setValue("name", loadedUser.name);
     setValue("email", loadedUser.email);
     setValue("password", "");
     setValue("passwordConfirm", "");
     setValue("roleId", loadedUser.role.id ?? []);
-  }
-  ,[])
+  }, []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -144,11 +143,11 @@ export default function Index({ loadedUser }: Props) {
 }
 export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
   const recoveryToken: string = ctx.params.token;
-  const apiClient = getApiClient(ctx)
+  const apiClient = getApiClient(ctx);
 
-  const user:UserType = await apiClient
+  const user: UserType = await apiClient
     .post("reset", { token: recoveryToken })
-    .then(({ data }: any) => data)
+    .then(({ data }: any) => data);
 
   return {
     props: {

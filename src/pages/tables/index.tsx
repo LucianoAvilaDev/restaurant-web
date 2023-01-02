@@ -1,11 +1,9 @@
 import { AxiosError } from "axios";
 import { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { SelectType } from "../../../types/SelectType";
-import { TableType } from "../../../types/TableType";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert";
 import { InfoAlert } from "../../components/alerts/InfoAlert";
 import { SuccessAlert } from "../../components/alerts/SuccessAlert";
@@ -24,8 +22,10 @@ import YesNoTemplate from "../../components/templates/YesNoTemplate";
 import { api } from "../../services/api";
 import { getApiClient } from "../../services/getApiClient";
 import validateAuth from "../../services/validateAuth";
+import { SelectType } from "../../types/SelectType";
+import { TableType } from "../../types/TableType";
 
-const Index = ({loadedTables}:any) => {
+const Index = ({ loadedTables }: any) => {
   const [tables, setTables] = useState<TableType[]>(loadedTables);
   const [pending, setPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -257,8 +257,8 @@ const Index = ({loadedTables}:any) => {
 
 export default Index;
 
-export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
-  const apiClient = getApiClient(ctx)
+export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
+  const apiClient = getApiClient(ctx);
 
   if (!(await validateAuth(ctx))) {
     return {
@@ -269,11 +269,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx:any) => {
     };
   }
 
-  const loadedTables:TableType[] = await apiClient.get("tables").then(({ data }: any) => data);
+  const loadedTables: TableType[] = await apiClient
+    .get("tables")
+    .then(({ data }: any) => data);
 
   return {
     props: {
-      loadedTables:loadedTables
+      loadedTables: loadedTables,
     },
   };
 };

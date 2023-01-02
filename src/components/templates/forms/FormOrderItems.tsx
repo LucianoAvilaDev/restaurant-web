@@ -1,9 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MealType } from "../../../../types/MealType";
-import { OrderItemsType } from "../../../../types/OrderItemType";
 import { OrderItemsSchema } from "../../../schemas/OrderItemsSchema";
+import { MealType } from "../../../types/MealType";
+import { OrderItemsType } from "../../../types/OrderItemType";
 import { ErrorAlert } from "../../alerts/ErrorAlert";
 import { ButtonSolid } from "../../buttons/ButtonSolid";
 import { BodyCard } from "../../cards/BodyCard";
