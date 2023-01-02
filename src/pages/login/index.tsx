@@ -1,5 +1,4 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AxiosError } from "axios";
 import Head from "next/head";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,9 +33,10 @@ export default function Index() {
       setIsLoading(true);
       await signIn(data);
     } catch (e: any) {
-      const error: AxiosError = e as AxiosError;
       ErrorAlert(
-        e.response.status == 400 ? "Usuário ou senha inválido(s)." : e.message
+        e.response?.status == 400
+          ? "Usuário ou senha inválido(s)."
+          : "Erro! Tente novamente mais tarde."
       );
       setIsLoading(false);
     }
