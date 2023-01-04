@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -32,8 +32,10 @@ type Props = {
 const Index = ({ loadedClients }: Props) => {
   const { user, setIsLoading } = useContext(AuthContext);
 
-  if (!user?.permissions.includes("manage_clients"))
-    Router.push("../dashboard");
+  useEffect(() => {
+    if (!user?.permissions.includes("manage_clients"))
+      Router.push("../dashboard");
+  }, []);
 
   const { register, handleSubmit, setValue } = useForm();
 

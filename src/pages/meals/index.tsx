@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { AxiosError, AxiosInstance } from "axios";
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import Router from "next/router";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -29,9 +30,11 @@ import { FormatMoney } from "../../utils/FormatMoney";
 const Index = ({ loadedMeals, loadedMealTypes }: any) => {
   const { user } = useContext(AuthContext);
 
-  const router = useRouter();
-
-  if (!user?.permissions.includes("manage_meals")) router.push("../dashboard");
+  useEffect(() => {
+    if (!user?.permissions.includes("manage_meals")) {
+      Router.push("../dashboard");
+    }
+  }, []);
 
   const [meals, setMeals] = useState<MealType[]>(loadedMeals);
   const [pending, setPending] = useState<boolean>(false);

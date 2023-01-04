@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import moment from "moment";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
@@ -36,7 +36,10 @@ const Index = ({ loadedTables, loadedClients, loadedOrders }: any) => {
 
   const router = useRouter();
 
-  if (!user?.permissions.includes("manage_orders")) router.push("../dashboard");
+  useEffect(() => {
+    if (!user?.permissions.includes("manage_orders"))
+      router.push("../dashboard");
+  }, []);
 
   const [orders, setOrders] = useState<OrderType[]>(loadedOrders);
 
