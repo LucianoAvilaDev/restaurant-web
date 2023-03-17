@@ -1,4 +1,4 @@
-# Projeto - Restaurante Eat 'N' Run
+# Projeto - Restaurante Foods 'N' Drinks
 ## Descrição
   Este é um projeto em **[Next.js](https://nextjs.org/)** e **Typescript** com a finalidade de aprendizado e colaboração, onde foi implementada a interface para o usuário e utilizada a API localizada em [restaurant-api](https://github.com/LucianoAvilaDev/restaurant-api).
 
